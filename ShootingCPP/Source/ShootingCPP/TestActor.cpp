@@ -20,11 +20,36 @@ void ATestActor::BeginPlay()
 	{
 		// 화면에 디버그 메시지를 출력하는 함수. 블루프린트의 Print String과 같은 기능
 		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("Hello World!"));	
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, 
+			FString::Printf(TEXT("Hello World! %d %d %d"), MyInt1, MyInt2, MyInt3));	
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("Hello World! 한글"));	// 로그를 출력하는 함수. 에티터의 콘솔에 출력됨
-	
 
+	Test1();
+	Test4();
+	Test5();
+}
+
+void ATestActor::Test1()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("Hello Test1"));
+}
+
+void ATestActor::Test2()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("Hello Test2"));
+}
+
+int32 ATestActor::Test3()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("Hello Test3"));
+	return 1;
+}
+
+void ATestActor::Test5_Implementation()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("Hello Test5"));
 }
 
 // Called every frame
