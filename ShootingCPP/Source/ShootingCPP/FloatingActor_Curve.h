@@ -18,5 +18,8 @@ protected:
 	UPROPERTY(EditAnywhere)
 	UCurveFloat* HeightCurve = nullptr;
 
+	UPROPERTY(EditAnywhere)
+	float Duration = 5.0f;
+
 	virtual void OnUpdateFloatMesh(float DeltaTime) override;
 };
