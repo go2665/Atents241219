@@ -3,6 +3,7 @@
 
 #include "TestActor_AddComponent.h"
 
+
 // Sets default values
 ATestActor_AddComponent::ATestActor_AddComponent()
 {
@@ -16,7 +17,10 @@ ATestActor_AddComponent::ATestActor_AddComponent()
 	SetRootComponent(Root);				// Root를 루트 컴포넌트로 설정
 
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));	// UStaticMeshComponent를 Mesh라는 이름으로 생성
-	StaticMesh->SetupAttachment(Root);	// StaticMesh를 Root에 부착
+	StaticMesh->SetupAttachment(Root);	// StaticMesh를 Root에 부착	
+
+	Effect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Effect"));	// UNiagaraComponent를 Effect라는 이름으로 생성
+	Effect->SetupAttachment(Root);		// Effect를 Root에 부착
 }
 
 // Called when the game starts or when spawned

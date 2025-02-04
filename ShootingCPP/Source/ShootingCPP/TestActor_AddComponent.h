@@ -4,7 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "NiagaraComponent.h"
+
 #include "TestActor_AddComponent.generated.h"
+
+//class UNiagaraComponent;
 
 UCLASS()
 class SHOOTINGCPP_API ATestActor_AddComponent : public AActor
@@ -30,4 +34,7 @@ protected:
 	// 스태틱 메쉬 컴포넌트
 	UPROPERTY(EditAnywhere)		// 컴포넌트는 VisibleAnywhere로 설정해도 에디터 편집이 가능하다.
 	UStaticMeshComponent* StaticMesh = nullptr;
+
+	UPROPERTY(EditAnywhere)
+	UNiagaraComponent* Effect = nullptr;
 };

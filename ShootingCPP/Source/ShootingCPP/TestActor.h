@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"				// 엔진을 구동하는데 필요한 최소한의 해더
 #include "GameFramework/Actor.h"		// 액터 클래스를 사용하기 위한 해더
-#include "TestActor.generated.h"		// 기타 자동 생성된 코드를 사용하기 위한 해더
+#include "TestActor.generated.h"		// 기타 자동 생성된 코드를 사용하기 위한 해더(반드시 가장 아래에 위치해야 함)
 
 UCLASS()	// 언리얼 엔진의 가비지 콜랙터가 관리할 수 있게 됨
 class SHOOTINGCPP_API ATestActor : public AActor
