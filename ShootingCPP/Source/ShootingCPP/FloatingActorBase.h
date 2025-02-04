@@ -40,4 +40,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float BaseHeight = 40.0f;
+
+	virtual void OnUpdateFloatMesh(float DeltaTime);
 };

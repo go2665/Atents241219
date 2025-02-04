@@ -31,16 +31,22 @@ void AFloatingActorBase::Tick(float DeltaTime)
 	ElapsedTime += DeltaTime;
 	//double time = GetWorld()->GetTimeSeconds();
 
+	OnUpdateFloatMesh(DeltaTime);	
+}
+
+void AFloatingActorBase::OnConstruction(const FTransform& Transform)
+{
+	BaseHeight = StaticMesh->GetComponentLocation().Z;
+}
+
+void AFloatingActorBase::OnUpdateFloatMesh(float DeltaTime)
+{
 	float cosValue = FMath::Cos(ElapsedTime);	// 1 -> -1 -> 1
 	cosValue += 1;								// 2 -> 0 -> 2
 	cosValue *= 0.5f;							// 1 -> 0 -> 1
 	cosValue = 1 - cosValue;					// 0 -> 1 -> 0
 
 	StaticMesh->SetRelativeLocation(FVector(0, 0, BaseHeight + cosValue * MoveHeight));
-}
-
-void AFloatingActorBase::OnConstruction(const FTransform& Transform)
-{
-	BaseHeight = StaticMesh->GetComponentLocation().Z;
+	StaticMesh->AddRelativeRotation(FRotator(0, SpinSpeed * DeltaTime, 0));
 }
 
