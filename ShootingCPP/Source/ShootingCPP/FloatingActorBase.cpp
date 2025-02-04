@@ -3,25 +3,16 @@
 
 #include "FloatingActorBase.h"
 
-// Sets default values
 AFloatingActorBase::AFloatingActorBase()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	USceneComponent* root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	SetRootComponent(root);
 
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FloatingStaticMesh"));
-	StaticMesh->SetupAttachment(root);	
-
-}
-
-// Called when the game starts or when spawned
-void AFloatingActorBase::BeginPlay()
-{
-	Super::BeginPlay();
-	
+	StaticMesh->SetupAttachment(root);
 }
 
 // Called every frame
