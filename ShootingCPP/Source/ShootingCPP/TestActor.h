@@ -44,7 +44,7 @@ protected:
 	UFUNCTION(BlueprintCallable)	// 블루프린트에서 호출 가능하게 함
 	void Test2();
 
-	UFUNCTION(BlueprintPure)		// 블루프린트에서 호출 가능하게 함
+	UFUNCTION(BlueprintPure)		// 블루프린트에서 호출 가능하게 함(순서가 상관 없어진다.)
 	int32 Test3();
 
 	// 블루프린트에서 구현 가능하게 함(함수 호출은 CPP에서 하고 싶은데 구현은 블루프린트에서 하고 싶을 때 사용)
