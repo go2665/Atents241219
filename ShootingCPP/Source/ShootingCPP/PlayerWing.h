@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "GameFramework/FloatingPawnMovement.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 
@@ -31,13 +32,31 @@ public:
 
 private:
 	void GeoInputMove(const FInputActionValue& Value);
+	void GeoInputFireNormal(const FInputActionValue& Value);
+	void GeoInputFireHomming(const FInputActionValue& Value);
+	void GeoInputFireArea(const FInputActionValue& Value);
 
 protected:
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* StaticMesh = nullptr;
+
+	UPROPERTY(EditAnywhere)
+	UFloatingPawnMovement* FloatingMovement = nullptr;
+
 	UPROPERTY(EditDefaultsOnly)
 	UInputMappingContext* DefaultMappingContext;
 
 	UPROPERTY(EditDefaultsOnly)
 	UInputAction* GeoMoveAction = nullptr;
+
+	UPROPERTY(EditDefaultsOnly)
+	UInputAction* GeoFireNormal = nullptr;
+
+	UPROPERTY(EditDefaultsOnly)
+	UInputAction* GeoFireHomming = nullptr;
+
+	UPROPERTY(EditDefaultsOnly)
+	UInputAction* GeoFireArea = nullptr;
 
 
 };
