@@ -32,6 +32,12 @@ private:
 	UFUNCTION()
 	void UpdateUpAndDown(float value);	// 타임라인에서 호출하기 위해서는 UFUNCTION() 매크로를 사용해야 한다.
 
+	UFUNCTION()
+	void UpdateColor(float value);
+
+	UFUNCTION()
+	void UpdateSpin(float value);
+
 protected:
 	UPROPERTY(EditAnywhere)
 	FLinearColor BaseColor = FLinearColor::White;
@@ -39,10 +45,24 @@ protected:
 	UPROPERTY(EditAnywhere)
 	FLinearColor SecondColor = FLinearColor::Black;
 
+	UPROPERTY(EditAnywhere)
+	UCurveFloat* ColorCurve = nullptr;
+
+	UPROPERTY(EditAnywhere)
+	UCurveFloat* SpinCurve = nullptr;
+
 private:
 	// 사용할 타임라인 
+	UPROPERTY()
 	FTimeline UpDownTimeline;
 
+	UPROPERTY()
+	FTimeline ColorTimeline;
+
+	UPROPERTY()
+	FTimeline SpinTimeline;
+
 	// 이 액터의 머티리얼 인스턴스
+	UPROPERTY()
 	UMaterialInstanceDynamic* MID = nullptr;
 };
