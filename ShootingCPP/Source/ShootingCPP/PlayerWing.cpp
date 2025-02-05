@@ -2,8 +2,6 @@
 
 
 #include "PlayerWing.h"
-#include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
 
 // Sets default values
 APlayerWing::APlayerWing()
