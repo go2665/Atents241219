@@ -15,6 +15,12 @@ AFloatingActorBase::AFloatingActorBase()
 	StaticMesh->SetupAttachment(root);
 }
 
+void AFloatingActorBase::BeginPlay()
+{
+	Super::BeginPlay();
+	BaseHeight = StaticMesh->GetComponentLocation().Z;
+}
+
 // Called every frame
 void AFloatingActorBase::Tick(float DeltaTime)
 {
@@ -23,11 +29,6 @@ void AFloatingActorBase::Tick(float DeltaTime)
 	//double time = GetWorld()->GetTimeSeconds();
 
 	OnUpdateFloatMesh(DeltaTime);	
-}
-
-void AFloatingActorBase::OnConstruction(const FTransform& Transform)
-{
-	BaseHeight = StaticMesh->GetComponentLocation().Z;
 }
 
 void AFloatingActorBase::OnUpdateFloatMesh(float DeltaTime)

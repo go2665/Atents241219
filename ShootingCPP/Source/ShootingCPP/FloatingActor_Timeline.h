@@ -16,12 +16,13 @@ class SHOOTINGCPP_API AFloatingActor_Timeline : public AFloatingActor_Curve
 {
 	GENERATED_BODY()
 	
-public:
-	AFloatingActor_Timeline();
-
 protected:
 	virtual void BeginPlay() override;	
 	virtual void OnUpdateFloatMesh(float DeltaTime) override;
+
+public:
+	// 생성될 때나 에디터에서 변경할 때 호출됨
+	virtual void OnConstruction(const FTransform& Transform) override;
 
 private:
 	/// <summary>
@@ -31,5 +32,17 @@ private:
 	UFUNCTION()
 	void UpdateUpAndDown(float value);	// 타임라인에서 호출하기 위해서는 UFUNCTION() 매크로를 사용해야 한다.
 
-	FTimeline UpDownTimeline;	// 사용할 타임라인 
+protected:
+	UPROPERTY(EditAnywhere)
+	FLinearColor BaseColor = FLinearColor::White;
+
+	UPROPERTY(EditAnywhere)
+	FLinearColor SecondColor = FLinearColor::Black;
+
+private:
+	// 사용할 타임라인 
+	FTimeline UpDownTimeline;
+
+	// 이 액터의 머티리얼 인스턴스
+	UMaterialInstanceDynamic* MID = nullptr;
 };

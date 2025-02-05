@@ -15,12 +15,13 @@ public:
 	// Sets default values for this actor's properties
 	AFloatingActorBase();
 
+protected:
+	virtual void BeginPlay() override;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// 생성될 때나 에디터에서 변경할 때 호출됨
-	virtual void OnConstruction(const FTransform& Transform) override;
 
 protected:
 	UPROPERTY(VisibleAnywhere)
