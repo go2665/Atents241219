@@ -28,4 +28,7 @@ void AMainCamera::BeginPlay()
 	UWorld* World = GetWorld();
 	APlayerController* PlayerController = World->GetFirstPlayerController();
 	PlayerController->SetViewTargetWithBlend(this, 0.5f, EViewTargetBlendFunction::VTBlend_Cubic);
+
+	/*GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Yellow,
+		FString::Printf(TEXT("Main Camera OrthoWidth : %.1f"), Camera->OrthoWidth));*/
 }

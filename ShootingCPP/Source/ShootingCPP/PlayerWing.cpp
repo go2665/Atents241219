@@ -34,19 +34,23 @@ void APlayerWing::BeginPlay()
 {
 	Super::BeginPlay();
 
-	AController* WingController = GetController();
-	APlayerController* PlayerWingController = Cast<APlayerController>(WingController);
-	ULocalPlayer* LocalPlayer = PlayerWingController->GetLocalPlayer();	
+	AController* wingController = GetController();
+	APlayerController* playerWingController = Cast<APlayerController>(wingController);
+	ULocalPlayer* localPlayer = playerWingController->GetLocalPlayer();
 
-	UEnhancedInputLocalPlayerSubsystem* InputSystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
-	if (InputSystem != nullptr && DefaultMappingContext != nullptr)
+	// 입력 컨텍스트 연결하기
+	UEnhancedInputLocalPlayerSubsystem* inputSystem = localPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+	if (inputSystem != nullptr && DefaultMappingContext != nullptr)
 	{
-		InputSystem->AddMappingContext(DefaultMappingContext, 0);	// 향상된 입력과 Context 연결
+		inputSystem->AddMappingContext(DefaultMappingContext, 0);	// 향상된 입력과 Context 연결
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Input System is null"));
 	}
+
+	// 보더 위치 결정
+	UpdateOrthoSize();
 }
 
 // Called every frame
@@ -54,6 +58,7 @@ void APlayerWing::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	LookMouseLocation(DeltaTime);
+	WarpToOtherSide();
 }
 
 // Called to bind functionality to input
@@ -115,6 +120,25 @@ void APlayerWing::GeoInputFireArea(const FInputActionValue& Value)
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("GeoInputFireArea"));
 }
 
+void APlayerWing::UpdateOrthoSize()
+{
+	//AController* wingController = GetController();
+	//APlayerController* playerWingController = Cast<APlayerController>(wingController);
+	//APlayerCameraManager* cameraManager = playerWingController->PlayerCameraManager;
+	//float orthoSize = cameraManager->GetOrthoWidth();	
+
+	float orthoSize = 1000.0f;	// 일단 하드코딩으로 처리
+
+	/*GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Green,
+		FString::Printf(TEXT("Playerwing orthoSize : %.1f"), orthoSize));*/
+
+	BorderX = orthoSize * 0.5f + PlayerMargin;
+	BorderY = orthoSize * 0.5f * 1.77777f + PlayerMargin;
+
+	/*GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Green,
+		FString::Printf(TEXT("Playerwing Border : %.1f, %.1f"), BorderX, BorderY));*/
+}
+
 void APlayerWing::LookMouseLocation(float InDeltaTime)
 {
 	// 기본 데이터 가져오기
@@ -124,8 +148,8 @@ void APlayerWing::LookMouseLocation(float InDeltaTime)
 	FHitResult hitResult;
 	controller->GetHitResultUnderCursorByChannel(
 		ETraceTypeQuery::TraceTypeQuery1, true, hitResult);				// 마우스 커서가 있는 위치 구하기
-	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, 
-	//	FString::Printf(TEXT("Hit : %.1f, %.1f, %.1f"), hitResult.Location.X, hitResult.Location.Y, hitResult.Location.Z));
+	/*GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, 
+		FString::Printf(TEXT("Hit : %.1f, %.1f, %.1f"), hitResult.Location.X, hitResult.Location.Y, hitResult.Location.Z));*/
 		
 	// 커서 위치 확정(XY는 hit된 위치, 높이는 플레이어와 동일한 높이로 설정)
 	FVector cursorLocation(hitResult.Location.X, hitResult.Location.Y, playerLocation.Z);	
@@ -142,5 +166,21 @@ void APlayerWing::LookMouseLocation(float InDeltaTime)
 
 	// 보간된 결과를 플레이어에게 적용
 	SetActorRotation(interpToRotator);
+}
+
+void APlayerWing::WarpToOtherSide()
+{
+	FVector playerLocation = GetActorLocation();
+	if (BorderX < playerLocation.X || -BorderX > playerLocation.X)
+	{
+		GetOtherSideLocation(playerLocation);
+		SetActorLocation(playerLocation, false, nullptr, ETeleportType::TeleportPhysics);
+	}
+
+	if (BorderY < playerLocation.Y || -BorderY > playerLocation.Y)
+	{
+		GetOtherSideLocation(playerLocation);
+		SetActorLocation(playerLocation, false, nullptr, ETeleportType::TeleportPhysics);
+	}
 }
 
