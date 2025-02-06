@@ -3,6 +3,7 @@
 
 #include "PlayerWing.h"
 #include "Components/ArrowComponent.h"
+#include "Camera/CameraComponent.h"
 
 // Sets default values
 APlayerWing::APlayerWing()
@@ -122,15 +123,15 @@ void APlayerWing::GeoInputFireArea(const FInputActionValue& Value)
 
 void APlayerWing::UpdateOrthoSize()
 {
-	//AController* wingController = GetController();
-	//APlayerController* playerWingController = Cast<APlayerController>(wingController);
-	//APlayerCameraManager* cameraManager = playerWingController->PlayerCameraManager;
-	//float orthoSize = cameraManager->GetOrthoWidth();	
+	AController* wingController = GetController();
+	APlayerController* playerWingController = Cast<APlayerController>(wingController);
 
-	float orthoSize = 1000.0f;	// 일단 하드코딩으로 처리
+	AActor* viewTarget = playerWingController->GetViewTarget();
+	UCameraComponent* cameraComponent = viewTarget->FindComponentByClass<UCameraComponent>();
+	float orthoSize = cameraComponent->OrthoWidth;
 
-	/*GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Green,
-		FString::Printf(TEXT("Playerwing orthoSize : %.1f"), orthoSize));*/
+	//GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Green,
+	//	FString::Printf(TEXT("Playerwing orthoSize : %.1f"), orthoSize));
 
 	BorderX = orthoSize * 0.5f + PlayerMargin;
 	BorderY = orthoSize * 0.5f * 1.77777f + PlayerMargin;
