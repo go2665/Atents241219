@@ -53,7 +53,7 @@ void APlayerWing::BeginPlay()
 void APlayerWing::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	LookMouseLocation(DeltaTime);
 }
 
 // Called to bind functionality to input
@@ -113,5 +113,34 @@ void APlayerWing::GeoInputFireHomming(const FInputActionValue& Value)
 void APlayerWing::GeoInputFireArea(const FInputActionValue& Value)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("GeoInputFireArea"));
+}
+
+void APlayerWing::LookMouseLocation(float InDeltaTime)
+{
+	// 기본 데이터 가져오기
+	FVector playerLocation = GetActorLocation();		// 플레이어 위치 가져오기	
+	UWorld* world = GetWorld();
+	APlayerController* controller = world->GetFirstPlayerController();	// 마우스 hit 위치를 계산하기 위해 컨트롤러 가져오기
+	FHitResult hitResult;
+	controller->GetHitResultUnderCursorByChannel(
+		ETraceTypeQuery::TraceTypeQuery1, true, hitResult);				// 마우스 커서가 있는 위치 구하기
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, 
+	//	FString::Printf(TEXT("Hit : %.1f, %.1f, %.1f"), hitResult.Location.X, hitResult.Location.Y, hitResult.Location.Z));
+		
+	// 커서 위치 확정(XY는 hit된 위치, 높이는 플레이어와 동일한 높이로 설정)
+	FVector cursorLocation(hitResult.Location.X, hitResult.Location.Y, playerLocation.Z);	
+
+	// 플레이어의 위치와 커서의 위치를 바탕으로 방향 계산
+	FVector direction = (cursorLocation - playerLocation).GetSafeNormal();	// 플레이어 위치에서 마우스 커서 위치로 가는 방향 벡터 구하기		
+
+	// 방향을 기반으로 최종 목표회전 결정
+	FRotator toRotator = direction.Rotation();		// direction방향으로 바라보는 회전 만들기
+	FRotator playerRotator = GetActorRotation();	// 플레이어의 회전
+
+	// 플레이어의 회전에서 최종 목표회전으로 보간
+	FRotator interpToRotator = FMath::RInterpTo(playerRotator, toRotator, InDeltaTime, TurnSpeed);	// 보간된 회전
+
+	// 보간된 결과를 플레이어에게 적용
+	SetActorRotation(interpToRotator);
 }
 

@@ -37,7 +37,10 @@ private:
 	void GeoInputFireArea(const FInputActionValue& Value);
 
 protected:
-	UPROPERTY(VisibleAnywhere)
+	UFUNCTION(BlueprintCallable)
+	void LookMouseLocation(float InDeltaTime);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* StaticMesh = nullptr;
 
 	UPROPERTY(EditAnywhere)
@@ -57,6 +60,11 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	UInputAction* GeoFireArea = nullptr;
+
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	float TurnSpeed = 5.0f;
+
+	
 
 
 };
