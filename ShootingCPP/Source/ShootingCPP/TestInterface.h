@@ -2,23 +2,26 @@
 
 #pragma once
 
+#include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "TestInterface.generated.h"
 
-UINTERFACE(MinimalAPI, Blueprintable)
+UINTERFACE(MinimalAPI, BlueprintType)
+//UINTERFACE(MinimalAPI, Blueprintable)
 class UTestInterface : public UInterface
 {
 	GENERATED_BODY()
 };
 
-class ITestInterface
+class SHOOTINGCPP_API ITestInterface
 {
 	GENERATED_BODY()
 
 public:
 	UFUNCTION()
-	virtual void TestNormalFunction();
+	virtual void TestNormalFunction() = 0;
 
 	UFUNCTION(BlueprintNativeEvent)
 	void TestNative();
+	//virtual void TestNative_Implementation() = 0;
 };

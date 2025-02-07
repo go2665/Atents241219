@@ -21,6 +21,7 @@ void ATestSpawnActor::BeginPlay()
 		ATestInterfaceActor::StaticClass(), FVector(0, 0, 0), FRotator(0, 0, 0));
 		
 	ITestInterface::Execute_TestNative(SpawnedActor);	// SpawnedActor->TestNative();
+	SpawnedActor->TestNormalFunction();
 	
 }
 

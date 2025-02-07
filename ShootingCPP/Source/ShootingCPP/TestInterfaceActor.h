@@ -24,7 +24,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION()
 	virtual void TestNormalFunction() override;
-	virtual void TestNative_Implementation() override;
 
+	UFUNCTION(BlueprintNativeEvent)
+	void TestNative();
+	virtual void TestNative_Implementation() override;
 };
