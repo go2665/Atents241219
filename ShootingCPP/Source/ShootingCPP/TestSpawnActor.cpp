@@ -18,7 +18,7 @@ void ATestSpawnActor::BeginPlay()
 	Super::BeginPlay();
 	UWorld* World = GetWorld();
 	ATestInterfaceActor* SpawnedActor = World->SpawnActor<ATestInterfaceActor>(
-		ATestInterfaceActor::StaticClass(), FVector(0, 0, 0), FRotator(0, 0, 0));
+		TestInterfaceActorClass, FVector(0, 0, 0), FRotator(0, 0, 0));
 		
 	ITestInterface::Execute_TestNative(SpawnedActor);	// SpawnedActor->TestNative();
 	SpawnedActor->TestNormalFunction();

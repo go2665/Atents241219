@@ -4,18 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "TestSpawnActor.generated.h"
-
-class ATestInterfaceActor;
+#include "TestDelegateTo.generated.h"
 
 UCLASS()
-class SHOOTINGCPP_API ATestSpawnActor : public AActor
+class SHOOTINGCPP_API ATestDelegateTo : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ATestSpawnActor();
+	ATestDelegateTo();
 
 protected:
 	// Called when the game starts or when spawned
@@ -25,7 +23,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Test")
-	TSubclassOf<ATestInterfaceActor> TestInterfaceActorClass;
+private:
+	void Test1();
 };
