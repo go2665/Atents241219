@@ -25,7 +25,7 @@ AProjectileNoPool::AProjectileNoPool()
 	Sphere->SetupAttachment(Root);
 	Sphere->SetSphereRadius(8);		// 반지름 8로 설정
 	Sphere->SetCollisionProfileName(TEXT("OverlapAllDynamic"));	// 겹침만 체크(동적으로 겹침을 감지하는 콜리전 프로필로 설정)
-
+	
 	// 이동 컴포넌트 생성
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
 	ProjectileMovement->InitialSpeed = 500.0f;			// 초기	속도 500
