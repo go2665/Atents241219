@@ -28,6 +28,14 @@ APoolingProjectileBase::APoolingProjectileBase()
 	this->Tags.Add(FName("Bullet"));
 }
 
+void APoolingProjectileBase::OnConstruction(const FTransform& Transform)
+{
+	if (ProjectileVfx)
+	{
+		ProjectileVfx->SetNiagaraVariableVec3(TEXT("ProjectileColor"), FVector(ProjectileColor.R, ProjectileColor.G, ProjectileColor.B));
+	}
+}
+
 void APoolingProjectileBase::BeginPlay()
 {
 	Super::BeginPlay();

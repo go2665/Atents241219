@@ -19,8 +19,10 @@ class SHOOTINGCPP_API APoolingProjectileBase : public APoolingObjectBase
 	
 public:
 	APoolingProjectileBase();
+	virtual void OnConstruction(const FTransform& Transform) override;
 
 protected:
+
 	virtual void BeginPlay() override;
 
 	virtual void OnActivate() override;
