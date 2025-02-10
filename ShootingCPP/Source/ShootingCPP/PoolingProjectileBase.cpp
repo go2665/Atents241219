@@ -2,6 +2,8 @@
 
 
 #include "PoolingProjectileBase.h"
+#include "NiagaraFunctionLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 APoolingProjectileBase::APoolingProjectileBase()
 {
@@ -22,6 +24,8 @@ APoolingProjectileBase::APoolingProjectileBase()
 	Movement->Velocity = FVector(InitialSpeed, 0, 0);
 	Movement->bConstrainToPlane = true;
 	Movement->ConstrainNormalToPlane(FVector(0, 0, 1));
+
+	this->Tags.Add(FName("Bullet"));
 }
 
 void APoolingProjectileBase::BeginPlay()
@@ -42,7 +46,7 @@ void APoolingProjectileBase::OnActivate()
 	FTimerManager& TimerManager = World->GetTimerManager();
 	TimerManager.SetTimer(
 		LifeTimeTimerHandle, 
-		this, APoolingProjectileBase::OnExplosion,
+		this, &APoolingProjectileBase::OnExplosion,
 		LifeTime, false);	// 수명이 다되면 자동으로 터지기
 
 	SetActorHiddenInGame(false);
@@ -64,8 +68,25 @@ void APoolingProjectileBase::OnDeactivate()
 
 void APoolingProjectileBase::OnExplosion()
 {
+	UNiagaraComponent* SpawnedEffect = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+		GetWorld(), ExplosionEffect, 
+		GetActorLocation(), FRotator::ZeroRotator, FVector(1.0f),
+		true, true, ENCPoolMethod::AutoRelease, true);
+
+	SpawnedEffect->SetNiagaraVariableLinearColor(TEXT("BaseColor"), ProjectileColor);	
+
+	Deactivate();
 }
 
 void APoolingProjectileBase::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (!OtherActor->ActorHasTag("Player") && !OtherActor->ActorHasTag("Bullet"))
+	{
+		// 데미지 처리
+		UGameplayStatics::ApplyDamage(OtherActor, Damage,
+			nullptr, nullptr, nullptr);
+
+		// 터지는 이펙트 처리
+		OnExplosion();
+	}
 }

@@ -71,7 +71,7 @@ protected:
 	
 	// 총알의 색상
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pooled Projectile")
-	FLinearColor ProjectileColor = FLinearColor::Red;
+	FLinearColor ProjectileColor = FLinearColor::White;
 
 	// 수명 타이머의 핸들러
 	FTimerHandle LifeTimeTimerHandle;
