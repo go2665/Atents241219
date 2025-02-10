@@ -51,6 +51,12 @@ APoolingObjectBase* UObjectPoolActorComponent::GetObject(const FTransform& Trans
 		PooledObject = SpawnNewPooledObject();	// Pool이 비어있으면 새로 생성
 	}
 
+	if (PooledObject)
+	{
+		PooledObject->SetActorTransform(Transform);	// 트랜스폼 설정
+		PooledObject->Activate();					// 활성화
+	}
+
 	return PooledObject;
 }
 
