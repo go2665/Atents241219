@@ -18,7 +18,7 @@ APlayerWing::APlayerWing()
 	StaticMesh->SetupAttachment(RootComponent);
 
 	UArrowComponent* arrow = CreateDefaultSubobject<UArrowComponent>(TEXT("ForwardArrow"));
-	arrow->SetupAttachment(arrow);
+	arrow->SetupAttachment(RootComponent);
 
 	FloatingMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("FloatingPawnMovement"));	
 	FloatingMovement->MaxSpeed = 500;
@@ -39,15 +39,18 @@ void APlayerWing::BeginPlay()
 	APlayerController* playerWingController = Cast<APlayerController>(wingController);
 	ULocalPlayer* localPlayer = playerWingController->GetLocalPlayer();
 
-	// 입력 컨텍스트 연결하기
-	UEnhancedInputLocalPlayerSubsystem* inputSystem = localPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
-	if (inputSystem != nullptr && DefaultMappingContext != nullptr)
+	if (localPlayer)
 	{
-		inputSystem->AddMappingContext(DefaultMappingContext, 0);	// 향상된 입력과 Context 연결
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Input System is null"));
+		// 입력 컨텍스트 연결하기
+		UEnhancedInputLocalPlayerSubsystem* inputSystem = localPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+		if (inputSystem != nullptr && DefaultMappingContext != nullptr)
+		{
+			inputSystem->AddMappingContext(DefaultMappingContext, 0);	// 향상된 입력과 Context 연결
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Input System is null"));
+		}
 	}
 
 	// 보더 위치 결정

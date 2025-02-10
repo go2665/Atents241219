@@ -9,7 +9,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeactivateDelegate, APoolingObjectBase*, DeactivatedObject);
 
-UCLASS()
+UCLASS(Blueprintable)
 class SHOOTINGCPP_API APoolingObjectBase : public AActor, public IPoolObject
 {
 	GENERATED_BODY()

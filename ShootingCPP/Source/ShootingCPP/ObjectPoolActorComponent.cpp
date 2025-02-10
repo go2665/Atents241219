@@ -40,15 +40,15 @@ void UObjectPoolActorComponent::BeginPlay()
 
 APoolingObjectBase* UObjectPoolActorComponent::GetObject(const FTransform& Transform)
 {
-	APoolingObjectBase* PooledObject = nullptr;	// 반환할 오브젝트
+	APoolingObjectBase* PooledObject = nullptr;		// 반환할 오브젝트
 
 	if (Pool.Num() > 0)	// Pool에 오브젝트가 있으면
 	{
-		PooledObject = Pool.Pop(false);	// Pool에서 꺼내온다.(주의! - 리사이즈 테스트 필요)
+		PooledObject = Pool.Pop(false);				// Pool에서 꺼내온다.(주의! - 리사이즈 테스트 필요)		
 	}
 	else
 	{
-		PooledObject = SpawnNewPooledObject();	// Pool이 비어있으면 새로 생성
+		PooledObject = SpawnNewPooledObject();		// Pool이 비어있으면 새로 생성
 	}
 
 	if (PooledObject)
