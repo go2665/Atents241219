@@ -55,7 +55,6 @@ void APoolingProjectile_Area::OnDeactivate()
 	Super::OnDeactivate();
 
 	AreaCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	AreaVfx->SetVisibility(false);
 	AreaVfx->Deactivate();
 	SecondTargets.Empty();
 
@@ -87,7 +86,6 @@ void APoolingProjectile_Area::SecondExplosion()
 	// 자기 컴포넌트들 활성화
 	AreaCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	AreaVfx->Activate(true);
-	AreaVfx->SetVisibility(true);
 
 	// 시작하자 마자 첫번째 2차 폭발 데미지 적용
 	ApplyDamageToSecondTargets();

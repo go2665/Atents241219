@@ -74,6 +74,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pooled Projectile")
 	FLinearColor ProjectileColor = FLinearColor::White;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pooled Projectile")
+	TSubclassOf<UDamageType> DamageType = nullptr;
+
 	// 수명 타이머의 핸들러
 	UPROPERTY()
 	FTimerHandle LifeTimeTimerHandle;

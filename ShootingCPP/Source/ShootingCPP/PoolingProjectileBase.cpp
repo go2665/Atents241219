@@ -57,8 +57,6 @@ void APoolingProjectileBase::OnActivate()
 		LifeTimeTimerHandle, 
 		this, &APoolingProjectileBase::OnExplosion,
 		LifeTime, false);	// 수명이 다되면 자동으로 터지기
-
-	SetActorHiddenInGame(false);	// 게임에서 보이게 설정
 }
 
 void APoolingProjectileBase::OnDeactivate()
@@ -70,9 +68,7 @@ void APoolingProjectileBase::OnDeactivate()
 	
 	ProjectileVfx->Deactivate();									// 나이아가라 컴포넌트 비활성화
 	Collision->SetCollisionEnabled(ECollisionEnabled::NoCollision);	// 충돌 비활성화
-	Movement->Deactivate();											// 이동 컴포넌트 비활성화	
-
-	SetActorHiddenInGame(true);
+	Movement->Deactivate();											// 이동 컴포넌트 비활성화		
 }
 
 void APoolingProjectileBase::OnExplosion()
@@ -96,7 +92,7 @@ void APoolingProjectileBase::OnComponentBeginOverlap(UPrimitiveComponent* Overla
 	if (!OtherActor->ActorHasTag("Player") && !OtherActor->ActorHasTag("Bullet"))	// 플레이어와 총알이 아닌 경우
 	{
 		// 데미지 처리
-		UGameplayStatics::ApplyDamage(OtherActor, Damage, nullptr, nullptr, nullptr);
+		UGameplayStatics::ApplyDamage(OtherActor, Damage, nullptr, nullptr, DamageType);
 
 		// 터지는 이펙트 처리
 		OnExplosion();
