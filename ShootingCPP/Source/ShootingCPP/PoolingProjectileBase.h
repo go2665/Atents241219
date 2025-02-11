@@ -75,5 +75,6 @@ protected:
 	FLinearColor ProjectileColor = FLinearColor::White;
 
 	// 수명 타이머의 핸들러
+	UPROPERTY()
 	FTimerHandle LifeTimeTimerHandle;
 };

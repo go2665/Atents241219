@@ -77,13 +77,16 @@ void APoolingProjectileBase::OnDeactivate()
 
 void APoolingProjectileBase::OnExplosion()
 {
-	// 나이아가라 이팩트 생성
-	UNiagaraComponent* SpawnedEffect = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-		GetWorld(), ExplosionEffect, 
-		GetActorLocation(), FRotator::ZeroRotator, FVector(1.0f),
-		true, true, ENCPoolMethod::AutoRelease, true);
+	if (ExplosionEffect)	// 이팩트가 있을 때만 처리
+	{
+		// 나이아가라 이팩트 생성
+		UNiagaraComponent* SpawnedEffect = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			GetWorld(), ExplosionEffect, 
+			GetActorLocation(), FRotator::ZeroRotator, FVector(1.0f),
+			true, true, ENCPoolMethod::AutoRelease, true);
 
-	SpawnedEffect->SetNiagaraVariableLinearColor(TEXT("BaseColor"), ProjectileColor);	// 색상 설정
+		SpawnedEffect->SetNiagaraVariableLinearColor(TEXT("BaseColor"), ProjectileColor);	// 색상 설정
+	}
 
 	Deactivate();	// 비활성화
 }
