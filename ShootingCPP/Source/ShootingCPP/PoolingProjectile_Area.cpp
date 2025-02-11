@@ -48,7 +48,6 @@ void APoolingProjectile_Area::OnActivate()
 		LifeTimeTimerHandle,
 		this, &APoolingProjectile_Area::SecondExplosion,
 		LifeTime, false);	// 수명이 다되면 2차 폭발
-
 }
 
 void APoolingProjectile_Area::OnDeactivate()
@@ -56,8 +55,12 @@ void APoolingProjectile_Area::OnDeactivate()
 	Super::OnDeactivate();
 
 	AreaCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	AreaVfx->SetVisibility(false);
 	AreaVfx->Deactivate();
 	SecondTargets.Empty();
+
+	//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::White,
+	//	FString::Printf(TEXT("OnDeactivate : %.1f"), GetWorld()->GetTimeSeconds()));
 }
 
 void APoolingProjectile_Area::OnExplosion()
@@ -67,6 +70,9 @@ void APoolingProjectile_Area::OnExplosion()
 
 void APoolingProjectile_Area::SecondExplosion()
 {
+	//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, 
+	//	FString::Printf(TEXT("SecondExplosion : %.1f"), GetWorld()->GetTimeSeconds()));
+
 	// 라이프타임 타이머 취소
 	UWorld* World = GetWorld();
 	FTimerManager& TimerManager = World->GetTimerManager();
@@ -81,6 +87,7 @@ void APoolingProjectile_Area::SecondExplosion()
 	// 자기 컴포넌트들 활성화
 	AreaCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	AreaVfx->Activate(true);
+	AreaVfx->SetVisibility(true);
 
 	// 시작하자 마자 첫번째 2차 폭발 데미지 적용
 	ApplyDamageToSecondTargets();
