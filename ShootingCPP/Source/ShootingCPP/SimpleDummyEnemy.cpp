@@ -2,6 +2,7 @@
 
 
 #include "SimpleDummyEnemy.h"
+#include "ProjectileDamageTypeBase.h"
 
 // Sets default values
 ASimpleDummyEnemy::ASimpleDummyEnemy()
@@ -25,6 +26,10 @@ void ASimpleDummyEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	Health = MaxHealth;
+
+	this->Tags.Add(FName("Enemy"));
+
 	OnTakeAnyDamage.AddDynamic(this, &ASimpleDummyEnemy::OnAnyDamage);
 }
 
@@ -37,7 +42,19 @@ void ASimpleDummyEnemy::Tick(float DeltaTime)
 
 void ASimpleDummyEnemy::OnAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
+	float CurrentDamage = Damage;
+
+	const UProjectileDamageTypeBase* ProjectileDamageType = Cast<UProjectileDamageTypeBase>(DamageType);
+	if (ProjectileDamageType && ProjectileDamageType->Type == WeakType)
+	{
+		CurrentDamage *= 2.0f;
+	}
+
+	Health -= CurrentDamage;
+
 	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, 
-		FString::Printf(TEXT("OnAnyDamage(%s) : %.1f"), *(DamagedActor->GetActorLabel()), Damage));
+		FString::Printf(TEXT("OnAnyDamage(%s) : %.1f, [%.1f/%.1f]"), 
+			*(DamagedActor->GetActorLabel()), 
+			CurrentDamage, Health, MaxHealth));
 }
 

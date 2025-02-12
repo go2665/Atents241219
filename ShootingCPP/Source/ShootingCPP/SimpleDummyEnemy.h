@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "EDamageType.h"
 #include "SimpleDummyEnemy.generated.h"
 
 UCLASS()
@@ -31,6 +32,15 @@ private:
 
 protected:
 	// 스테틱 메쉬 컴포넌트
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = "Dummy Enemy")
 	UStaticMeshComponent* Mesh = nullptr;
+
+	UPROPERTY(EditAnywhere, Category = "Dummy Enemy")
+	EDamageType WeakType = EDamageType::DT_Red;
+
+	UPROPERTY(EditAnywhere, Category = "Dummy Enemy")
+	float Health = 100.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Dummy Enemy")
+	float MaxHealth = 100.0f;
 };

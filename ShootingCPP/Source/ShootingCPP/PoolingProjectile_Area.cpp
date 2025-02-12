@@ -88,7 +88,7 @@ void APoolingProjectile_Area::SecondExplosion()
 	AreaVfx->Activate(true);
 
 	// 시작하자 마자 첫번째 2차 폭발 데미지 적용
-	ApplyDamageToSecondTargets();
+	//ApplyDamageToSecondTargets();		// 블루프린트는 타이머가 무조건 선딜레이가 있음. CPP는 선딜레이 없음
 
 	// 2차 폭발 지속 시간 동안 데미지 적용
 	TimerManager.SetTimer(
@@ -115,7 +115,7 @@ void APoolingProjectile_Area::ApplyDamageToSecondTargets()
 		if (Target)
 		{
 			// 모든 타겟에게 데미지 적용
-			UGameplayStatics::ApplyDamage(Target, Damage, nullptr, nullptr, nullptr);
+			UGameplayStatics::ApplyDamage(Target, Damage, nullptr, nullptr, DamageType);
 		}
 	}
 }
