@@ -2,7 +2,7 @@
 
 
 #include "PlayerWingUsePool.h"
-
+#include "NiagaraFunctionLibrary.h"
 
 APlayerWingUsePool::APlayerWingUsePool()
 {
@@ -27,6 +27,8 @@ void APlayerWingUsePool::Tick(float DeltaTime)
 void APlayerWingUsePool::BeginPlay()
 {
 	Super::BeginPlay();
+
+	OnTakeAnyDamage.AddDynamic(this, &APlayerWingUsePool::OnPlayerTakeAnyDamage);	// 데미지 받는 함수 바인딩
 }
 
 void APlayerWingUsePool::OnFireStart(EProjectileType Type)
@@ -117,4 +119,30 @@ const FTransform APlayerWingUsePool::GetFireTransform() const
 		bFireLocationSelector = true;
 		return StaticMesh->GetSocketTransform(TEXT("FireSocket1"), ERelativeTransformSpace::RTS_World);
 	}
+}
+
+void APlayerWingUsePool::OnPlayerTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
+{
+	Health -= Damage;	// 데미지만큼 체력 감소
+	if (Health < 0)
+	{
+		DieProcess();	// 체력이 0 이하면 사망 처리
+	}
+}
+
+void APlayerWingUsePool::DieProcess()
+{
+	OnDie.Broadcast();	// 죽었다고 알리기(델리게이트 브로드캐스트)
+
+	if (DieExplosion)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			GetWorld(),
+			DieExplosion,
+			GetActorLocation(), FRotator::ZeroRotator, FVector(1.0f),
+			true, true, ENCPoolMethod::AutoRelease);	// 플레이어가 폭발하는 파티클 생성
+			
+	}
+
+	SetLifeSpan(3.0f);	// 3초 후에 사라지게 만들기
 }
