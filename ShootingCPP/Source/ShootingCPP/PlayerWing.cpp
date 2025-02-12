@@ -95,6 +95,44 @@ void APlayerWing::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	}
 }
 
+void APlayerWing::OnFireStart(EProjectileType Type)
+{
+	switch (Type)
+	{
+	case APlayerWing::EProjectileType::Normal:
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("GeoInputFireNormal - Press"));
+		break;
+	case APlayerWing::EProjectileType::Homming:
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("GeoInputFireHoming - Press"));
+		break;
+	case APlayerWing::EProjectileType::Area:
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("GeoInputFireArea - Press"));
+		break;
+	default:
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("ERROR - OnFireStart"));
+		break;
+	}
+}
+
+void APlayerWing::OnFireEnd(EProjectileType Type)
+{
+	switch (Type)
+	{
+	case APlayerWing::EProjectileType::Normal:
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("GeoInputFireNormal - Release"));
+		break;
+	case APlayerWing::EProjectileType::Homming:
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("GeoInputFireHoming - Release"));
+		break;
+	case APlayerWing::EProjectileType::Area:
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("GeoInputFireArea - Release"));
+		break;
+	default:
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("ERROR - OnFireEnd"));
+		break;
+	}
+}
+
 void APlayerWing::GeoInputMove(const FInputActionValue& Value)
 {
 	FVector2D InputValue = Value.Get<FVector2D>();
@@ -110,29 +148,29 @@ void APlayerWing::GeoInputMove(const FInputActionValue& Value)
 
 void APlayerWing::GeoInputFireNormal_Press(const FInputActionValue& Value)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("GeoInputFireNormal - Press"));
+	OnFireStart(EProjectileType::Normal);
 }
 
 void APlayerWing::GeoInputFireNormal_Release(const FInputActionValue& Value)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("GeoInputFireNormal - Release"));
+	OnFireEnd(EProjectileType::Normal);
 }
 
 void APlayerWing::GeoInputFireHomming(const FInputActionValue& Value)
 {
 	bool bPressed = Value.Get<bool>();
 	if (bPressed)
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("GeoInputFireHomming - Press"));
+		OnFireStart(EProjectileType::Homming);
 	else
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("GeoInputFireHomming - Release"));
+		OnFireEnd(EProjectileType::Homming);
 }
 
 void APlayerWing::GeoInputFireArea(const FInputActionValue& Value, bool bPressed)
 {
 	if (bPressed)
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("GeoInputFireArea - Press"));
+		OnFireStart(EProjectileType::Area);
 	else
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("GeoInputFireArea - Release"));
+		OnFireEnd(EProjectileType::Area);
 }
 
 void APlayerWing::UpdateOrthoSize()

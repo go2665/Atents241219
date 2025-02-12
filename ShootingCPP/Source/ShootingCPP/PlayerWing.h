@@ -37,6 +37,17 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void WarpToOtherSide();
 
+	// 발사체 종류
+	enum class EProjectileType : uint8
+	{
+		Normal,
+		Homming,
+		Area,
+	};
+
+	virtual void OnFireStart(EProjectileType Type);
+	virtual void OnFireEnd(EProjectileType Type);
+
 private:
 	void GeoInputMove(const FInputActionValue& Value);
 	void GeoInputFireNormal_Press(const FInputActionValue& Value);
@@ -53,7 +64,6 @@ private:
 	}
 
 	void UpdateOrthoSize();
-
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
