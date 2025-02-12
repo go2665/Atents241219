@@ -80,20 +80,19 @@ void APlayerWing::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 		if (GeoFireNormal)
 		{
-			Input->BindAction(GeoFireNormal, ETriggerEvent::Triggered, this, &APlayerWing::GeoInputFireNormal);
+			Input->BindAction(GeoFireNormal, ETriggerEvent::Started, this, &APlayerWing::GeoInputFireNormal_Press);
+			Input->BindAction(GeoFireNormal, ETriggerEvent::Completed, this, &APlayerWing::GeoInputFireNormal_Release);
 		}
 		if (GeoFireHomming)
 		{
-			Input->BindAction(GeoFireHomming, ETriggerEvent::Started, this, &APlayerWing::GeoInputFireHomming);
-			Input->BindAction(GeoFireHomming, ETriggerEvent::Completed, this, &APlayerWing::GeoInputFireHomming);
+			Input->BindAction(GeoFireHomming, ETriggerEvent::Triggered, this, &APlayerWing::GeoInputFireHomming);
 		}
 		if (GeoFireArea)
 		{
-			Input->BindAction(GeoFireArea, ETriggerEvent::Started, this, &APlayerWing::GeoInputFireArea);
-			Input->BindAction(GeoFireArea, ETriggerEvent::Completed, this, &APlayerWing::GeoInputFireArea);
+			Input->BindAction(GeoFireArea, ETriggerEvent::Started, this, &APlayerWing::GeoInputFireArea, true);
+			Input->BindAction(GeoFireArea, ETriggerEvent::Completed, this, &APlayerWing::GeoInputFireArea, false);
 		}
 	}
-
 }
 
 void APlayerWing::GeoInputMove(const FInputActionValue& Value)
@@ -109,19 +108,31 @@ void APlayerWing::GeoInputMove(const FInputActionValue& Value)
 	AddMovementInput(inputDirection);		// 이동 방향 적용
 }
 
-void APlayerWing::GeoInputFireNormal(const FInputActionValue& Value)
+void APlayerWing::GeoInputFireNormal_Press(const FInputActionValue& Value)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("GeoInputFireNormal"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("GeoInputFireNormal - Press"));
+}
+
+void APlayerWing::GeoInputFireNormal_Release(const FInputActionValue& Value)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("GeoInputFireNormal - Release"));
 }
 
 void APlayerWing::GeoInputFireHomming(const FInputActionValue& Value)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("GeoInputFireHomming"));
+	bool bPressed = Value.Get<bool>();
+	if (bPressed)
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("GeoInputFireHomming - Press"));
+	else
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("GeoInputFireHomming - Release"));
 }
 
-void APlayerWing::GeoInputFireArea(const FInputActionValue& Value)
+void APlayerWing::GeoInputFireArea(const FInputActionValue& Value, bool bPressed)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("GeoInputFireArea"));
+	if (bPressed)
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("GeoInputFireArea - Press"));
+	else
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("GeoInputFireArea - Release"));
 }
 
 void APlayerWing::UpdateOrthoSize()

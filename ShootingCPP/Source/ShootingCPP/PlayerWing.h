@@ -39,9 +39,10 @@ protected:
 
 private:
 	void GeoInputMove(const FInputActionValue& Value);
-	void GeoInputFireNormal(const FInputActionValue& Value);
+	void GeoInputFireNormal_Press(const FInputActionValue& Value);
+	void GeoInputFireNormal_Release(const FInputActionValue& Value);
 	void GeoInputFireHomming(const FInputActionValue& Value);
-	void GeoInputFireArea(const FInputActionValue& Value);
+	void GeoInputFireArea(const FInputActionValue& Value, bool bPressed);
 
 	// 인라인함수 : 컴파일전에 함수의 바디가 호출부분에 대체된다.
 	// __forceinline : 인라인 함수로 처리하도록 설정하는 키워드(반드시는 아님)	
