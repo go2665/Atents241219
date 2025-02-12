@@ -102,7 +102,7 @@ void APlayerWing::OnFireStart(EProjectileType Type)
 	case APlayerWing::EProjectileType::Normal:
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("GeoInputFireNormal - Press"));
 		break;
-	case APlayerWing::EProjectileType::Homming:
+	case APlayerWing::EProjectileType::Homing:
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("GeoInputFireHoming - Press"));
 		break;
 	case APlayerWing::EProjectileType::Area:
@@ -121,7 +121,7 @@ void APlayerWing::OnFireEnd(EProjectileType Type)
 	case APlayerWing::EProjectileType::Normal:
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("GeoInputFireNormal - Release"));
 		break;
-	case APlayerWing::EProjectileType::Homming:
+	case APlayerWing::EProjectileType::Homing:
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("GeoInputFireHoming - Release"));
 		break;
 	case APlayerWing::EProjectileType::Area:
@@ -160,9 +160,9 @@ void APlayerWing::GeoInputFireHomming(const FInputActionValue& Value)
 {
 	bool bPressed = Value.Get<bool>();
 	if (bPressed)
-		OnFireStart(EProjectileType::Homming);
+		OnFireStart(EProjectileType::Homing);
 	else
-		OnFireEnd(EProjectileType::Homming);
+		OnFireEnd(EProjectileType::Homing);
 }
 
 void APlayerWing::GeoInputFireArea(const FInputActionValue& Value, bool bPressed)

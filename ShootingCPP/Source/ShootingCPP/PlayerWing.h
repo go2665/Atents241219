@@ -41,7 +41,7 @@ protected:
 	enum class EProjectileType : uint8
 	{
 		Normal,
-		Homming,
+		Homing,
 		Area,
 	};
 

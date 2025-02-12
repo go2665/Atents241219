@@ -17,6 +17,7 @@ class SHOOTINGCPP_API APlayerWingUsePool : public APlayerWing
 	
 public:
 	APlayerWingUsePool();
+	virtual void Tick(float DeltaTime) override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -34,4 +35,26 @@ protected:
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Object Pool")
 	UObjectPoolActorComponent* AreaProjectilePool = nullptr;
+
+	UPROPERTY(EditAnywhere, Category = "Object Pool")
+	float Interval_Normal = 0.5f;
+
+	UPROPERTY(EditAnywhere, Category = "Object Pool")
+	float Interval_Homing = 1.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Object Pool")
+	float Interval_Area = 1.0f;
+
+	UPROPERTY()
+	FTimerHandle TimerHandle_Normal;
+
+	UPROPERTY()
+	FTimerHandle TimerHandle_Homing;
+
+	UPROPERTY()
+	FTimerHandle TimerHandle_Area;
+
+	float FireCoolTime_Normal = Interval_Normal;
+	float FireCoolTime_Homing = Interval_Homing;
+	float FireCoolTime_Area = Interval_Area;
 };
