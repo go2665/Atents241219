@@ -22,6 +22,11 @@ public:
 	APlayerWingUsePool();							// 풀 컴포넌트 초기화용
 	virtual void Tick(float DeltaTime) override;	// 발사체 쿨타임 관리용
 
+	inline const UInputMappingContext* GetMappingContext() const {
+		return DefaultMappingContext;
+	};
+	inline bool IsAlive() const { return Health >= 0; }
+
 protected:
 	virtual void BeginPlay() override;				// 데미지 받는 함수 바인딩용
 	virtual void OnFireStart(EProjectileType Type) override;	// 발사체 발사 시작(연사 처리용)
@@ -33,7 +38,7 @@ protected:
 	// 이런식으로 만드는 것도 가능(가독성이 더 좋음)
 	inline bool IsFireReady_Normal() const { return FireCoolTime_Normal < 0; }
 	inline bool IsFireReady_Homing() const { return FireCoolTime_Homing < 0; }
-	inline bool IsFireReady_Area() const { return FireCoolTime_Area < 0; }
+	inline bool IsFireReady_Area() const { return FireCoolTime_Area < 0; }	
 
 private:
 	// 데미지 받는 함수
@@ -44,6 +49,11 @@ private:
 
 	// 사망 처리 함수
 	void DieProcess();	
+
+public:
+	// 사망 델리게이트
+	UPROPERTY(BlueprintAssignable, Category = "Object Pool")
+	FOnPlayerDie OnDie;
 
 protected:
 	// Normal 발사체 풀 컴포넌트
@@ -93,9 +103,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Object Pool")
 	float Health = 100.0f;
-
-	UPROPERTY(BlueprintAssignable, Category = "Object Pool")
-	FOnPlayerDie OnDie;
 
 	UPROPERTY(EditAnywhere, Category = "Object Pool")
 	UNiagaraSystem* DieExplosion = nullptr;

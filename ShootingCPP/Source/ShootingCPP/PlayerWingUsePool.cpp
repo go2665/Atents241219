@@ -123,10 +123,13 @@ const FTransform APlayerWingUsePool::GetFireTransform() const
 
 void APlayerWingUsePool::OnPlayerTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
-	Health -= Damage;	// 데미지만큼 체력 감소
-	if (Health < 0)
+	if (IsAlive())			// 살아있을 때만 데미지 받기(한번만 죽게 하기 위해)
 	{
-		DieProcess();	// 체력이 0 이하면 사망 처리
+		Health -= Damage;	// 데미지만큼 체력 감소
+		if (Health < 0)
+		{
+			DieProcess();	// 체력이 0 이하면 사망 처리
+		}
 	}
 }
 
@@ -144,5 +147,7 @@ void APlayerWingUsePool::DieProcess()
 			
 	}
 
-	SetLifeSpan(3.0f);	// 3초 후에 사라지게 만들기
+	StaticMesh->SetVisibility(false);	// 메쉬 숨기기
+
+	SetLifeSpan(3.0f);	// 3초 후에 제거
 }

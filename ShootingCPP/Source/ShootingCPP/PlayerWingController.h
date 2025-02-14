@@ -16,4 +16,11 @@ class SHOOTINGCPP_API APlayerWingController : public APlayerController
 
 public:
 	APlayerWingController();
+
+protected:
+	virtual void OnPossess(APawn* InPawn) override;
+
+private:
+	UFUNCTION()
+	void OnPlayerDie();
 };
