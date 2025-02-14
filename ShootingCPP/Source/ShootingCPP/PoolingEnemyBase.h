@@ -26,7 +26,13 @@ protected:
 	virtual void OnDeactivate() override;
 
 	// 플레이어를 공격할 때 사용하는 함수(주기적으로 실행)
-	virtual void Attack();
+	virtual void Attack(AActor* Target);
+
+	// 사망 처리 함수
+	virtual void Die();
+
+	// 생존 여부 확인 함수
+	inline bool IsAlive() const { return Health >= 0.0f; }
 
 private:
 	// 데미지를 입었을 때 호출되는 함수
@@ -106,4 +112,8 @@ private:
 	// 적의 수명 타이머
 	UPROPERTY()
 	FTimerHandle LifeTimeTimer;
+
+	// 플레이어에게 데미지를 주기적으로 주기 위한 타이머
+	UPROPERTY()
+	FTimerHandle DamageTimer;
 };
