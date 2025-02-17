@@ -64,7 +64,8 @@ void APoolingEnemyBase::OnDeactivate()
 	{
 		// 첫번째 비활성화 이후에만 실행
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-			World, SelfExplosionEffect, GetActorLocation(), FRotator::ZeroRotator, FVector(1.0f),
+			World, SelfExplosionEffect, 
+			StaticMesh->GetComponentLocation(), FRotator::ZeroRotator, FVector(1.0f),
 			true, true, ENCPoolMethod::AutoRelease);	// 터지는 이펙트 생성
 	}
 	else
