@@ -52,9 +52,9 @@ void ASimpleDummyEnemy::OnAnyDamage(AActor* DamagedActor, float Damage, const UD
 
 	Health -= CurrentDamage;
 
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, 
-		FString::Printf(TEXT("OnAnyDamage(%s) : %.1f, [%.1f/%.1f]"), 
-			*(DamagedActor->GetActorLabel()), 
-			CurrentDamage, Health, MaxHealth));
+	//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, 
+	//	FString::Printf(TEXT("OnAnyDamage(%s) : %.1f, [%.1f/%.1f]"), 
+	//		*(DamagedActor->GetActorLabel()), 
+	//		CurrentDamage, Health, MaxHealth));
 }
 

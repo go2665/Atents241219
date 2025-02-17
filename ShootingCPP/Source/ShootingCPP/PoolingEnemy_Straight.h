@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "PoolingEnemyBase.h"
-#include "PoolingEnemyStraight.generated.h"
+#include "PoolingEnemy_Straight.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SHOOTINGCPP_API APoolingEnemyStraight : public APoolingEnemyBase
+class SHOOTINGCPP_API APoolingEnemy_Straight : public APoolingEnemyBase
 {
 	GENERATED_BODY()
 
 public:
-	APoolingEnemyStraight();
+	APoolingEnemy_Straight();
 	
 
 protected:
