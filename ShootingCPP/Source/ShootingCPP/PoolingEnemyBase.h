@@ -36,7 +36,7 @@ protected:
 
 private:
 	// 데미지를 입었을 때 호출되는 함수
-	void OnAnyDamage(
+	void OnEnemyAnyDamage(
 		AActor* DamagedActor, 
 		float Damage, 
 		const UDamageType* DamageType, 
@@ -44,10 +44,10 @@ private:
 		AActor* DamageCauser);
 
 	// 다른 액터와 겹칠 때 호출되는 함수
-	void OnActorBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
+	void OnEnemyActorBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
 
 	// 다른 액터가 나갔을 때 호출되는 함수
-	void OnActorEndOverlap(AActor* OverlappedActor, AActor* OtherActor);
+	void OnEnemyActorEndOverlap(AActor* OverlappedActor, AActor* OtherActor);
 
 	// 적이 받는 최종 데미지를 계산하는 함수
 	float CalcFinalDamage(float BaseDamage, const UDamageType* DamageType);

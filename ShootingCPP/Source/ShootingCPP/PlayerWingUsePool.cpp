@@ -126,6 +126,10 @@ void APlayerWingUsePool::OnPlayerTakeAnyDamage(AActor* DamagedActor, float Damag
 	if (IsAlive())			// 살아있을 때만 데미지 받기(한번만 죽게 하기 위해)
 	{
 		Health -= Damage;	// 데미지만큼 체력 감소
+
+		/*GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, 
+			FString::Printf(TEXT("Player Health : %.1f"), Health));*/
+
 		if (Health < 0)
 		{
 			DieProcess();	// 체력이 0 이하면 사망 처리

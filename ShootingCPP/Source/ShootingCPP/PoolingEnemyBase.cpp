@@ -81,7 +81,7 @@ void APoolingEnemyBase::Die()
 	Deactivate();
 }
 
-void APoolingEnemyBase::OnAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
+void APoolingEnemyBase::OnEnemyAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {	
 	if (DamageType)	
 	{		
@@ -93,6 +93,9 @@ void APoolingEnemyBase::OnAnyDamage(AActor* DamagedActor, float Damage, const UD
 		Health -= Damage;	// 일반적인 데미지 계산
 	}
 
+	/*GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, 
+		FString::Printf(TEXT("Enemy Health : [%.1f/%.1f]"), Health, MaxHealth));*/
+
 	// 처음 죽으면 Die 함수 호출
 	if (Health <= 0.0f /*|| FMath::IsNearlyZero(Health)*/ )
 	{
@@ -100,7 +103,7 @@ void APoolingEnemyBase::OnAnyDamage(AActor* DamagedActor, float Damage, const UD
 	}
 }
 
-void APoolingEnemyBase::OnActorBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
+void APoolingEnemyBase::OnEnemyActorBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
 	if (OtherActor->ActorHasTag("Player") && !DamageTimer.IsValid())
 	{
@@ -117,7 +120,7 @@ void APoolingEnemyBase::OnActorBeginOverlap(AActor* OverlappedActor, AActor* Oth
 	}
 }
 
-void APoolingEnemyBase::OnActorEndOverlap(AActor* OverlappedActor, AActor* OtherActor)
+void APoolingEnemyBase::OnEnemyActorEndOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
 	if (OtherActor->ActorHasTag("Player") && DamageTimer.IsValid())
 	{
