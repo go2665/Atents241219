@@ -73,5 +73,5 @@ private:
 	int8 CurrentFireCount = 0;
 
 	// 회전 틱 간격
-	const float TurnTickInterval = 0.1f;
+	const float TurnTickInterval = 0.03f;
 };

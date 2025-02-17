@@ -59,8 +59,7 @@ void APoolingEnemy_Shooter::TurnToLookAtLocation()
 	FVector LookAtDirection = LookAtLocation - GetActorLocation();	// 목표를 바라보는 방향 구하기
 	// FRotationMatrix::MakeFromX(LookAtDirection) : LookAtDirection이 forward가 되도록 하는 회전 메트릭스 만들기	
 	FRotator TargetRot = FRotationMatrix::MakeFromX(LookAtDirection).Rotator();		// 목표 회전 구하기
-	FRotator NewRot = FMath::RInterpTo(CurrentRot, TargetRot, TurnTickInterval, TurnSpeed);	// 현재 회전에서 목표 회전으로 보간하기
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, NewRot.ToString());	// 보간된 회전값 출력
+	FRotator NewRot = FMath::RInterpConstantTo(CurrentRot, TargetRot, TurnTickInterval, TurnSpeed);	// 현재 회전에서 목표 회전으로 보간하기
 
 	SetActorRotation(NewRot);	// 보간된 회전으로 회전 설정
 	if (IsTurnComplete())		// 회전이 완료되었으면
