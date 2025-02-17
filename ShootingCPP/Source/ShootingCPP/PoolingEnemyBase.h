@@ -22,6 +22,7 @@ public:
 	APoolingEnemyBase();
 
 protected:
+	virtual void BeginPlay() override;	
 	virtual void OnActivate() override;
 	virtual void OnDeactivate() override;
 
@@ -36,6 +37,7 @@ protected:
 
 private:
 	// 데미지를 입었을 때 호출되는 함수
+	UFUNCTION()
 	void OnEnemyAnyDamage(
 		AActor* DamagedActor, 
 		float Damage, 
@@ -44,9 +46,11 @@ private:
 		AActor* DamageCauser);
 
 	// 다른 액터와 겹칠 때 호출되는 함수
+	UFUNCTION()
 	void OnEnemyActorBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
 
 	// 다른 액터가 나갔을 때 호출되는 함수
+	UFUNCTION()
 	void OnEnemyActorEndOverlap(AActor* OverlappedActor, AActor* OtherActor);
 
 	// 적이 받는 최종 데미지를 계산하는 함수

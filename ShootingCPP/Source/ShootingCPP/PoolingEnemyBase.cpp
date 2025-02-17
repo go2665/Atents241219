@@ -22,6 +22,15 @@ APoolingEnemyBase::APoolingEnemyBase()
 	Tags.Add("Enemy");
 }
 
+void APoolingEnemyBase::BeginPlay()
+{
+	Super::BeginPlay();
+
+	OnActorBeginOverlap.AddDynamic(this, &APoolingEnemyBase::OnEnemyActorBeginOverlap);
+	OnActorEndOverlap.AddDynamic(this, &APoolingEnemyBase::OnEnemyActorEndOverlap);
+	OnTakeAnyDamage.AddDynamic(this, &APoolingEnemyBase::OnEnemyAnyDamage);
+}
+
 void APoolingEnemyBase::OnActivate()
 {
 	Super::OnActivate();
@@ -66,8 +75,10 @@ void APoolingEnemyBase::OnDeactivate()
 
 void APoolingEnemyBase::Attack(AActor* Target)
 {
+	//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Attack!") );
 	if (Target)
 	{
+		//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("Target : %s"), *Target->GetActorLabel()));
 		// 플레이어에게 데미지를 줌
 		UGameplayStatics::ApplyDamage(Target, DamageTickInterval * DamagePerSecond, nullptr, nullptr, nullptr);
 	}
@@ -93,8 +104,8 @@ void APoolingEnemyBase::OnEnemyAnyDamage(AActor* DamagedActor, float Damage, con
 		Health -= Damage;	// 일반적인 데미지 계산
 	}
 
-	/*GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, 
-		FString::Printf(TEXT("Enemy Health : [%.1f/%.1f]"), Health, MaxHealth));*/
+	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, 
+		FString::Printf(TEXT("Enemy Health : [%.1f/%.1f]"), Health, MaxHealth));
 
 	// 처음 죽으면 Die 함수 호출
 	if (Health <= 0.0f /*|| FMath::IsNearlyZero(Health)*/ )
@@ -105,6 +116,7 @@ void APoolingEnemyBase::OnEnemyAnyDamage(AActor* DamagedActor, float Damage, con
 
 void APoolingEnemyBase::OnEnemyActorBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
+	//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Overlap - Begin!"));
 	if (OtherActor->ActorHasTag("Player") && !DamageTimer.IsValid())
 	{
 		// 플레이어와 겹치면 플레이어에게 데미지를 줌
@@ -116,12 +128,13 @@ void APoolingEnemyBase::OnEnemyActorBeginOverlap(AActor* OverlappedActor, AActor
 			{
 				Attack(OtherActor);
 			},
-			DamageTickInterval, false);
+			DamageTickInterval, true);
 	}
 }
 
 void APoolingEnemyBase::OnEnemyActorEndOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
+	//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Overlap - End!"));
 	if (OtherActor->ActorHasTag("Player") && DamageTimer.IsValid())
 	{
 		// 플레이어가 범위에서 나가면 공격하는 타이머 해제

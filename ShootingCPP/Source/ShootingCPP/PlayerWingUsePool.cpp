@@ -12,6 +12,8 @@ APlayerWingUsePool::APlayerWingUsePool()
 	NormalProjectilePool = CreateDefaultSubobject<UObjectPoolActorComponent>(TEXT("NormalProjectilePool"));
 	HomingProjectilePool = CreateDefaultSubobject<UObjectPoolActorComponent>(TEXT("HomingProjectilePool"));
 	AreaProjectilePool = CreateDefaultSubobject<UObjectPoolActorComponent>(TEXT("AreaProjectilePool"));
+
+	StaticMesh->SetCollisionProfileName(TEXT("OverlapAll"));	// 플레이어는 겹침만 체크
 }
 
 void APlayerWingUsePool::Tick(float DeltaTime)
@@ -127,8 +129,8 @@ void APlayerWingUsePool::OnPlayerTakeAnyDamage(AActor* DamagedActor, float Damag
 	{
 		Health -= Damage;	// 데미지만큼 체력 감소
 
-		/*GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, 
-			FString::Printf(TEXT("Player Health : %.1f"), Health));*/
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, 
+			FString::Printf(TEXT("Player Health : %.1f"), Health));
 
 		if (Health < 0)
 		{
