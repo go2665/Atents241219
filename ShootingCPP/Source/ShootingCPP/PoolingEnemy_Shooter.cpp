@@ -2,10 +2,18 @@
 
 
 #include "PoolingEnemy_Shooter.h"
+#include "Kismet/GameplayStatics.h"
 
 APoolingEnemy_Shooter::APoolingEnemy_Shooter()
 {
 	PrimaryActorTick.bCanEverTick = false;
+	LookAtLocation = FVector::ZeroVector;
+}
+
+void APoolingEnemy_Shooter::BeginPlay()
+{
+	Super::BeginPlay();
+	GameModeCPP = Cast<AGameModeCPP>(UGameplayStatics::GetGameMode(GetWorld()));
 }
 
 void APoolingEnemy_Shooter::OnActivate()
@@ -72,7 +80,13 @@ void APoolingEnemy_Shooter::TurnToLookAtLocation()
 
 void APoolingEnemy_Shooter::FireOneShot()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("FireOneShot"));	// 나중에 총알 생성 코드로 대체
+	//FTransform socketTransform = StaticMesh->GetSocketTransform(TEXT("FireSocket"), ERelativeTransformSpace::RTS_World);
+	//GEngine->AddOnScreenDebugMessage(-1, 100.0f, FColor::Red, 
+	//	FString::Printf(TEXT("FireOneShot : %s, %s"), 
+	//		*(socketTransform.GetLocation().ToString()), *(socketTransform.Rotator().ToString())));
+
+	GameModeCPP->GetBullet(StaticMesh->GetSocketTransform(TEXT("FireSocket")));		// 총알 생성
+
 	CurrentFireCount++;	// 현재 발사 횟수 증가
 	if (CurrentFireCount >= FireRepeatCount)	// 현재 발사 횟수가 FireRepeatCount보다 크거나 같아지면
 	{

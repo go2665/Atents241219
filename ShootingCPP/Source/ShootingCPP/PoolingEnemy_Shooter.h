@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "PoolingEnemyBase.h"
+#include "GameModeCPP.h"
 #include "PoolingEnemy_Shooter.generated.h"
 
 /**
@@ -18,6 +19,7 @@ public:
 	APoolingEnemy_Shooter();
 
 protected:
+	virtual void BeginPlay() override;
 	virtual void OnActivate() override;
 
 private:
@@ -74,4 +76,7 @@ private:
 
 	// 회전 틱 간격
 	const float TurnTickInterval = 0.03f;
+
+	UPROPERTY()
+	AGameModeCPP* GameModeCPP = nullptr;
 };
