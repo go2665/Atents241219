@@ -65,6 +65,7 @@ void APoolingEnemy_Shooter::TurnToLookAtLocation()
 {
 	FRotator CurrentRot = GetActorRotation();						// 현재 회전 구하기
 	FVector LookAtDirection = LookAtLocation - GetActorLocation();	// 목표를 바라보는 방향 구하기
+	LookAtDirection.Z = 0;											// Z값은 0으로 설정
 	// FRotationMatrix::MakeFromX(LookAtDirection) : LookAtDirection이 forward가 되도록 하는 회전 메트릭스 만들기	
 	FRotator TargetRot = FRotationMatrix::MakeFromX(LookAtDirection).Rotator();		// 목표 회전 구하기
 	FRotator NewRot = FMath::RInterpConstantTo(CurrentRot, TargetRot, TurnTickInterval, TurnSpeed);	// 현재 회전에서 목표 회전으로 보간하기
@@ -104,7 +105,10 @@ void APoolingEnemy_Shooter::FireOneShot()
 
 bool APoolingEnemy_Shooter::IsTurnComplete() const
 {
-	FVector Direction = (LookAtLocation - GetActorLocation()).GetSafeNormal();	// 목표를 바라보는 방향 구하기
+	FVector Direction = LookAtLocation - GetActorLocation();	// 목표를 바라보는 방향 구하기
+	Direction.Z = 0;											// Z값는 0으로 설정
+	Direction.Normalize();										// 방향 벡터 정규화	
+
 	float Scalar = FVector::DotProduct(Direction, GetActorForwardVector());		// Direction과 액터의 Forward 벡터의 내적 구하기
 	float Radian = FMath::Acos(Scalar);				// 내적을 이용해서 두 벡터의 사이각 구하기(라디안)
 	float Degree = FMath::RadiansToDegrees(Radian);	// 라디안을 각도로 변환

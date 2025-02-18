@@ -37,13 +37,18 @@ APoolingObjectBase* UObjectPoolActorComponent::GetObject(const FTransform& Trans
 	}
 	else
 	{
-		PooledObject = SpawnNewPooledObject();		// Pool이 비어있으면 새로 생성
+		PooledObject = SpawnNewPooledObject();		// Pool이 비어있으면 새로 생성(만약을 대비한 코드)
 	}
 
 	if (PooledObject)
 	{
 		PooledObject->SetActorTransform(Transform);	// 트랜스폼 설정
 		PooledObject->Activate();					// 활성화
+	}
+
+	if (Pool.Num() == 0)
+	{
+		SpawnNewPooledObject();		// Pool에서 마지막 오브젝트를 꺼냈으면 새로 생성
 	}
 
 	return PooledObject;

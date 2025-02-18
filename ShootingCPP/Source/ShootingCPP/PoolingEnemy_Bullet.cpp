@@ -21,6 +21,8 @@ APoolingEnemy_Bullet::APoolingEnemy_Bullet()
 	ProjectileMovement->ProjectileGravityScale = 0.0f;	// 중력 적용 안함
 	ProjectileMovement->bConstrainToPlane = true;		// XY평면에 제한
 	ProjectileMovement->SetPlaneConstraintNormal(FVector(0.0f, 0.0f, 1.0f));	// Z축이 노멀벡터
+
+	Tags.Add(FName("Bullet"));	// 태그 추가
 }
 
 void APoolingEnemy_Bullet::BeginPlay()
