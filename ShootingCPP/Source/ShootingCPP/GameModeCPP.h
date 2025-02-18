@@ -37,11 +37,11 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	class APoolingEnemyBase* GetEnemy_Shooter(const FTransform& SpawnTransform);
 
-	//UFUNCTION(BlueprintCallable)
-	//class APoolingEnemy_Chase* GetEnemy_Chase(const FTransform& SpawnTransform);
+	UFUNCTION(BlueprintCallable)
+	class APoolingEnemyBase* GetEnemy_Chase(const FTransform& SpawnTransform);
 
 	//UFUNCTION(BlueprintCallable)
-	//class APoolingEnemy_Debris* GetEnemy_Debris(const FTransform& SpawnTransform);
+	//class APoolingEnemyBase* GetEnemy_Debris(const FTransform& SpawnTransform);
 	
 private:
 	UPROPERTY()

@@ -27,6 +27,9 @@ public:
 	APoolingObjectBase* GetObject_Shooter(const FTransform& SpawnTransform);
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "EnemyPool")
+	APoolingObjectBase* GetObject_Chase(const FTransform& SpawnTransform);
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "EnemyPool")
 	APoolingObjectBase* GetObject_Bullet(const FTransform& SpawnTransform);
 
 };

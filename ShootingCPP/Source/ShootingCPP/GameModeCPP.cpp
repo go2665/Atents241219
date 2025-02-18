@@ -7,7 +7,7 @@
 #include "PoolingEnemy_Straight.h"
 #include "PoolingEnemy_Wave.h"
 #include "PoolingEnemy_Shooter.h"
-
+#include "PoolingEnemy_Chase.h"
 
 APoolingEnemyBase* AGameModeCPP::GetEnemy(EEnemyType Type, const FTransform& SpawnTransform)
 {
@@ -79,6 +79,17 @@ APoolingEnemyBase* AGameModeCPP::GetEnemy_Shooter(const FTransform& SpawnTransfo
 	if (EnemyPool)
 	{
 		result = Cast<APoolingEnemyBase>(EnemyPool->GetObject_Shooter(SpawnTransform));
+	}
+
+	return result;
+}
+
+APoolingEnemyBase* AGameModeCPP::GetEnemy_Chase(const FTransform& SpawnTransform)
+{
+	APoolingEnemyBase* result = nullptr;
+	if (EnemyPool)
+	{
+		result = Cast<APoolingEnemyBase>(EnemyPool->GetObject_Chase(SpawnTransform));
 	}
 
 	return result;
