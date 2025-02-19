@@ -14,4 +14,5 @@ enum class EEnemyType : uint8
 	ET_Shooter		UMETA(DisplayName = "Shooter"),
 	ET_Chase		UMETA(DisplayName = "Chase"),
 	ET_Debris		UMETA(DisplayName = "Debris"),
+	ET_SmallDebris	UMETA(DisplayName = "SmallDebris"),
 };

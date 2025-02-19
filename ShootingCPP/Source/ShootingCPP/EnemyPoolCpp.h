@@ -32,4 +32,10 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "EnemyPool")
 	APoolingObjectBase* GetObject_Bullet(const FTransform& SpawnTransform);
 
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "EnemyPool")
+	APoolingObjectBase* GetObject_Debris(const FTransform& SpawnTransform);
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "EnemyPool")
+	APoolingObjectBase* GetObject_SmallDebris(const FTransform& SpawnTransform);
+
 };

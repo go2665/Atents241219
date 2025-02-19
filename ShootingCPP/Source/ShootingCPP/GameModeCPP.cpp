@@ -23,6 +23,15 @@ APoolingEnemyBase* AGameModeCPP::GetEnemy(EEnemyType Type, const FTransform& Spa
 		case EEnemyType::ET_Shooter:
 			result = GetEnemy_Shooter(SpawnTransform);
 			break;
+		case EEnemyType::ET_Chase:
+			result = GetEnemy_Chase(SpawnTransform);
+			break;
+		case EEnemyType::ET_Debris:
+			result = GetEnemy_Debris(SpawnTransform);
+			break;
+		case EEnemyType::ET_SmallDebris:
+			result = GetEnemy_SmallDebris(SpawnTransform);
+			break;
 	}
 	return result;
 }
@@ -90,6 +99,28 @@ APoolingEnemyBase* AGameModeCPP::GetEnemy_Chase(const FTransform& SpawnTransform
 	if (EnemyPool)
 	{
 		result = Cast<APoolingEnemyBase>(EnemyPool->GetObject_Chase(SpawnTransform));
+	}
+
+	return result;
+}
+
+APoolingEnemyBase* AGameModeCPP::GetEnemy_Debris(const FTransform& SpawnTransform)
+{
+	APoolingEnemyBase* result = nullptr;
+	if (EnemyPool)
+	{
+		result = Cast<APoolingEnemyBase>(EnemyPool->GetObject_Debris(SpawnTransform));
+	}
+
+	return result;
+}
+
+APoolingEnemyBase* AGameModeCPP::GetEnemy_SmallDebris(const FTransform& SpawnTransform)
+{
+	APoolingEnemyBase* result = nullptr;
+	if (EnemyPool)
+	{
+		result = Cast<APoolingEnemyBase>(EnemyPool->GetObject_SmallDebris(SpawnTransform));
 	}
 
 	return result;

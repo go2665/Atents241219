@@ -109,10 +109,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pooling Enemy")
 	int32 Point = 10;
 
-private:
-	// 초기화 되었는지 여부(생성 후 첫 비활성화때 이팩트 재생 방지용)
+	// 초기화 되었는지 여부(생성 후 첫 비활성화때 이팩트 재생 또는 소형 운석 생성 방지용)
 	bool bIsInitialized = false;
-	
+
+private:	
 	// 적의 수명 타이머
 	UPROPERTY()
 	FTimerHandle LifeTimeTimer;

@@ -40,8 +40,11 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	class APoolingEnemyBase* GetEnemy_Chase(const FTransform& SpawnTransform);
 
-	//UFUNCTION(BlueprintCallable)
-	//class APoolingEnemyBase* GetEnemy_Debris(const FTransform& SpawnTransform);
+	UFUNCTION(BlueprintCallable)
+	class APoolingEnemyBase* GetEnemy_Debris(const FTransform& SpawnTransform);
+
+	UFUNCTION(BlueprintCallable)
+	class APoolingEnemyBase* GetEnemy_SmallDebris(const FTransform& SpawnTransform);
 	
 private:
 	UPROPERTY()
