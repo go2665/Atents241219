@@ -8,8 +8,7 @@
 // Sets default values for this component's properties
 USpawnerBaseComponent::USpawnerBaseComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
+	// 틱 끄기
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
@@ -19,10 +18,12 @@ void USpawnerBaseComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// 게임모드를 캐스팅 해 놓음(캐싱)
 	GameMode = Cast<AGameModeCPP>(GetWorld()->GetAuthGameMode());
 
 	if (GameMode)
 	{
+		// GameMode가 있다면 스폰 주기마다 Spawn 함수를 호출하도록 타이머 설정
 		FTimerManager& TimerManager = GetWorld()->GetTimerManager();
 		FTimerHandle TempTimerHandle;
 		TimerManager.SetTimer(
@@ -46,13 +47,14 @@ void USpawnerBaseComponent::BeginPlay()
 //}
 
 void USpawnerBaseComponent::Spawn()
-{
-	FTransform SpawnTransform = GetSpawnTransform();
-	GameMode->GetEnemy(SpawnEnemyType, SpawnTransform);
+{	
+	FTransform SpawnTransform = GetSpawnTransform();	// 스폰할 트랜스폼 가져오기
+	GameMode->GetEnemy(SpawnEnemyType, SpawnTransform);	// 적 하나 스폰
 }
 
 FTransform USpawnerBaseComponent::GetSpawnTransform() const
 {
+	// 스폰 영역의 위치 가져오기(없으면 Identity)
 	return SpawnArea ? SpawnArea->GetComponentTransform() : FTransform::Identity;
 }
 

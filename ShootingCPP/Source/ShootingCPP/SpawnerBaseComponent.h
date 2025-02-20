@@ -18,6 +18,7 @@ public:
 	// Sets default values for this component's properties
 	USpawnerBaseComponent();
 
+	// Getters and Setters
 	inline UBoxComponent* GetSpawnArea() const { return SpawnArea; }
 	inline void SetSpawnArea(UBoxComponent* InSpawnArea) { SpawnArea = InSpawnArea; }
 
@@ -28,26 +29,33 @@ protected:
 	//// 컴포넌트가 등록될 때 실행되는 함수
 	//virtual void OnRegister() override;
 
+	// 주기적으로 실행되면서 적을 하나 스폰하는 함수
 	UFUNCTION(BlueprintCallable, Category = "Spawner")
 	void Spawn();
 
+	// 스폰될 위치를 반환해주는 함수
 	UFUNCTION(BlueprintPure, Category = "Spawner")
 	virtual FTransform GetSpawnTransform() const;
 
 private:
+	// 스폰될 영역 컴포넌트와 화살표를 생성하는 함수(미완성 - 사용안함)
 	void AddBoxAndArrowComponent();
 		
 protected:
+	// 스폰될 영역 컴포넌트
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spawner")
 	UBoxComponent* SpawnArea = nullptr;
 
+	// 스폰될 적의 타입
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner")
 	EEnemyType SpawnEnemyType = EEnemyType::ET_Straight;
 
+	// 스폰 주기
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner")
 	float SpawnInterval = 1.0f;
 
 private:
+	// 적을 꺼내오기 위해 게임모드를 캐스팅 해 놓은 변수
 	class AGameModeCPP* GameMode = nullptr;
 
 };

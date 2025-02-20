@@ -19,14 +19,15 @@ ASpawner::ASpawner()
 
 void ASpawner::AddSpawnerBaseComponent()
 {
-	SpawnAreaBase = CreateDefaultSubobject<UBoxComponent>(TEXT("SpawnArea_Base"));
+	SpawnAreaBase = CreateDefaultSubobject<UBoxComponent>(TEXT("SpawnArea_Base"));	// 스폰될 영역 컴포넌트 생성
 	SpawnAreaBase->SetupAttachment(RootComponent);
 
-	UArrowComponent* ArrowBase = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow_Base"));
+	// 스폰 영역의 forward 방향을 표시하기 위한 화살표 컴포넌트 생성
+	UArrowComponent* ArrowBase = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow_Base")); 
 	ArrowBase->SetupAttachment(SpawnAreaBase);
 	ArrowBase->SetRelativeRotation(FRotator::ZeroRotator);
 
-	SpawnerBase = CreateDefaultSubobject<USpawnerBaseComponent>(TEXT("Spawner_Base"));
+	SpawnerBase = CreateDefaultSubobject<USpawnerBaseComponent>(TEXT("Spawner_Base"));	// 스포너 컴포넌트 생성
 	SpawnerBase->SetSpawnArea(SpawnAreaBase);
 }
 
