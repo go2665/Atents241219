@@ -2,7 +2,6 @@
 
 
 #include "SpawnerBaseComponent.h"
-#include "GameModeCPP.h"
 #include "Components/ArrowComponent.h"
 
 // Sets default values for this component's properties

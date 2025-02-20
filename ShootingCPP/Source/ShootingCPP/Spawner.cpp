@@ -15,6 +15,7 @@ ASpawner::ASpawner()
 
 	AddSpawnerBaseComponent();
 	AddSpawnerAreaComponent();
+	AddSpawnerDiagonalComponent();
 }
 
 void ASpawner::AddSpawnerBaseComponent()
@@ -42,4 +43,17 @@ void ASpawner::AddSpawnerAreaComponent()
 
 	SpawnerAreaType = CreateDefaultSubobject<USpawnerAreaComponent>(TEXT("Spawner_Area"));
 	SpawnerAreaType->SetSpawnArea(SpawnAreaArea);
+}
+
+void ASpawner::AddSpawnerDiagonalComponent()
+{
+	SpawnDiagonalArea = CreateDefaultSubobject<UBoxComponent>(TEXT("SpawnArea_Diagonal"));
+	SpawnDiagonalArea->SetupAttachment(RootComponent);
+
+	UArrowComponent* ArrowDiagonal = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow_Diagonal"));
+	ArrowDiagonal->SetupAttachment(SpawnDiagonalArea);
+	ArrowDiagonal->SetRelativeRotation(FRotator::ZeroRotator);
+
+	SpawnerDiagonalType = CreateDefaultSubobject<USpawnerDiagonalComponent>(TEXT("Spawner_Diagonal"));
+	SpawnerDiagonalType->SetSpawnArea(SpawnDiagonalArea);
 }

@@ -45,7 +45,10 @@ void APoolingEnemy_Chase::BeginPlay()
 	UWorld* World = GetWorld();
 	APlayerController* PlayerController = World->GetFirstPlayerController();
 	APlayerWingUsePool* Wing = Cast<APlayerWingUsePool>(PlayerController->GetPawn());
-	Wing->OnDie.AddDynamic(this, &APoolingEnemy_Chase::TargetLost);	// 플레이어 사망시 TargetPawn을 nullptr로 설정
+	if (Wing)
+	{
+		Wing->OnDie.AddDynamic(this, &APoolingEnemy_Chase::TargetLost);	// 플레이어 사망시 TargetPawn을 nullptr로 설정
+	}
 
 	ProjectileMovement->MaxSpeed = MaxSpeed;	// 최대 속도 설정
 }

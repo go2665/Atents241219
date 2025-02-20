@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "Components/BoxComponent.h"
 #include "EEnemyType.h"
+#include "GameModeCPP.h"
 #include "SpawnerBaseComponent.generated.h"
 
 
@@ -31,7 +32,7 @@ protected:
 
 	// 주기적으로 실행되면서 적을 하나 스폰하는 함수
 	UFUNCTION(BlueprintCallable, Category = "Spawner")
-	void Spawn();
+	virtual void Spawn();
 
 	// 스폰될 위치를 반환해주는 함수
 	UFUNCTION(BlueprintPure, Category = "Spawner")
@@ -54,8 +55,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner")
 	float SpawnInterval = 1.0f;
 
-private:
 	// 적을 꺼내오기 위해 게임모드를 캐스팅 해 놓은 변수
-	class AGameModeCPP* GameMode = nullptr;
+	AGameModeCPP* GameMode = nullptr;
 
+//protected:
+//	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner")
+//	UBoxComponent* Test = nullptr;
 };

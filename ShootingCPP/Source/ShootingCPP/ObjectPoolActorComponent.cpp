@@ -33,7 +33,7 @@ APoolingObjectBase* UObjectPoolActorComponent::GetObject(const FTransform& Trans
 
 	if (Pool.Num() > 0)	// Pool에 오브젝트가 있으면
 	{
-		PooledObject = Pool.Pop(EAllowShrinking::No);				// Pool에서 꺼내온다.(주의! - 리사이즈 테스트 필요)		
+		PooledObject = Pool.Pop(EAllowShrinking::No);	// Pool에서 꺼내온다.(주의! - 리사이즈 테스트 필요)		
 	}
 	else
 	{
