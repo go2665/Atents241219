@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(meta = (BlueprintSpawnableComponent))
 class SHOOTINGCPP_API USpawnerAreaComponent : public USpawnerBaseComponent
 {
 	GENERATED_BODY()

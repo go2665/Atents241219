@@ -27,8 +27,8 @@ void ASpawner::AddSpawnerBaseComponent()
 	ArrowBase->SetupAttachment(SpawnAreaBase);
 	ArrowBase->SetRelativeRotation(FRotator::ZeroRotator);
 
-	SpawnerBase = CreateDefaultSubobject<USpawnerBaseComponent>(TEXT("Spawner_Base"));	// 스포너 컴포넌트 생성
-	SpawnerBase->SetSpawnArea(SpawnAreaBase);
+	SpawnerBaseType = CreateDefaultSubobject<USpawnerBaseComponent>(TEXT("Spawner_Base"));	// 스포너 컴포넌트 생성
+	SpawnerBaseType->SetSpawnArea(SpawnAreaBase);
 }
 
 void ASpawner::AddSpawnerAreaComponent()
@@ -40,6 +40,6 @@ void ASpawner::AddSpawnerAreaComponent()
 	ArrowArea->SetupAttachment(SpawnAreaArea);
 	ArrowArea->SetRelativeRotation(FRotator::ZeroRotator);
 
-	SpawnerArea = CreateDefaultSubobject<USpawnerAreaComponent>(TEXT("Spawner_Area"));
-	SpawnerArea->SetSpawnArea(SpawnAreaArea);
+	SpawnerAreaType = CreateDefaultSubobject<USpawnerAreaComponent>(TEXT("Spawner_Area"));
+	SpawnerAreaType->SetSpawnArea(SpawnAreaArea);
 }

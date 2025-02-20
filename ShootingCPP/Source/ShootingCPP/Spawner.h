@@ -9,7 +9,7 @@
 #include "SpawnerAreaComponent.h"
 #include "Spawner.generated.h"
 
-// 스포너 커모넌트들과 스폰될 영역들을 관리	하는 액터 클래스
+// 스포너 컴포넌트들과 스폰될 영역들을 관리하는 액터 클래스
 UCLASS()
 class SHOOTINGCPP_API ASpawner : public AActor
 {
@@ -32,7 +32,7 @@ protected:
 
 	// 스포너 컴포넌트(기본)
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spawner")
-	USpawnerBaseComponent* SpawnerBase = nullptr;
+	USpawnerBaseComponent* SpawnerBaseType = nullptr;
 
 	// 스폰될 영역 컴포넌트(일정 범위 안 스폰)
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spawner")
@@ -40,6 +40,6 @@ protected:
 
 	// 스포너 컴포넌트(일정 범위 안 스폰)
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spawner")
-	USpawnerAreaComponent* SpawnerArea = nullptr;
+	USpawnerAreaComponent* SpawnerAreaType = nullptr;
 
 };

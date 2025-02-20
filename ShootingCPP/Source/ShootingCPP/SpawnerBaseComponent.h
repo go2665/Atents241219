@@ -9,7 +9,7 @@
 #include "SpawnerBaseComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( meta=(BlueprintSpawnableComponent) )
 class SHOOTINGCPP_API USpawnerBaseComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -43,7 +43,7 @@ private:
 		
 protected:
 	// 스폰될 영역 컴포넌트
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spawner")
+	UPROPERTY(BlueprintReadOnly, Category = "Spawner")
 	UBoxComponent* SpawnArea = nullptr;
 
 	// 스폰될 적의 타입
