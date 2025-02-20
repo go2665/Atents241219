@@ -226,8 +226,14 @@ void APlayerWing::WarpToOtherSide()
 	FVector playerLocation = GetActorLocation();
 	if (BorderX < playerLocation.X || -BorderX > playerLocation.X)
 	{
-		GetOtherSideLocation(playerLocation);
-		SetActorLocation(playerLocation, false, nullptr, ETeleportType::TeleportPhysics);
+		GetOtherSideLocation(playerLocation);	// 현재 위치의 반대 위치 구하기
+
+		// playerLocation를 중앙쪽으로 유닛 벡터만큼 이동
+		FVector BasePosition = FVector(0, 0, playerLocation.Z);
+		FVector Direction = (BasePosition - playerLocation).GetSafeNormal();
+		playerLocation += Direction * 10.0f;
+
+		SetActorLocation(playerLocation, false, nullptr, ETeleportType::TeleportPhysics);	// 최종적으로 반대 위치로 이동
 	}
 
 	if (BorderY < playerLocation.Y || -BorderY > playerLocation.Y)
