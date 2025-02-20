@@ -32,18 +32,18 @@ void USpawnerBaseComponent::BeginPlay()
 	}
 }
 
-void USpawnerBaseComponent::OnRegister()
-{
-	Super::OnRegister();
-
-	AddBoxAndArrowComponent();
-
-	//AActor* Owner = GetOwner();
-	//if (Owner)
-	//{
-	//	UE_LOG(LogTemp, Warning, TEXT("%s"), *(Owner->GetName()));
-	//}
-}
+//void USpawnerBaseComponent::OnRegister()
+//{
+//	Super::OnRegister();
+//
+//	AddBoxAndArrowComponent();
+//
+//	AActor* Owner = GetOwner();
+//	if (Owner)
+//	{
+//		UE_LOG(LogTemp, Warning, TEXT("%s"), *(Owner->GetName()));
+//	}
+//}
 
 void USpawnerBaseComponent::Spawn()
 {

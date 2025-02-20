@@ -2,7 +2,6 @@
 
 
 #include "Spawner.h"
-#include "SpawnerBaseComponent.h"
 #include "Components/ArrowComponent.h"
 
 // Sets default values
@@ -15,6 +14,7 @@ ASpawner::ASpawner()
 	SetRootComponent(Root);
 
 	AddSpawnerBaseComponent();
+	AddSpawnerAreaComponent();
 }
 
 void ASpawner::AddSpawnerBaseComponent()
@@ -28,4 +28,17 @@ void ASpawner::AddSpawnerBaseComponent()
 
 	SpawnerBase = CreateDefaultSubobject<USpawnerBaseComponent>(TEXT("Spawner_Base"));
 	SpawnerBase->SetSpawnArea(SpawnAreaBase);
+}
+
+void ASpawner::AddSpawnerAreaComponent()
+{
+	SpawnAreaArea = CreateDefaultSubobject<UBoxComponent>(TEXT("SpawnArea_Area"));
+	SpawnAreaArea->SetupAttachment(RootComponent);
+
+	UArrowComponent* ArrowArea = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow_Area"));
+	ArrowArea->SetupAttachment(SpawnAreaArea);
+	ArrowArea->SetRelativeRotation(FRotator::ZeroRotator);
+
+	SpawnerArea = CreateDefaultSubobject<USpawnerAreaComponent>(TEXT("Spawner_Area"));
+	SpawnerArea->SetSpawnArea(SpawnAreaArea);
 }
