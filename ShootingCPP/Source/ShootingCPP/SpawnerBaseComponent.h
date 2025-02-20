@@ -28,7 +28,7 @@ protected:
 	void Spawn();
 
 	UFUNCTION(BlueprintPure, Category = "Spawner")
-	FTransform GetSpawnTransform() const;
+	virtual FTransform GetSpawnTransform() const;
 		
 protected:
 	UPROPERTY()

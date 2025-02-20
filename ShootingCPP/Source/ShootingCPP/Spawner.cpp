@@ -28,4 +28,5 @@ void ASpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	SpawnerBase->SetSpawnArea(SpawnAreaBase);
 }
