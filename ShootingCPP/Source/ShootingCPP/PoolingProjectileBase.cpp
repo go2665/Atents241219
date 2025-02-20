@@ -33,7 +33,8 @@ void APoolingProjectileBase::OnConstruction(const FTransform& Transform)
 	if (ProjectileVfx)
 	{
 		// ProjectileVfx에 ProjectileColor 색상 설정
-		ProjectileVfx->SetNiagaraVariableVec3(TEXT("ProjectileColor"), FVector(ProjectileColor.R, ProjectileColor.G, ProjectileColor.B));
+		ProjectileVfx->SetVariableVec3(
+			TEXT("ProjectileColor"), FVector(ProjectileColor.R, ProjectileColor.G, ProjectileColor.B));
 	}
 }
 
@@ -81,7 +82,7 @@ void APoolingProjectileBase::OnExplosion()
 			GetActorLocation(), FRotator::ZeroRotator, FVector(1.0f),
 			true, true, ENCPoolMethod::AutoRelease, true);
 
-		SpawnedEffect->SetNiagaraVariableLinearColor(TEXT("BaseColor"), ProjectileColor);	// 색상 설정
+		SpawnedEffect->SetVariableLinearColor(TEXT("BaseColor"), ProjectileColor);	// 색상 설정
 	}
 
 	Deactivate();	// 비활성화

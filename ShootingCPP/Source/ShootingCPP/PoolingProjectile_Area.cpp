@@ -22,7 +22,7 @@ void APoolingProjectile_Area::OnConstruction(const FTransform& Transform)
 	if (AreaVfx)
 	{
 		// AreaVfx에 ProjectileColor 색상 설정
-		AreaVfx->SetNiagaraVariableVec3(TEXT("BaseColor"), FVector(ProjectileColor.R, ProjectileColor.G, ProjectileColor.B));
+		AreaVfx->SetVariableVec3(TEXT("BaseColor"), FVector(ProjectileColor.R, ProjectileColor.G, ProjectileColor.B));
 	}
 }
 
