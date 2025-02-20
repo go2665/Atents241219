@@ -3,6 +3,7 @@
 
 #include "SpawnerBaseComponent.h"
 #include "GameModeCPP.h"
+#include "Components/ArrowComponent.h"
 
 // Sets default values for this component's properties
 USpawnerBaseComponent::USpawnerBaseComponent()
@@ -31,6 +32,19 @@ void USpawnerBaseComponent::BeginPlay()
 	}
 }
 
+void USpawnerBaseComponent::OnRegister()
+{
+	Super::OnRegister();
+
+	AddBoxAndArrowComponent();
+
+	//AActor* Owner = GetOwner();
+	//if (Owner)
+	//{
+	//	UE_LOG(LogTemp, Warning, TEXT("%s"), *(Owner->GetName()));
+	//}
+}
+
 void USpawnerBaseComponent::Spawn()
 {
 	FTransform SpawnTransform = GetSpawnTransform();
@@ -40,4 +54,29 @@ void USpawnerBaseComponent::Spawn()
 FTransform USpawnerBaseComponent::GetSpawnTransform() const
 {
 	return SpawnArea ? SpawnArea->GetComponentTransform() : FTransform::Identity;
+}
+
+void USpawnerBaseComponent::AddBoxAndArrowComponent()
+{
+	//AActor* Owner = GetOwner();
+	//if (Owner && !SpawnArea)
+	//{
+	//	SpawnArea = NewObject<UBoxComponent>(Owner);
+	//	if (SpawnArea)
+	//	{
+	//		SpawnArea->AttachToComponent(Owner->GetRootComponent(),
+	//			FAttachmentTransformRules::KeepRelativeTransform);
+	//		SpawnArea->SetRelativeLocation(FVector::ZeroVector);
+	//		FString NewName = GetName() + TEXT("_SpawnArea");
+	//		SpawnArea->Rename(*NewName);
+	//		SpawnArea->RegisterComponent();
+
+	//		UArrowComponent* ArrowComponent = NewObject<UArrowComponent>(Owner);
+	//		ArrowComponent->AttachToComponent(SpawnArea,
+	//			FAttachmentTransformRules::KeepRelativeTransform);
+	//		ArrowComponent->SetRelativeLocation(FVector::ZeroVector);
+	//		ArrowComponent->SetRelativeRotation(FRotator::ZeroRotator);
+	//		ArrowComponent->RegisterComponent();
+	//	}
+	//}
 }

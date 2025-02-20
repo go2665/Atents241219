@@ -18,9 +18,9 @@ public:
 	ASpawner();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
+private:
+	void AddSpawnerBaseComponent();
 
 protected:
 	// 스폰될 영역 컴포넌트

@@ -14,19 +14,18 @@ ASpawner::ASpawner()
 	USceneComponent* Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	SetRootComponent(Root);
 
+	AddSpawnerBaseComponent();
+}
+
+void ASpawner::AddSpawnerBaseComponent()
+{
 	SpawnAreaBase = CreateDefaultSubobject<UBoxComponent>(TEXT("SpawnArea_Base"));
-	SpawnAreaBase->SetupAttachment(Root);
+	SpawnAreaBase->SetupAttachment(RootComponent);
+
 	UArrowComponent* ArrowBase = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow_Base"));
 	ArrowBase->SetupAttachment(SpawnAreaBase);
 	ArrowBase->SetRelativeRotation(FRotator::ZeroRotator);
 
 	SpawnerBase = CreateDefaultSubobject<USpawnerBaseComponent>(TEXT("Spawner_Base"));
-}
-
-// Called when the game starts or when spawned
-void ASpawner::BeginPlay()
-{
-	Super::BeginPlay();
-	
 	SpawnerBase->SetSpawnArea(SpawnAreaBase);
 }
