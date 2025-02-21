@@ -26,6 +26,8 @@ public:
 		return DefaultMappingContext;
 	};
 	inline bool IsAlive() const { return Health >= 0; }
+	inline float GetHealth() const { return Health; }
+	inline float GetMaxHealth() const { return MaxHealth; }
 
 protected:
 	virtual void BeginPlay() override;				// 데미지 받는 함수 바인딩용
@@ -100,9 +102,14 @@ protected:
 
 	// 발사체 쿨타임(Area)
 	float FireCoolTime_Area = Interval_Area;
-
+	
+	// 플레이어 최대 HP
 	UPROPERTY(EditAnywhere, Category = "Object Pool")
-	float Health = 100.0f;
+	float MaxHealth = 100.0f;
+
+	// 플레이어 HP
+	UPROPERTY(EditAnywhere, Category = "Object Pool")
+	float Health = MaxHealth;
 
 	UPROPERTY(EditAnywhere, Category = "Object Pool")
 	UNiagaraSystem* DieExplosion = nullptr;
