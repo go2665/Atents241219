@@ -34,7 +34,7 @@ void USpawnerMassComponent::Spawn()
 FTransform USpawnerMassComponent::GetSpawnTransform() const
 {
 	FTransform Result = FTransform();
-	if (SpawnArea)
+	if (SpawnArea && FormationCurve)
 	{
 		FVector LocaLocation;
 		// X 결과는 0 ~ -Offset.X
