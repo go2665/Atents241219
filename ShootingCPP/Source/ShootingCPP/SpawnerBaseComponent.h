@@ -53,7 +53,7 @@ protected:
 
 	// 스폰 주기
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawner")
-	float SpawnInterval = 1.0f;
+	float SpawnInterval = 10000.0f;
 
 	// 적을 꺼내오기 위해 게임모드를 캐스팅 해 놓은 변수
 	AGameModeCPP* GameMode = nullptr;

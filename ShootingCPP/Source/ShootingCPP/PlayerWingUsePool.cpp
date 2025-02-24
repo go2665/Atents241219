@@ -31,6 +31,7 @@ void APlayerWingUsePool::BeginPlay()
 	Super::BeginPlay();
 
 	OnTakeAnyDamage.AddDynamic(this, &APlayerWingUsePool::OnPlayerTakeAnyDamage);	// 데미지 받는 함수 바인딩
+	PC = Cast<APlayerController>(GetController());	// 플레이어 컨트롤러 캐스팅
 }
 
 void APlayerWingUsePool::OnFireStart(EProjectileType Type)
@@ -131,6 +132,19 @@ void APlayerWingUsePool::OnPlayerTakeAnyDamage(AActor* DamagedActor, float Damag
 
 		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, 
 			FString::Printf(TEXT("Player Health : %.1f"), Health));
+
+		if (PC && PC->PlayerCameraManager && HitReactShake)
+		{			
+			float Scale = 1.0f;
+			if (Damage > 20.0f)
+			{
+				Scale = 2.0f;
+			}
+			GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red,
+				FString::Printf(TEXT("Camera Shake : %.1f"), Scale));
+			PC->PlayerCameraManager->StartCameraShake(HitReactShake, Scale);
+			//PC->ClientStartCameraShake(HitReactShake, Scale);
+		}
 
 		if (Health < 0)
 		{

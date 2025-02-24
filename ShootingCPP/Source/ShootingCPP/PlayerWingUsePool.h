@@ -114,6 +114,14 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Object Pool")
 	UNiagaraSystem* DieExplosion = nullptr;
 
+	// 플레이어가 피격시 카메라 흔들림을 결정하는 클래스
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UCameraShakeBase> HitReactShake = nullptr;
+
 
 	//mutable bool test = false; // mutable : const 함수 내에서 변수를 변경할 수 있도록 함.
+
+private:
+	UPROPERTY()
+	APlayerController* PC = nullptr;
 };
