@@ -12,10 +12,14 @@ AMainCamera::AMainCamera()
 
 	USceneComponent* Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	SetRootComponent(Root);
-	
+
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	SpringArm->SetupAttachment(RootComponent);	// RootComponent : 이 엑터의 루트 컴포넌트
+	SpringArm->TargetArmLength = 1000.0f;		// 카메라와의 거리
+	SpringArm->SetRelativeRotation(FRotator(-90, 0, 0));
+
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	Camera->SetupAttachment(RootComponent);		// RootComponent : 이 엑터의 루트 컴포넌트
-	Camera->SetRelativeLocationAndRotation(FVector(0, 0, 1000), FRotator(-90, 0, 0));	// 카메라 기본 회전과 이동 배치
+	Camera->SetupAttachment(SpringArm);			// SpringArm에 붙이기
 	Camera->SetProjectionMode(ECameraProjectionMode::Orthographic);	// 직교 투영 모드
 	Camera->SetOrthoWidth(1000);									// 직교 투영 모드의 너비
 }

@@ -3,6 +3,8 @@
 
 #include "PlayerWingController.h"
 #include "PlayerWingUsePool.h"
+#include "Kismet/GameplayStatics.h"
+
 
 APlayerWingController::APlayerWingController()
 {
@@ -23,6 +25,20 @@ void APlayerWingController::OnPossess(APawn* InPawn)
 	}
 }
 
+void APlayerWingController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+
+	UEnhancedInputComponent* Input = Cast<UEnhancedInputComponent>(InputComponent);
+	if (Input)	// Input != nullptr
+	{
+		if (GeoRestartAction)
+		{
+			Input->BindAction(GeoRestartAction, ETriggerEvent::Started, this, &APlayerWingController::GeoInputRestart);
+		}
+	}
+}
+
 void APlayerWingController::OnPlayerDie()
 {
 	ULocalPlayer* LocalPlayer = GetLocalPlayer();
@@ -30,4 +46,15 @@ void APlayerWingController::OnPlayerDie()
 
 	APlayerWingUsePool* PlayerWing = Cast<APlayerWingUsePool>(GetPawn());
 	InputSubSystem->RemoveMappingContext(PlayerWing->GetMappingContext());
+
+	InputSubSystem->AddMappingContext(GameOverMappingContext, 0);
+}
+
+void APlayerWingController::GeoInputRestart(const FInputActionValue& Value)
+{
+	//UGameplayStatics::OpenLevel(GetWorld(), FName(*GetWorld()->GetName()), false);	// 아래와 같음
+	if (Level)
+	{
+		UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), Level);
+	}
 }

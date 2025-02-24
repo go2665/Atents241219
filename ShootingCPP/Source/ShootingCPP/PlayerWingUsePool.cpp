@@ -144,7 +144,7 @@ void APlayerWingUsePool::OnPlayerTakeAnyDamage(AActor* DamagedActor, float Damag
 
 			PC->PlayerCameraManager->StartCameraShake(HitReactShake, Scale);
 			//PC->ClientStartCameraShake(HitReactShake, Scale);
-		}
+		}		
 
 		if (Health < 0)
 		{

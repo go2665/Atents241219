@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 #include "PlayerWingController.generated.h"
 
 /**
@@ -19,8 +21,22 @@ public:
 
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
+	virtual void SetupInputComponent() override;
 
 private:
 	UFUNCTION()
 	void OnPlayerDie();
+
+	UFUNCTION()
+	void GeoInputRestart(const FInputActionValue& Value);
+
+protected:
+	UPROPERTY(EditDefaultsOnly)
+	class UInputMappingContext* GameOverMappingContext = nullptr;
+
+	UPROPERTY(EditDefaultsOnly)
+	class UInputAction* GeoRestartAction = nullptr;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSoftObjectPtr<UWorld> Level = nullptr;
 };

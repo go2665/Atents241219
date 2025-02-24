@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "MainCamera.generated.h"
 
 class UCameraComponent;
@@ -24,4 +26,7 @@ protected:
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UCameraComponent* Camera = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USpringArmComponent* SpringArm = nullptr;
 };
