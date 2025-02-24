@@ -140,8 +140,8 @@ void APlayerWingUsePool::OnPlayerTakeAnyDamage(AActor* DamagedActor, float Damag
 			{
 				Scale = 2.0f;
 			}
-			GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red,
-				FString::Printf(TEXT("Camera Shake : %.1f"), Scale));
+			//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Camera Shake : %.1f"), Scale));
+
 			PC->PlayerCameraManager->StartCameraShake(HitReactShake, Scale);
 			//PC->ClientStartCameraShake(HitReactShake, Scale);
 		}

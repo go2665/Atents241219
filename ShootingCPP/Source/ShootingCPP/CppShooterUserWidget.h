@@ -14,16 +14,17 @@ class SHOOTINGCPP_API UCppShooterUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
-protected:
-	virtual void NativeConstruct() override;
-	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
-
+public:
 	UFUNCTION(BlueprintCallable)
 	void RefreshScore(int32 Point);
 
 	UFUNCTION(BlueprintCallable)
 	void ShowGameOverPanel();
-	
+
+protected:
+	virtual void NativeConstruct() override;
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+		
 protected:
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* ScoreText;

@@ -120,4 +120,7 @@ private:
 	// 플레이어에게 데미지를 주기적으로 주기 위한 타이머
 	UPROPERTY()
 	FTimerHandle DamageTimer;
+
+	UPROPERTY()
+	class ACppGameState* GameState = nullptr;
 };

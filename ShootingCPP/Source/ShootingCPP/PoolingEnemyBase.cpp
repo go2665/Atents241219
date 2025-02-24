@@ -5,6 +5,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "ProjectileDamageTypeBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "CppGameState.h"
 
 APoolingEnemyBase::APoolingEnemyBase()
 {
@@ -29,6 +30,8 @@ void APoolingEnemyBase::BeginPlay()
 	OnActorBeginOverlap.AddDynamic(this, &APoolingEnemyBase::OnEnemyActorBeginOverlap);
 	OnActorEndOverlap.AddDynamic(this, &APoolingEnemyBase::OnEnemyActorEndOverlap);
 	OnTakeAnyDamage.AddDynamic(this, &APoolingEnemyBase::OnEnemyAnyDamage);
+
+	GameState = Cast<ACppGameState>(UGameplayStatics::GetGameState(GetWorld()));
 }
 
 void APoolingEnemyBase::OnActivate()
@@ -88,6 +91,7 @@ void APoolingEnemyBase::Attack(AActor* Target)
 void APoolingEnemyBase::Die()
 {
 	// 점수 증가
+	GameState->AddScore(Point);
 	
 	// 비활성화
 	Deactivate();
