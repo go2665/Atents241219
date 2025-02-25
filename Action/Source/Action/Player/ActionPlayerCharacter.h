@@ -23,6 +23,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Player Movement")
 	void DoRoll();
 
+	UFUNCTION()
+	void OnSectionJumpReady(class UANS_SectionJump* SectionJump);
+
+	UFUNCTION()
+	void OnSectionJumpEnd();
+
 	// 달리기 모드로 설정
 	UFUNCTION(BlueprintCallable, Category = "Player Movement")
 	inline void SetSprintMode() { GetCharacterMovement()->MaxWalkSpeed = SprintSpeed; };
@@ -58,4 +64,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player Movement")
 	UAnimMontage* RollMontage = nullptr;
 
+private:
+	// 콤보용 노티파이
+	class UANS_SectionJump* SectionJumpNotify = nullptr;
+
+	// 콤보가 가능한 상황인지 확인하기 위한 플래그(true면 가능, false면 불가능)
+	bool bEnableCombo = false;
 };

@@ -4,6 +4,7 @@
 #include "ActionPlayerCharacter.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "../AnimNotify/ANS_SectionJump.h"
 
 // Sets default values
 AActionPlayerCharacter::AActionPlayerCharacter()
@@ -44,6 +45,18 @@ void AActionPlayerCharacter::DoRoll()
 	{
 		PlayAnimMontage(RollMontage);
 	}
+}
+
+void AActionPlayerCharacter::OnSectionJumpReady(UANS_SectionJump* SectionJump)
+{
+	bEnableCombo = true;
+	SectionJumpNotify = SectionJump;
+}
+
+void AActionPlayerCharacter::OnSectionJumpEnd()
+{
+	SectionJumpNotify = nullptr;
+	bEnableCombo = false;
 }
 
 // Called when the game starts or when spawned
