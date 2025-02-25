@@ -34,7 +34,12 @@ void AActionPlayerCharacter::Movement(const FVector& Direction)
 
 void AActionPlayerCharacter::DoRoll()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Cyan, TEXT("Roll"));
+	//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Cyan, TEXT("Roll"));
+
+	// 마지막 입력 방향으로 즉시 회전 시키기
+	SetActorRotation(GetLastMovementInputVector().Rotation(), ETeleportType::ResetPhysics);
+	
+	// 몽타주 재생
 	if (!GetMesh()->GetAnimInstance()->Montage_IsPlaying(RollMontage))
 	{
 		PlayAnimMontage(RollMontage);
