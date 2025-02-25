@@ -26,6 +26,10 @@ void AActionPlayerController::BeginPlay()
 			InputSystem->AddMappingContext(DefaultContext, 0);	// 인풋 시스템에 입력 컨택스트 추가
 		}
 	}
+
+	PlayerCameraManager->ViewPitchMin = CameraPitchMin;
+	PlayerCameraManager->ViewPitchMax = CameraPitchMax;
+
 }
 
 void AActionPlayerController::SetupInputComponent()
@@ -41,6 +45,13 @@ void AActionPlayerController::SetupInputComponent()
 			// InputMove 함수와 바인딩
 			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, 
 				this, &AActionPlayerController::InputMove);
+		}
+
+		if (LookAction)	// LookAction이 있으면
+		{
+			// InputLook 함수와 바인딩
+			EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered,
+				this, &AActionPlayerController::InputLook);
 		}
 
 		if (TestAction)
@@ -76,13 +87,26 @@ void AActionPlayerController::InputMove(const FInputActionValue& Value)
 			InputValue /= Size;	// 정규화 == 유닛 벡터화
 		}
 
-		FVector Direction(InputValue.Y, InputValue.X, 0.0f);
+		FVector Direction(InputValue.Y, InputValue.X, 0.0f);	// 입력 받은 대로 방향 설정
 
+		// 카메라 방향을 기준으로 이동시키기		
+		FQuat ControlYawRotation = FRotator(0.0f, GetControlRotation().Yaw, 0.0f).Quaternion(); // 컨트롤러의 회전값(카메라의 회전)을 가져와서 Yaw값만 사용하여 쿼터니언 만들기
+		Direction = ControlYawRotation.RotateVector(Direction);	// 입력방향을 카메라 Yaw 회전값에 맞게 회전		
+
+		// 캐릭터에게 방향 전달
 		PlayerCharacter->Movement(Direction);
 
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Cyan,
-			FString::Printf(TEXT("InputMove: %s"), *Direction.ToString()));
+		//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Cyan,
+		//	FString::Printf(TEXT("InputMove: %s"), *Direction.ToString()));
 	}
+}
+
+void AActionPlayerController::InputLook(const FInputActionValue& Value)
+{
+	FVector2D InputValue = Value.Get<FVector2D>();
+
+	AddYawInput(InputValue.X);
+	AddPitchInput(InputValue.Y);
 }
 
 void AActionPlayerController::InputTest(const FInputActionValue& Value)
