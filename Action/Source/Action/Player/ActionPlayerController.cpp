@@ -54,6 +54,27 @@ void AActionPlayerController::SetupInputComponent()
 				this, &AActionPlayerController::InputLook);
 		}
 
+		if (SprintAction)	// LookAction이 있으면
+		{
+			// InputLook 함수와 바인딩
+			EnhancedInputComponent->BindActionValueLambda(SprintAction, ETriggerEvent::Started,
+				[this](const FInputActionValue& Value) {
+					InputSprint(true);
+				});
+
+			EnhancedInputComponent->BindActionValueLambda(SprintAction, ETriggerEvent::Completed,
+				[this](const FInputActionValue& Value) {
+					InputSprint(false);
+				});
+		}
+
+		if (RollAction)	// RollAction이 있으면
+		{
+			// InputRoll 함수와 바인딩
+			EnhancedInputComponent->BindAction(RollAction, ETriggerEvent::Started,
+				this, &AActionPlayerController::InputRoll);
+		}
+
 		if (TestAction)
 		{
 			EnhancedInputComponent->BindAction(TestAction, ETriggerEvent::Started,
@@ -107,6 +128,31 @@ void AActionPlayerController::InputLook(const FInputActionValue& Value)
 
 	AddYawInput(InputValue.X);
 	AddPitchInput(InputValue.Y);
+}
+
+void AActionPlayerController::InputSprint(bool IsPress)
+{
+	if (PlayerCharacter)
+	{
+		//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Cyan, FString::Printf(TEXT("InputSprint: %s"), IsPress ? TEXT("True") : TEXT("False")));
+		if (IsPress)
+		{
+			PlayerCharacter->SetSprintMode();	// 누르고 있는 상태면 달리기 모드로 설정
+		}
+		else
+		{
+			PlayerCharacter->SetWalkMode();		// 뗀 상태면 걷기 모드로 되돌리기
+		}
+	}
+}
+
+void AActionPlayerController::InputRoll(const FInputActionValue& Value)
+{
+	//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Cyan, TEXT("InputRoll"));
+	if (PlayerCharacter)
+	{
+		PlayerCharacter->DoRoll();
+	}
 }
 
 void AActionPlayerController::InputTest(const FInputActionValue& Value)

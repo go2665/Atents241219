@@ -4,7 +4,6 @@
 #include "ActionPlayerCharacter.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AActionPlayerCharacter::AActionPlayerCharacter()
@@ -31,6 +30,15 @@ AActionPlayerCharacter::AActionPlayerCharacter()
 void AActionPlayerCharacter::Movement(const FVector& Direction)
 {
 	AddMovementInput(Direction);
+}
+
+void AActionPlayerCharacter::DoRoll()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Cyan, TEXT("Roll"));
+	if (!GetMesh()->GetAnimInstance()->Montage_IsPlaying(RollMontage))
+	{
+		PlayAnimMontage(RollMontage);
+	}
 }
 
 // Called when the game starts or when spawned
