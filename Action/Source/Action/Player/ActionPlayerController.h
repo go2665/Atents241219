@@ -26,6 +26,7 @@ protected:
 	virtual void OnUnPossess() override;
 
 	void InputMove(const FInputActionValue& Value);
+	void InputTest(const FInputActionValue& Value);
 
 
 protected:
@@ -35,7 +36,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input Setup")
 	class UInputAction* MoveAction = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input Setup")
+	class UInputAction* TestAction = nullptr;
+
 private:
-	class ActionPlayerCharacter* PlayerCharacter = nullptr;
+	class AActionPlayerCharacter* PlayerCharacter = nullptr;
 };
 

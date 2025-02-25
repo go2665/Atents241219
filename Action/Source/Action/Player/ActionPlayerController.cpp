@@ -4,11 +4,12 @@
 #include "ActionPlayerController.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "ActionPlayerCharacter.h"
 
 
 AActionPlayerController::AActionPlayerController()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;			// 틱을 사용하지 않으면 입력처리가 안된다.
 }
 
 void AActionPlayerController::BeginPlay()
@@ -41,19 +42,50 @@ void AActionPlayerController::SetupInputComponent()
 			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, 
 				this, &AActionPlayerController::InputMove);
 		}
+
+		if (TestAction)
+		{
+			EnhancedInputComponent->BindAction(TestAction, ETriggerEvent::Started,
+				this, &AActionPlayerController::InputTest);
+		}
 	}
 }
 
 void AActionPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
+	// GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Cyan, TEXT("OnPossess"));
+	PlayerCharacter = Cast<AActionPlayerCharacter>(InPawn);
 }
 
 void AActionPlayerController::OnUnPossess()
 {
+	PlayerCharacter = nullptr;
 	Super::OnUnPossess();
 }
 
 void AActionPlayerController::InputMove(const FInputActionValue& Value)
 {
+	if (PlayerCharacter)	// 조종하는 캐릭터가 있으면 처리
+	{
+		FVector2D InputValue = Value.Get<FVector2D>();
+		
+		float Size = InputValue.Size();
+		if (Size > 1.0f)		// 입력값이 1보다 크면(= 일정 속도 이상의 가속도는 금지)
+		{
+			InputValue /= Size;	// 정규화 == 유닛 벡터화
+		}
+
+		FVector Direction(InputValue.Y, InputValue.X, 0.0f);
+
+		PlayerCharacter->Movement(Direction);
+
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Cyan,
+			FString::Printf(TEXT("InputMove: %s"), *Direction.ToString()));
+	}
+}
+
+void AActionPlayerController::InputTest(const FInputActionValue& Value)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Cyan, TEXT("InputTest"));
 }

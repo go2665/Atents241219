@@ -15,6 +15,10 @@ public:
 	// Sets default values for this character's properties
 	AActionPlayerCharacter();
 
+	// 컨트롤러에서 입력 방향을 받아서 처리하는 함수
+	UFUNCTION(BlueprintCallable, Category = "Player Movement")
+	void Movement(const FVector& Direction);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

@@ -4,12 +4,17 @@
 #include "ActionPlayerCharacter.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AActionPlayerCharacter::AActionPlayerCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	bUseControllerRotationYaw = false;	// 컨트롤러의 회전값을 사용하지 않음(3인칭 카메라에서는 사용하지 않음)
+	GetCharacterMovement()->bOrientRotationToMovement = true;	// 이동 방향으로 캐릭터를 회전시킴
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 360.0f, 0.0f);	// 회전 속도 설정(Yaw축만 사용)
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(RootComponent);				// 부모가 루트
@@ -21,6 +26,11 @@ AActionPlayerCharacter::AActionPlayerCharacter()
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera"));
 	PlayerCamera->SetupAttachment(SpringArm);				// 부모가 스프링암
 	PlayerCamera->SetRelativeRotation(FRotator(-20.0f, 0.0f, 0.0f));	// 카메라의 기본 회전 설정
+}
+
+void AActionPlayerCharacter::Movement(const FVector& Direction)
+{
+	AddMovementInput(Direction);
 }
 
 // Called when the game starts or when spawned
