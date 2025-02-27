@@ -30,7 +30,7 @@ AActionPlayerCharacter::AActionPlayerCharacter()
 
 void AActionPlayerCharacter::Movement(const FVector& Direction)
 {
-	AddMovementInput(Direction);
+	AddMovementInput(Direction);	// 입력받은 방향으로 이동
 }
 
 void AActionPlayerCharacter::DoRoll()
@@ -60,7 +60,7 @@ void AActionPlayerCharacter::DoAttack()
 void AActionPlayerCharacter::OnSectionJumpReady(UANS_SectionJump* SectionJump)
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Cyan, TEXT("Section Jump Ready"));
-	bIsComboReady = true;
+	bIsComboReady = true;					// 콤보공격이 가능하다고 설정
 	SectionJumpNotify = SectionJump;
 }
 
@@ -68,7 +68,7 @@ void AActionPlayerCharacter::OnSectionJumpEnd()
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, TEXT("Section Jump End"));
 	SectionJumpNotify = nullptr;
-	bIsComboReady = false;
+	bIsComboReady = false;					// 콤보공격이 불가능하다고 설정
 }
 
 // Called when the game starts or when spawned
@@ -76,7 +76,7 @@ void AActionPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	AnimInstance = GetMesh()->GetAnimInstance();
+	AnimInstance = GetMesh()->GetAnimInstance();	// 애님 인스턴스 캐싱
 }
 
 void AActionPlayerCharacter::PlayHighPriorityMontage(UAnimMontage* Montage, FName StartSectionName)
@@ -90,14 +90,14 @@ void AActionPlayerCharacter::PlayHighPriorityMontage(UAnimMontage* Montage, FNam
 
 void AActionPlayerCharacter::SectionJumpForCombo()
 {
-	if (SectionJumpNotify && bIsComboReady)
+	if (SectionJumpNotify && bIsComboReady)			// SectionJumpNotify가 있고 콤보가 가능하면(AnimNotifyState가 시작되었으면)
 	{
 		UAnimMontage* Current = AnimInstance->GetCurrentActiveMontage();
 		AnimInstance->Montage_SetNextSection(
-			AnimInstance->Montage_GetCurrentSection(Current),
-			SectionJumpNotify->GetNextSectionName(),
-			Current);
-		bIsComboReady = false;
+			AnimInstance->Montage_GetCurrentSection(Current),	// 현재 섹션
+			SectionJumpNotify->GetNextSectionName(),			// 다음 섹션
+			Current);											// 이 몽타주에서
+		bIsComboReady = false;									// 중복실행 방지를 위해 콤보가 불가능하다고 설정
 	}
 }
 
@@ -105,13 +105,6 @@ void AActionPlayerCharacter::SectionJumpForCombo()
 void AActionPlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-}
-
-// Called to bind functionality to input
-void AActionPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
 
