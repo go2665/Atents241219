@@ -15,6 +15,8 @@ public:
 	// Sets default values for this actor's properties
 	AWeaponActor();
 
+	void SetWeaponActivation(bool bActivate);
+
 	inline void SetOwner(AActor* InOwner) { Owner = InOwner; }
 
 protected:

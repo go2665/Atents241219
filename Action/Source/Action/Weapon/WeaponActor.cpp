@@ -23,6 +23,18 @@ AWeaponActor::AWeaponActor()
 	WeaponCollision->SetCollisionProfileName(TEXT("OverlapOnlyPawn"));
 }
 
+void AWeaponActor::SetWeaponActivation(bool bActivate)
+{
+	if (bActivate)
+	{
+		WeaponCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	}
+	else
+	{
+		WeaponCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+}
+
 // Called when the game starts or when spawned
 void AWeaponActor::BeginPlay()
 {

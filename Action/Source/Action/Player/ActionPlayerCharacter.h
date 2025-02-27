@@ -32,6 +32,9 @@ public:
 	UFUNCTION()
 	void OnSectionJumpEnd();
 
+	UFUNCTION()
+	void SetCurrentWeaponActivation(bool bActivate);
+
 	// 달리기 모드로 설정
 	UFUNCTION(BlueprintCallable, Category = "Player Movement")
 	inline void SetSprintMode() { GetCharacterMovement()->MaxWalkSpeed = SprintSpeed; };
@@ -72,6 +75,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player Attack")
 	UAnimMontage* AttackMontage = nullptr;
+
+	UPROPERTY()
+	class AWeaponActor* CurrentWeapon = nullptr;
 
 private:
 	// 콤보용 노티파이

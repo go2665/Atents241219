@@ -5,6 +5,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "../AnimNotify/ANS_SectionJump.h"
+#include "../Weapon/WeaponActor.h"
 
 // Sets default values
 AActionPlayerCharacter::AActionPlayerCharacter()
@@ -69,6 +70,14 @@ void AActionPlayerCharacter::OnSectionJumpEnd()
 	//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, TEXT("Section Jump End"));
 	SectionJumpNotify = nullptr;
 	bIsComboReady = false;					// 콤보공격이 불가능하다고 설정
+}
+
+void AActionPlayerCharacter::SetCurrentWeaponActivation(bool bActivate)
+{
+	if (CurrentWeapon)
+	{
+		CurrentWeapon->SetWeaponActivation(bActivate);
+	}
 }
 
 // Called when the game starts or when spawned
