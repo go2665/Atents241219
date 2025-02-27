@@ -15,10 +15,13 @@ public:
 	// Sets default values for this actor's properties
 	AWeaponActor();
 
+	inline void SetOwner(AActor* InOwner) { Owner = InOwner; }
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UFUNCTION()
 	void OnWeaponBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
 public:	
 	// Called every frame

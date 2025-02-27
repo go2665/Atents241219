@@ -16,6 +16,7 @@ void ATestSingleWeaponCharacter::BeginPlay()
 				GetMesh(), 
 				FAttachmentTransformRules::KeepRelativeTransform, 
 				TEXT("hand_rSocket"));
+			TestWeapon->SetOwner(this);
 		}
 	}
 }

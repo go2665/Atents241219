@@ -27,7 +27,6 @@ AWeaponActor::AWeaponActor()
 void AWeaponActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
 
 	OnActorBeginOverlap.AddDynamic(this, &AWeaponActor::OnWeaponBeginOverlap);
 }
@@ -36,6 +35,8 @@ void AWeaponActor::OnWeaponBeginOverlap(AActor* OverlappedActor, AActor* OtherAc
 {
 	if (OtherActor && OtherActor != Owner)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, 
+			FString::Printf(TEXT("Weapon Overlap : %s"), *OtherActor->GetActorLabel()));
 		UGameplayStatics::ApplyDamage(OtherActor, Damage, nullptr, nullptr, nullptr);
 	}
 }
