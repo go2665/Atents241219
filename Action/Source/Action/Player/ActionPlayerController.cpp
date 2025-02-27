@@ -75,6 +75,13 @@ void AActionPlayerController::SetupInputComponent()
 				this, &AActionPlayerController::InputRoll);
 		}
 
+		if (AttackAction)	// AttackAction이 있으면
+		{
+			// InputAttack 함수와 바인딩
+			EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started,
+				this, &AActionPlayerController::InputAttack);
+		}
+
 		if (TestAction)
 		{
 			EnhancedInputComponent->BindAction(TestAction, ETriggerEvent::Started,
@@ -152,6 +159,15 @@ void AActionPlayerController::InputRoll(const FInputActionValue& Value)
 	if (PlayerCharacter)
 	{
 		PlayerCharacter->DoRoll();
+	}
+}
+
+void AActionPlayerController::InputAttack(const FInputActionValue& Value)
+{
+	//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Cyan, TEXT("InputAttack"));
+	if (PlayerCharacter)
+	{
+		PlayerCharacter->DoAttack();
 	}
 }
 

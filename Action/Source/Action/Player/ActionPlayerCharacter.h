@@ -23,6 +23,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Player Movement")
 	void DoRoll();
 
+	UFUNCTION(BlueprintCallable, Category = "Player Attack")
+	void DoAttack();
+
 	UFUNCTION()
 	void OnSectionJumpReady(class UANS_SectionJump* SectionJump);
 
@@ -38,8 +41,10 @@ public:
 	inline void SetWalkMode() { GetCharacterMovement()->MaxWalkSpeed = WalkSpeed; };
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	void PlayHighPriorityMontage(UAnimMontage* Montage, FName StartSectionName = NAME_None);
+
+private:
+	void SectionJumpForCombo();
 
 public:	
 	// Called every frame
@@ -47,6 +52,10 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player Camera")
@@ -64,10 +73,21 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player Movement")
 	UAnimMontage* RollMontage = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player Attack")
+	UAnimMontage* AttackMontage = nullptr;
+
 private:
 	// 콤보용 노티파이
+	UPROPERTY()
 	class UANS_SectionJump* SectionJumpNotify = nullptr;
+	
+	UPROPERTY()
+	UAnimInstance* AnimInstance = nullptr;
+
+	UPROPERTY()
+	UAnimMontage* CurrentMontage = nullptr;
 
 	// 콤보가 가능한 상황인지 확인하기 위한 플래그(true면 가능, false면 불가능)
-	bool bEnableCombo = false;
+	bool bIsComboReady = false;
+
 };

@@ -41,22 +41,34 @@ void AActionPlayerCharacter::DoRoll()
 	SetActorRotation(GetLastMovementInputVector().Rotation(), ETeleportType::ResetPhysics);
 	
 	// 몽타주 재생
-	if (!GetMesh()->GetAnimInstance()->Montage_IsPlaying(RollMontage))
+	PlayHighPriorityMontage(RollMontage);
+}
+
+void AActionPlayerCharacter::DoAttack()
+{
+	// 몽타주 재생
+	if (!AnimInstance->IsAnyMontagePlaying())	// Montage가 재생 중이 아니면
 	{
-		PlayAnimMontage(RollMontage);
+		PlayHighPriorityMontage(AttackMontage);	// 공격용 몽타주 재생
+	}
+	else if (CurrentMontage == AttackMontage)	// 현재 재생 중인 몽타주가 공격용 몽타주면
+	{
+		SectionJumpForCombo();					// 콤보용 섹션 점프	
 	}
 }
 
 void AActionPlayerCharacter::OnSectionJumpReady(UANS_SectionJump* SectionJump)
 {
-	bEnableCombo = true;
+	//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Cyan, TEXT("Section Jump Ready"));
+	bIsComboReady = true;
 	SectionJumpNotify = SectionJump;
 }
 
 void AActionPlayerCharacter::OnSectionJumpEnd()
 {
+	//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, TEXT("Section Jump End"));
 	SectionJumpNotify = nullptr;
-	bEnableCombo = false;
+	bIsComboReady = false;
 }
 
 // Called when the game starts or when spawned
@@ -64,6 +76,29 @@ void AActionPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	AnimInstance = GetMesh()->GetAnimInstance();
+}
+
+void AActionPlayerCharacter::PlayHighPriorityMontage(UAnimMontage* Montage, FName StartSectionName)
+{
+	if (!AnimInstance->Montage_IsPlaying(Montage))	// Montage가 재생 중이 아니면
+	{
+		CurrentMontage = Montage;					// Montage를 CurrentMontage로 지정
+		PlayAnimMontage(CurrentMontage, 1.0f, StartSectionName);	// Montage 재생
+	}
+}
+
+void AActionPlayerCharacter::SectionJumpForCombo()
+{
+	if (SectionJumpNotify && bIsComboReady)
+	{
+		UAnimMontage* Current = AnimInstance->GetCurrentActiveMontage();
+		AnimInstance->Montage_SetNextSection(
+			AnimInstance->Montage_GetCurrentSection(Current),
+			SectionJumpNotify->GetNextSectionName(),
+			Current);
+		bIsComboReady = false;
+	}
 }
 
 // Called every frame

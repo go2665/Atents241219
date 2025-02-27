@@ -29,6 +29,7 @@ protected:
 	void InputLook(const FInputActionValue& Value);
 	void InputSprint(bool IsPress);
 	void InputRoll(const FInputActionValue& Value);
+	void InputAttack(const FInputActionValue& Value);
 	void InputTest(const FInputActionValue& Value);
 
 
@@ -47,6 +48,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input Setup")
 	class UInputAction* RollAction = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input Setup")
+	class UInputAction* AttackAction = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input Setup")
 	class UInputAction* TestAction = nullptr;
