@@ -8,8 +8,7 @@
 #include "WeaponManagerComponent.generated.h"
 
 
-//UCLASS( Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-UCLASS()
+UCLASS( Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ACTION_API UWeaponManagerComponent : public UActorComponent
 {
 	GENERATED_BODY()
