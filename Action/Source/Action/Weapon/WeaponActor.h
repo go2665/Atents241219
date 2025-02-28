@@ -21,6 +21,8 @@ public:
 	// 무기의 충돌 활성화 여부를 설정한다.
 	void SetCollisionActivate(bool bActivate);
 
+	inline float GetDamage() const { return Damage; }
+
 	inline void SetOwnerPlayer(class AActionPlayerCharacter* InOwner) { OwnerPlayer = InOwner; }
 
 protected:

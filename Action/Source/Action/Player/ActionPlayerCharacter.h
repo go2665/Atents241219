@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../Weapon/WeaponType.h"
+#include "../Weapon/WeaponActor.h"
 #include "ActionPlayerCharacter.generated.h"
 
 UCLASS()
@@ -46,6 +47,9 @@ public:
 	// 걷기 모드로 설정
 	UFUNCTION(BlueprintCallable, Category = "Player Movement")
 	inline void SetWalkMode() { GetCharacterMovement()->MaxWalkSpeed = WalkSpeed; };	
+
+	// 범위 공격용 데미지
+	inline float GetAreaDamage() const { return CurrentWeapon->GetDamage() * 2.0f; }
 
 protected:
 	void PlayHighPriorityMontage(UAnimMontage* Montage, FName StartSectionName = NAME_None);
