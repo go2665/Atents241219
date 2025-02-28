@@ -18,7 +18,11 @@ public:
 	UWeaponManagerComponent();
 
 	class AWeaponActor* GetWeapon(EWeaponType WeaponType) const {
-		return WeaponInstances[static_cast<uint8>(WeaponType)];
+		int index = static_cast<uint8>(WeaponType);
+		if (index == static_cast<uint8>(EWeaponType::Max))
+			index = static_cast<uint8>(EWeaponType::Axe);	// Max값이면 도끼로 설정
+			
+		return WeaponInstances[index];
 	};
 protected:
 	// Called when the game starts

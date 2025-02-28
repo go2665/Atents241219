@@ -16,7 +16,7 @@ void ATestSingleWeaponCharacter::BeginPlay()
 				GetMesh(), 
 				FAttachmentTransformRules::KeepRelativeTransform, 
 				TEXT("hand_rSocket"));
-			TestWeapon->SetOwner(this);
+			TestWeapon->SetOwnerPlayer(this);
 
 			CurrentWeapon = TestWeapon;	// 임시
 		}

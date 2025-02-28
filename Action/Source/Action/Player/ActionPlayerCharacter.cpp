@@ -85,9 +85,12 @@ void AActionPlayerCharacter::SetCurrentWeaponCollisionActivate(bool bActivate)
 
 void AActionPlayerCharacter::SetCurrentWeapon(EWeaponType WeaponType)
 {
-	CurrentWeapon->WeaponActivate(false);	// 현재 무기 비활성화
-	CurrentWeapon = WeaponManager->GetWeapon(WeaponType);
-	CurrentWeapon->WeaponActivate(true);	// 새로운 무기 활성화	
+	if (CurrentWeapon)
+	{
+		CurrentWeapon->WeaponActivate(false);	// 현재 무기가 있으면 비활성화		
+	}
+	CurrentWeapon = WeaponManager->GetWeapon(WeaponType);	
+	CurrentWeapon->WeaponActivate(true);		// 새로운 무기 활성화	
 }
 
 // Called when the game starts or when spawned

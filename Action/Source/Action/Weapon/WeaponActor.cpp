@@ -4,6 +4,7 @@
 #include "WeaponActor.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "../Player/ActionPlayerCharacter.h"
 
 // Sets default values
 AWeaponActor::AWeaponActor()
@@ -24,8 +25,22 @@ AWeaponActor::AWeaponActor()
 }
 
 void AWeaponActor::WeaponActivate(bool bActivate)
-{
-	WeaponMesh->SetVisibility(bActivate);	
+{	
+	if (bActivate)
+	{
+		AttachToComponent(
+			OwnerPlayer->GetMesh(),
+			FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("hand_rSocket"));
+		WeaponMesh->SetVisibility(true);
+	}
+	else
+	{
+		AttachToComponent(
+			OwnerPlayer->GetMesh(),
+			FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("root"));
+		SetActorRelativeLocation(FVector(0.0f, 0.0f, -10000.0f));
+		WeaponMesh->SetVisibility(false);	
+	}
 }
 
 void AWeaponActor::SetCollisionActivate(bool bActivate)
@@ -50,7 +65,7 @@ void AWeaponActor::BeginPlay()
 
 void AWeaponActor::OnWeaponBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
-	if (OtherActor && OtherActor != Owner)
+	if (OtherActor && OtherActor != OwnerPlayer)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, 
 			FString::Printf(TEXT("Weapon Overlap : %s"), *OtherActor->GetActorLabel()));

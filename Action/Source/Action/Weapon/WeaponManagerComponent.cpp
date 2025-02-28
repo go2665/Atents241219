@@ -32,8 +32,12 @@ void UWeaponManagerComponent::BeginPlay()
 		AWeaponActor* Weapon = World->SpawnActor<AWeaponActor>(
 			classType, 
 			Offset, FRotator::ZeroRotator);	// Offset위치에 무기 생성
-		Weapon->AttachToActor(OwnerCharacter, FAttachmentTransformRules::KeepWorldTransform); // 플레이어 아래에 무기를 추가
-		Weapon->SetOwner(OwnerCharacter);	// 무기에 플레이어를 소유자로 설정
+
+		Weapon->AttachToComponent(
+			OwnerCharacter->GetMesh(),
+			FAttachmentTransformRules::KeepWorldTransform,
+			FName("roor"));					// 플레이어 아래에 무기를 추가
+		Weapon->SetOwnerPlayer(OwnerCharacter);	// 무기에 플레이어를 소유자로 설정
 		Weapon->WeaponActivate(false);		// 무기 비활성화
 
 		WeaponInstances.Add(Weapon);
