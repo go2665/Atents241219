@@ -72,12 +72,19 @@ void AActionPlayerCharacter::OnSectionJumpEnd()
 	bIsComboReady = false;					// 콤보공격이 불가능하다고 설정
 }
 
-void AActionPlayerCharacter::SetCurrentWeaponActivation(bool bActivate)
+void AActionPlayerCharacter::SetCurrentWeaponCollisionActivate(bool bActivate)
 {
 	if (CurrentWeapon)
 	{
-		CurrentWeapon->SetWeaponActivation(bActivate);
+		CurrentWeapon->SetCollisionActivate(bActivate);
 	}
+}
+
+void AActionPlayerCharacter::SetCurrentWeapon(AWeaponActor* Weapon)
+{
+	CurrentWeapon->WeaponActivate(false);	// 현재 무기 비활성화
+	CurrentWeapon = Weapon;
+	CurrentWeapon->WeaponActivate(true);	// 새로운 무기 활성화	
 }
 
 // Called when the game starts or when spawned

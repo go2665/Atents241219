@@ -15,7 +15,7 @@ void UANS_AttackActivation::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimS
 	}
 	if (Character)
 	{
-		Character->SetCurrentWeaponActivation(true);
+		Character->SetCurrentWeaponCollisionActivate(true);
 	}
 }
 
@@ -24,6 +24,6 @@ void UANS_AttackActivation::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSeq
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
 	if (Character)
 	{
-		Character->SetCurrentWeaponActivation(false);
+		Character->SetCurrentWeaponCollisionActivate(false);
 	}
 }

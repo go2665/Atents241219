@@ -33,7 +33,10 @@ public:
 	void OnSectionJumpEnd();
 
 	UFUNCTION()
-	void SetCurrentWeaponActivation(bool bActivate);
+	void SetCurrentWeaponCollisionActivate(bool bActivate);
+
+	UFUNCTION(BlueprintCallable, Category = "Player Weapon")
+	void SetCurrentWeapon(class AWeaponActor* Weapon);
 
 	// 달리기 모드로 설정
 	UFUNCTION(BlueprintCallable, Category = "Player Movement")
@@ -41,7 +44,7 @@ public:
 
 	// 걷기 모드로 설정
 	UFUNCTION(BlueprintCallable, Category = "Player Movement")
-	inline void SetWalkMode() { GetCharacterMovement()->MaxWalkSpeed = WalkSpeed; };
+	inline void SetWalkMode() { GetCharacterMovement()->MaxWalkSpeed = WalkSpeed; };	
 
 protected:
 	void PlayHighPriorityMontage(UAnimMontage* Montage, FName StartSectionName = NAME_None);

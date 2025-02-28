@@ -15,7 +15,11 @@ public:
 	// Sets default values for this actor's properties
 	AWeaponActor();
 
-	void SetWeaponActivation(bool bActivate);
+	// 무기의 활성화 여부를 설정한다.
+	void WeaponActivate(bool bActivate);
+
+	// 무기의 충돌 활성화 여부를 설정한다.
+	void SetCollisionActivate(bool bActivate);
 
 	inline void SetOwner(AActor* InOwner) { Owner = InOwner; }
 
