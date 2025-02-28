@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "../Weapon/WeaponType.h"
 #include "ActionPlayerCharacter.generated.h"
 
 UCLASS()
@@ -36,7 +37,7 @@ public:
 	void SetCurrentWeaponCollisionActivate(bool bActivate);
 
 	UFUNCTION(BlueprintCallable, Category = "Player Weapon")
-	void SetCurrentWeapon(class AWeaponActor* Weapon);
+	void SetCurrentWeapon(EWeaponType WeaponType);
 
 	// 달리기 모드로 설정
 	UFUNCTION(BlueprintCallable, Category = "Player Movement")
@@ -56,6 +57,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -66,6 +68,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player Camera")
 	class UCameraComponent* PlayerCamera = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player Weapon")
+	class UWeaponManagerComponent* WeaponManager = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player Movement")
 	float WalkSpeed = 600.0f;

@@ -23,9 +23,11 @@ void UWeaponManagerComponent::BeginPlay()
 
 	OwnerCharacter = Cast<AActionPlayerCharacter>(GetOwner());
 
+	WeaponInstances.Empty(WeaponClasses.Num());
+
 	UWorld* World = GetWorld();
 	FVector Offset = FVector(0.0f, 0.0f, -10000.0f);
-	for (auto classType : WeaponArray)
+	for (auto classType : WeaponClasses)
 	{
 		AWeaponActor* Weapon = World->SpawnActor<AWeaponActor>(
 			classType, 
@@ -33,6 +35,8 @@ void UWeaponManagerComponent::BeginPlay()
 		Weapon->AttachToActor(OwnerCharacter, FAttachmentTransformRules::KeepWorldTransform); // 플레이어 아래에 무기를 추가
 		Weapon->SetOwner(OwnerCharacter);	// 무기에 플레이어를 소유자로 설정
 		Weapon->WeaponActivate(false);		// 무기 비활성화
+
+		WeaponInstances.Add(Weapon);
 	}
 	
 }

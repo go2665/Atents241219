@@ -21,7 +21,6 @@ AWeaponActor::AWeaponActor()
 	WeaponCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Collision"));
 	WeaponCollision->SetupAttachment(WeaponMesh);
 	WeaponCollision->SetCollisionProfileName(TEXT("OverlapOnlyPawn"));	
-	WeaponCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void AWeaponActor::WeaponActivate(bool bActivate)
@@ -46,8 +45,6 @@ void AWeaponActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//WeaponCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
 	OnActorBeginOverlap.AddDynamic(this, &AWeaponActor::OnWeaponBeginOverlap);
 }
 
@@ -59,6 +56,12 @@ void AWeaponActor::OnWeaponBeginOverlap(AActor* OverlappedActor, AActor* OtherAc
 			FString::Printf(TEXT("Weapon Overlap : %s"), *OtherActor->GetActorLabel()));
 		UGameplayStatics::ApplyDamage(OtherActor, Damage, nullptr, nullptr, nullptr);
 	}
+}
+
+void AWeaponActor::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	WeaponCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 // Called every frame

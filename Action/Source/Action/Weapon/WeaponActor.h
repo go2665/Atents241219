@@ -30,8 +30,12 @@ protected:
 	UFUNCTION()
 	void OnWeaponBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
 public:	
+
+	virtual void PostInitializeComponents() override;
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")

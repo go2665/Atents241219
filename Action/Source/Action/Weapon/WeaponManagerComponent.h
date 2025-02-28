@@ -4,10 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "WeaponType.h"
 #include "WeaponManagerComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+//UCLASS( Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS()
 class ACTION_API UWeaponManagerComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -16,6 +18,9 @@ public:
 	// Sets default values for this component's properties
 	UWeaponManagerComponent();
 
+	class AWeaponActor* GetWeapon(EWeaponType WeaponType) const {
+		return WeaponInstances[static_cast<uint8>(WeaponType)];
+	};
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -25,9 +30,11 @@ private:
 	class AActionPlayerCharacter* OwnerCharacter = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	TArray<TSubclassOf<class AWeaponActor>> WeaponArray;
+	TArray<TSubclassOf<class AWeaponActor>> WeaponClasses;
+
+	UPROPERTY()
+	TArray<class AWeaponActor*> WeaponInstances;
+			
 	
-		
-	// 모든 무기를 생성하고 비활성화 시켜 놓는다.
 	// 무기를 선택해서 플레이어에게 장착시킨다.
 };

@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "../AnimNotify/ANS_SectionJump.h"
 #include "../Weapon/WeaponActor.h"
+#include "../Weapon/WeaponManagerComponent.h"
 
 // Sets default values
 AActionPlayerCharacter::AActionPlayerCharacter()
@@ -27,6 +28,8 @@ AActionPlayerCharacter::AActionPlayerCharacter()
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera"));
 	PlayerCamera->SetupAttachment(SpringArm);				// 부모가 스프링암
 	PlayerCamera->SetRelativeRotation(FRotator(-20.0f, 0.0f, 0.0f));	// 카메라의 기본 회전 설정
+
+	WeaponManager = CreateDefaultSubobject<UWeaponManagerComponent>(TEXT("WeaponManager"));
 }
 
 void AActionPlayerCharacter::Movement(const FVector& Direction)
@@ -80,10 +83,10 @@ void AActionPlayerCharacter::SetCurrentWeaponCollisionActivate(bool bActivate)
 	}
 }
 
-void AActionPlayerCharacter::SetCurrentWeapon(AWeaponActor* Weapon)
+void AActionPlayerCharacter::SetCurrentWeapon(EWeaponType WeaponType)
 {
 	CurrentWeapon->WeaponActivate(false);	// 현재 무기 비활성화
-	CurrentWeapon = Weapon;
+	CurrentWeapon = WeaponManager->GetWeapon(WeaponType);
 	CurrentWeapon->WeaponActivate(true);	// 새로운 무기 활성화	
 }
 
