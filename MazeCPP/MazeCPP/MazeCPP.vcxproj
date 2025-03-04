@@ -134,6 +134,8 @@
     <ClInclude Include="CellBase.h" />
     <ClInclude Include="MazeBase.h" />
     <ClInclude Include="MazeEnum.h" />
+    <ClInclude Include="Random.h" />
+    <ClInclude Include="Singleton.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
