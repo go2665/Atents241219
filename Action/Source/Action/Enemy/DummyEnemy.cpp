@@ -2,6 +2,8 @@
 
 
 #include "DummyEnemy.h"
+#include "Blueprint/UserWidget.h"
+#include "Components/WidgetComponent.h"
 
 // Sets default values
 ADummyEnemy::ADummyEnemy()
@@ -9,6 +11,9 @@ ADummyEnemy::ADummyEnemy()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	UWidgetComponent* a;
+	//PopupDamageWidget = CreateDefaultSubobject<UUserWidget>(TEXT("PopupDamageWidget"));
+	//PopupDamageWidget->attac
 }
 
 // Called when the game starts or when spawned
