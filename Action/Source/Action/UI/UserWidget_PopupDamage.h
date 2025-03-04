@@ -15,17 +15,16 @@ class ACTION_API UUserWidget_PopupDamage : public UUserWidget
 	GENERATED_BODY()
 	
 public:
+	// 데미지 텍스트 설정 및 Popup 애니메이션 재생
 	UFUNCTION()
-	void PlayPopupAnimation(float Damage);
+	void ActivateWidget(float Damage);
 
 protected:
-	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
-
-protected:
-
+	// 데미지 텍스트 위젯
 	UPROPERTY(BlueprintReadOnly, Category = "PopupDamage", meta = (BindWidget))
 	class UTextBlock* DamageText;
 
+	// Popup 애니메이션
 	UPROPERTY(BlueprintReadOnly, Transient, Category = "PopupDamage", meta = (BindWidgetAnim))
 	UWidgetAnimation* Popup;
 

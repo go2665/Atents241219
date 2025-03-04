@@ -2,9 +2,10 @@
 
 
 #include "UserWidget_PopupDamage.h"
+#include "Components/WidgetComponent.h"
 #include "Components/TextBlock.h"
 
-void UUserWidget_PopupDamage::PlayPopupAnimation(float Damage)
+void UUserWidget_PopupDamage::ActivateWidget(float Damage)
 {
 	if (DamageText)
 	{
@@ -19,12 +20,4 @@ void UUserWidget_PopupDamage::PlayPopupAnimation(float Damage)
 	{
 		PlayAnimation(Popup, 0.f, 1, EUMGSequencePlayMode::Forward, 1.f);
 	}
-}
-
-void UUserWidget_PopupDamage::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
-{
-	Super::NativeTick(MyGeometry, InDeltaTime);
-
-	// 항상 카메라를 바라보게 만들기
-
 }
