@@ -18,12 +18,18 @@
     <ClCompile Include="MazeCPP.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="MazeBase.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CellBase.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="MazeEnum.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="MazeBase.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

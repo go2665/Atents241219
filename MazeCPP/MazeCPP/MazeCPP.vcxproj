@@ -127,10 +127,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="MazeBase.cpp" />
     <ClCompile Include="MazeCPP.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CellBase.h" />
+    <ClInclude Include="MazeBase.h" />
     <ClInclude Include="MazeEnum.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
