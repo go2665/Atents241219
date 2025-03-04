@@ -14,8 +14,14 @@ class ACTION_API UUserWidget_PopupDamage : public UUserWidget
 {
 	GENERATED_BODY()
 	
-protected:
+public:
+	UFUNCTION()
 	void PlayPopupAnimation(float Damage);
+
+protected:
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
+protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "PopupDamage", meta = (BindWidget))
 	class UTextBlock* DamageText;

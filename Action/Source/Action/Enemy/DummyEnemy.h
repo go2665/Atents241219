@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "DummyEnemy.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTakeDamage, float, Damage);
+
 UCLASS()
 class ACTION_API ADummyEnemy : public ACharacter
 {
@@ -20,6 +22,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -27,8 +30,17 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+
+public:
+	UPROPERTY(BlueprintAssignable, Category = "DummyEnemy")
+	FOnTakeDamage OnTakeDamage;
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	class UUserWidget* PopupDamageWidget = nullptr;
+	class UWidgetComponent* PopupDamageWidget = nullptr;
+
+private:
+	UPROPERTY()
+	class UUserWidget_PopupDamage* PopupDamageWidgetInstance = nullptr;
 
 };

@@ -4,6 +4,7 @@
 #include "DummyEnemy.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/WidgetComponent.h"
+#include "../UI/UserWidget_PopupDamage.h"
 
 // Sets default values
 ADummyEnemy::ADummyEnemy()
@@ -11,15 +12,21 @@ ADummyEnemy::ADummyEnemy()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	UWidgetComponent* a;
-	//PopupDamageWidget = CreateDefaultSubobject<UUserWidget>(TEXT("PopupDamageWidget"));
-	//PopupDamageWidget->attac
+	PopupDamageWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PopupDamageWidget"));
+	PopupDamageWidget->SetupAttachment(RootComponent);
+
+	
 }
 
 // Called when the game starts or when spawned
 void ADummyEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+	if (PopupDamageWidget)
+	{
+		PopupDamageWidgetInstance = Cast<UUserWidget_PopupDamage>(PopupDamageWidget->GetUserWidgetObject());
+		OnTakeDamage.AddDynamic(PopupDamageWidgetInstance, &UUserWidget_PopupDamage::PlayPopupAnimation);
+	}
 }
 
 float ADummyEnemy::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -28,6 +35,7 @@ float ADummyEnemy::TakeDamage(float Damage, FDamageEvent const& DamageEvent, ACo
 
 	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Damage : %f"), ActualDamage));
 
+	OnTakeDamage.Broadcast(ActualDamage);
 	return ActualDamage;
 }
 
@@ -44,4 +52,3 @@ void ADummyEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
-

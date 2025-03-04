@@ -20,3 +20,11 @@ void UUserWidget_PopupDamage::PlayPopupAnimation(float Damage)
 		PlayAnimation(Popup, 0.f, 1, EUMGSequencePlayMode::Forward, 1.f);
 	}
 }
+
+void UUserWidget_PopupDamage::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+
+	// 항상 카메라를 바라보게 만들기
+
+}
