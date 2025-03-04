@@ -23,4 +23,26 @@ void MazeBase::ConnectPath(CellBase* From, CellBase* To)
 	// 대각선 연결은 없다.
 	// From셀과 To셀은 인접해 있다.
 	// 동쪽은 X+, 서쪽은 X-, 남쪽은 Y+, 북쪽은 Y-
+
+	if (From->GetY() > To->GetY())			// To가 From의 북쪽에 있다.
+	{
+		From->MakePath(Direction::North);
+		To->MakePath(Direction::South);
+	}
+	else if (From->GetX() < To->GetX())		// To가 From의 동쪽에 있다.
+	{
+		From->MakePath(Direction::East);
+		To->MakePath(Direction::West);
+	}
+	else if (From->GetY() < To->GetY())		// To가 From의 남쪽에 있다.
+	{
+		From->MakePath(Direction::South);
+		To->MakePath(Direction::North);
+	}
+	else if (From->GetX() > To->GetX())		// To가 From의 서쪽에 있다.
+	{
+		From->MakePath(Direction::West);
+		To->MakePath(Direction::East);
+	}
+
 }
