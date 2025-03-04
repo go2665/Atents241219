@@ -134,6 +134,7 @@
   <ItemGroup>
     <ClInclude Include="CellBase.h" />
     <ClInclude Include="Cell_Wilson.h" />
+    <ClInclude Include="FVector2I.h" />
     <ClInclude Include="MazeBase.h" />
     <ClInclude Include="MazeEnum.h" />
     <ClInclude Include="Maze_Wilson.h" />
