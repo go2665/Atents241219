@@ -3,21 +3,29 @@
 
 #include <iostream>
 #include "Maze_Wilson.h"
+#include "Maze_RecursiveBackTracking.h"
 
 void PrintMaze(int Width, int Height, CellBase** cells);	// 함수 선언
 int GetSubIndex(int StartIndex, int X, int Y, int Width);	
 
 int main()
 {
-    int width = 10;
+    int width = 30;
     int height = 10;	
 
-	Maze_Wilson* maze = new Maze_Wilson();
+	/*Maze_Wilson* maze = new Maze_Wilson();
 	maze->MakeMaze(width, height, -1);
 	PrintMaze(width, height, maze->GetCells());
 	maze->ClearMaze();
 	delete maze;
-	maze = nullptr;
+	maze = nullptr;*/
+
+	Maze_RecursiveBackTracking* BackTrackingMaze = new Maze_RecursiveBackTracking();
+	BackTrackingMaze->MakeMaze(width, height, -1);
+	PrintMaze(width, height, BackTrackingMaze->GetCells());
+	BackTrackingMaze->ClearMaze();
+	delete BackTrackingMaze;
+	BackTrackingMaze = nullptr;
 }
 
 void PrintMaze(int Width, int Height, CellBase** cells)	// 함수의 실제 정의

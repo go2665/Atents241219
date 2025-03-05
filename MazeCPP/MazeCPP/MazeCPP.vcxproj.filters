@@ -27,6 +27,9 @@
     <ClCompile Include="Maze_Wilson.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Maze_RecursiveBackTracking.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CellBase.h">
@@ -51,6 +54,12 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="FVector2I.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Maze_RecursiveBackTracking.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Cell_RecursiveBackTracking.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
