@@ -129,16 +129,19 @@
   <ItemGroup>
     <ClCompile Include="MazeBase.cpp" />
     <ClCompile Include="MazeCPP.cpp" />
+    <ClCompile Include="Maze_Eller.cpp" />
     <ClCompile Include="Maze_RecursiveBackTracking.cpp" />
     <ClCompile Include="Maze_Wilson.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CellBase.h" />
+    <ClInclude Include="Cell_Eller.h" />
     <ClInclude Include="Cell_RecursiveBackTracking.h" />
     <ClInclude Include="Cell_Wilson.h" />
     <ClInclude Include="FVector2I.h" />
     <ClInclude Include="MazeBase.h" />
     <ClInclude Include="MazeEnum.h" />
+    <ClInclude Include="Maze_Eller.h" />
     <ClInclude Include="Maze_RecursiveBackTracking.h" />
     <ClInclude Include="Maze_Wilson.h" />
     <ClInclude Include="Random.h" />
