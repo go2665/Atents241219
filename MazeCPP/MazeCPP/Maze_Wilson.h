@@ -14,7 +14,7 @@ protected:
 
 private:
 	// 이웃 셀 중 랜덤하게 하나를 리턴하는 함수
-	Cell_Wilson* GetRandomNeighbor(const Cell_Wilson* Cell) const;
+	Cell_Wilson* GetRandomNeighbor(const Cell_Wilson& Cell) const;
 
 	// 방향 갯수(북동남서)
 	static const int DirectionsCount = 4;

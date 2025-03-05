@@ -13,7 +13,7 @@ void MazeBase::MakeMaze(int Width, int Height, int Seed)
 
 	ClearMaze();	// 기존 미로가 있으면 제거
 
-	Cells = new CellBase*[Width * Height];	// CellBase*의 배열 생성
+	Cells = new CellBase*[Width * Height]();	// CellBase*의 배열 생성
 
 	OnSpecificAlgorithmExcute();	// 실제 알고리즘 수행		
 }

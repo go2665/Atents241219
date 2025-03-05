@@ -6,8 +6,8 @@
 
 int main()
 {
-    int width = 2;
-    int height = 2;
+    int width = 10;
+    int height = 10;
 
 	Maze_Wilson* maze = new Maze_Wilson();
 	maze->MakeMaze(width, height, 10);
