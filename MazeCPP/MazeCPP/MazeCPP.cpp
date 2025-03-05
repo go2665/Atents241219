@@ -39,7 +39,7 @@ void PrintMaze(int Width, int Height, CellBase** cells)	// 함수의 실제 정�
 
 	int Length = Width * Height * 9 + Height * 3 + 1;	// 셀표현용(가로 * 세로 * 셀한칸9) + 엔터키(세로*3) + 널문자(1)
 	char* Canvas = new char[Length]();
-	std::fill(Canvas, Canvas + Length - 1, '\n');		// 전체를 빈칸으로 초기화
+	std::fill(Canvas, Canvas + Length - 1, '\n');		// 전체를 엔터로 초기화
 
 	for (int y = 0; y < Height; ++y)
 	{
