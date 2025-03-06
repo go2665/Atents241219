@@ -41,6 +41,4 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cell")
 	float GateHalfThickness = 50.0f;
-
-	class CellData* CoreData = nullptr;
 };

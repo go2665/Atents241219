@@ -50,8 +50,7 @@ void ACellActor::Initialize(CellData* InCellData)
 {
 	if (InCellData)
 	{
-		CoreData = InCellData;
-		EDirectionType Path = CoreData->GetPath();
+		EDirectionType Path = InCellData->GetPath();
 
 		for (int i = 0; i < 4; i++)
 		{
