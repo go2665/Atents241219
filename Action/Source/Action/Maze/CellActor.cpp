@@ -2,6 +2,9 @@
 
 
 #include "CellActor.h"
+#include "EDirectionType.h"
+#include "Components/ArrowComponent.h"
+#include "CellData.h"
 
 // Sets default values
 ACellActor::ACellActor()
@@ -9,12 +12,54 @@ ACellActor::ACellActor()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
+	USceneComponent* Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	RootComponent = Root;
+
+	BackgroundMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BackgroundMesh"));
+	BackgroundMesh->SetupAttachment(RootComponent);
+
+	UStaticMeshComponent* Gate = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GateNorth"));
+	Gate->SetupAttachment(BackgroundMesh);
+	Gate->SetRelativeLocation(FVector::ForwardVector * (CellHalfSize - GateHalfThickness));
+	GateMeshArray.Add(Gate);
+
+	Gate = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GateEast"));
+	Gate->SetupAttachment(BackgroundMesh);
+	Gate->SetRelativeLocation(FVector::RightVector * (CellHalfSize - GateHalfThickness));
+	Gate->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));
+	GateMeshArray.Add(Gate);
+
+	Gate = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GateSouth"));
+	Gate->SetupAttachment(BackgroundMesh);
+	Gate->SetRelativeLocation(FVector::BackwardVector * (CellHalfSize - GateHalfThickness));
+	Gate->SetRelativeRotation(FRotator(0.0f, 180.0f, 0.0f));
+	GateMeshArray.Add(Gate);
+
+	Gate = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GateWest"));
+	Gate->SetupAttachment(BackgroundMesh);
+	Gate->SetRelativeLocation(FVector::LeftVector * (CellHalfSize - GateHalfThickness));
+	Gate->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
+	GateMeshArray.Add(Gate);
+
+	UArrowComponent* Arrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow"));
+	Arrow->SetupAttachment(RootComponent);
+	Arrow->SetRelativeLocation(FVector(0.0f, 0.0f, 200.0f));
 }
 
-// Called when the game starts or when spawned
-void ACellActor::BeginPlay()
+void ACellActor::Initialize(CellData* InCellData)
 {
-	Super::BeginPlay();
-	
-}
+	if (InCellData)
+	{
+		CoreData = InCellData;
+		EDirectionType Path = CoreData->GetPath();
 
+		for (int i = 0; i < 4; i++)
+		{
+			if ((Path & static_cast<EDirectionType>(1 << i)) != EDirectionType::None)
+			{
+				GateMeshArray[i]->SetVisibility(false);
+				GateMeshArray[i]->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			}
+		}
+	}
+}

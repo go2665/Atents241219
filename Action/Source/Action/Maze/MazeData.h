@@ -19,12 +19,16 @@ public:
 	void MakeMaze(int8 InWidth, int8 InHeight, int32 Seed = -1);
 
 	// 생성된 미로를 제거하는 함수
-	inline void ClearMaze() {
-		if (Cells != nullptr)
-		{
-			delete[] Cells;
-			Cells = nullptr;
-		}
+	inline void ClearMaze() 
+	{
+		Cells.Reset();
+	}
+
+	// 위치에 해당하는 셀을 반환하는 함수
+	inline CellData* GetCell(int8 InX, int8 InY) const
+	{
+		if (!IsValidLocation(InX, InY)) return nullptr;
+		return &Cells[LocationToIndex(InX, InY)];
 	}
 
 private:
@@ -43,12 +47,8 @@ private:
 	// 위치가 유효한지 확인하는 함수
 	inline bool IsValidLocation(int8 InX, int8 InY) const { return InX >= 0 && InX < Width && InY >= 0 && InY < Height; }
 
-	// 위치에 해당하는 셀을 반환하는 함수
-	inline CellData* GetCell(int8 InX, int8 InY) const 
-	{ 
-		if (!IsValidLocation(InX, InY)) return nullptr;
-		return &Cells[LocationToIndex(InX, InY)];
-	}
+	// 배열을 랜덤하게 섞는 함수
+	void ShuffleArray(TArray<CellData*>& InArray);
 
 private:
 	// 미로의 너비
@@ -58,7 +58,7 @@ private:
 	int8 Height = 0;
 
 	// 미로의 셀 데이터의 배열
-	CellData* Cells = nullptr;
+	TUniquePtr<CellData[]> Cells;
 
 	// 이웃 방향 개수
 	static const int DirectionCount = 4;

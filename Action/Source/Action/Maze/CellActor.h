@@ -15,9 +15,12 @@ public:
 	// Sets default values for this actor's properties
 	ACellActor();
 
+	void Initialize(class CellData* InCellData);
+
+	float GetCellHalfSize() const { return CellHalfSize; }
+
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	//virtual void BeginPlay() override;
 
 public:	
 	//virtual void Tick(float DeltaTime) override;
@@ -33,5 +36,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Cell")
 	TArray<class UStaticMeshComponent*> GateMeshArray;
 
-	class CellData* CellData = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cell")
+	float CellHalfSize = 1000.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cell")
+	float GateHalfThickness = 50.0f;
+
+	class CellData* CoreData = nullptr;
 };
