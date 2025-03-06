@@ -28,12 +28,12 @@ int main()
 	//delete BackTrackingMaze;
 	//BackTrackingMaze = nullptr;
 
-	Maze_Eller* EllerMaze = new Maze_Eller();
-	EllerMaze->MakeMaze(width, height, -1);
-	PrintMaze(width, height, EllerMaze->GetCells());
-	EllerMaze->ClearMaze();
-	delete EllerMaze;
-	EllerMaze = nullptr;
+	//Maze_Eller* EllerMaze = new Maze_Eller();
+	//EllerMaze->MakeMaze(width, height, -1);
+	//PrintMaze(width, height, EllerMaze->GetCells());
+	//EllerMaze->ClearMaze();
+	//delete EllerMaze;
+	//EllerMaze = nullptr;
 }
 
 void PrintMaze(int Width, int Height, CellBase** cells)	// 함수의 실제 정의
