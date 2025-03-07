@@ -18,7 +18,6 @@ ACellActor::ACellActor()
 
 	BackgroundMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BackgroundMesh"));	// 배경 매시 생성
 	BackgroundMesh->SetupAttachment(RootComponent);
-	BackgroundMesh->SetMobility(EComponentMobility::Static);	// 안움직임으로 설정
 	BackgroundMesh->SetCollisionProfileName(TEXT("BlockAll"));	// 충돌 프로필 설정
 
 	UStaticMeshComponent* Gate = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GateNorth"));	// 문 생성
