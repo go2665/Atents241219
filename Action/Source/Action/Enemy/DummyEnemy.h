@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "EnemyBase.h"
 #include "DummyEnemy.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTakeDamage, float, Damage);
 
 UCLASS()
-class ACTION_API ADummyEnemy : public ACharacter
+class ACTION_API ADummyEnemy : public AEnemyBase
 {
 	GENERATED_BODY()
 

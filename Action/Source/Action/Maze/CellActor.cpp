@@ -5,6 +5,7 @@
 #include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
 #include "CellData.h"
+#include "../Enemy/EnemyBase.h"
 
 // Sets default values
 ACellActor::ACellActor()
@@ -44,7 +45,8 @@ ACellActor::ACellActor()
 	SensorCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("SensorCollision"));
 	SensorCollision->SetupAttachment(RootComponent);
 	SensorCollision->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
-	SensorCollision->SetBoxExtent(FVector(CellHalfSize * 0.75f, CellHalfSize * 0.75f, 200.0f));
+	SensorCollision->SetBoxExtent(FVector(CellHalfSize * 0.75f, CellHalfSize * 0.75f, 100.0f));
+	SensorCollision->SetRelativeLocation(FVector(0.0f, 0.0f, 100.0f));
 
 	UArrowComponent* Arrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow"));
 	Arrow->SetupAttachment(RootComponent);
@@ -66,11 +68,40 @@ void ACellActor::BeginPlay()
 	SensorCollision->OnComponentBeginOverlap.AddDynamic(this, &ACellActor::OnSensorBeginOverlap);
 }
 
+#if WITH_EDITOR
+void ACellActor::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+
+	FName PropertyName = (PropertyChangedEvent.Property != nullptr) ? 
+		PropertyChangedEvent.Property->GetFName() : NAME_None;	// 변경된 프로퍼티의 이름 가져오기
+
+	// EnemyCountMin나 EnemyCountMax가 변경되었을 때
+	if (PropertyName == GET_MEMBER_NAME_CHECKED(ACellActor, EnemyCountMin) ||
+		PropertyName == GET_MEMBER_NAME_CHECKED(ACellActor, EnemyCountMax))
+	{
+		// EnemyCountMax가 무조건 Min보다 크거나 같도록 설정
+		EnemyCountMax = FMath::Max(EnemyCountMin, EnemyCountMax);
+	}
+}
+#endif
+
 void ACellActor::OnSensorBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (!bIsClear && OtherActor->ActorHasTag("Player"))
 	{
 		CloseGate();
+		SpawnEnemy();
+	}
+}
+
+void ACellActor::OnEnemyDie()
+{
+	SpawnCount--;
+	if (SpawnCount <= 0)
+	{
+		bIsClear = true;
+		OpenGate();
 	}
 }
 
@@ -78,7 +109,7 @@ void ACellActor::OpenGate()
 {
 	if (!bIsOpened)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("OpenGate"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("OpenGate"));
 		bIsOpened = true;
 		for (int i = 0; i < 4; i++)
 		{
@@ -95,12 +126,30 @@ void ACellActor::CloseGate()
 {
 	if (bIsOpened)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("CloseGate"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("CloseGate"));
 		bIsOpened = false;
 		for (int i = 0; i < 4; i++)
 		{
 			GateMeshArray[i]->SetVisibility(true);
 			GateMeshArray[i]->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		}
+	}
+}
+
+void ACellActor::SpawnEnemy()
+{
+	if (EnemyClass)
+	{
+		UWorld* World = GetWorld();
+		SpawnCount = FMath::RandRange(EnemyCountMin, EnemyCountMax);
+
+		for (int i = 0; i < SpawnCount; i++)
+		{
+			FVector Location = FMath::RandPointInBox(SensorCollision->Bounds.GetBox());
+			Location.Z = 0.0f;
+
+			AEnemyBase* Enemy = World->SpawnActor<AEnemyBase>(EnemyClass, Location, FRotator::ZeroRotator);
+			Enemy->OnDie.AddDynamic(this, &ACellActor::OnEnemyDie);
 		}
 	}
 }

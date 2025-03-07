@@ -25,6 +25,9 @@ protected:
 
 public:	
 	//virtual void Tick(float DeltaTime) override;
+#if WITH_EDITOR
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
 
 private:
 	UFUNCTION()
@@ -32,9 +35,12 @@ private:
 		UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UFUNCTION()
+	void OnEnemyDie();
+
 	void OpenGate();
 	void CloseGate();
-
+	void SpawnEnemy();
 
 
 protected:
@@ -56,8 +62,18 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cell")
 	float GateHalfThickness = 50.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Cell")
+	TSubclassOf<class AEnemyBase> EnemyClass = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Cell", meta = (ClampMin = "1"))
+	int32 EnemyCountMin = 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Cell", meta = (ClampMin = "1"))
+	int32 EnemyCountMax = 5;
+	
 private:
 	EDirectionType Path = EDirectionType::None;
 	bool bIsClear = false;
 	bool bIsOpened = false;
+	int32 SpawnCount = 0;
 };
