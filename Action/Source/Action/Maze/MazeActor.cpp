@@ -30,6 +30,9 @@ void AMazeActor::BeginPlay()
 		FVector StartLocation = FVector(Height * CellHalfSize, -Width * CellHalfSize , 0.0f)
 			 + FVector(-CellHalfSize * (Height % 2), CellHalfSize * (Width % 2), 0);	// 미로의 시작 위치
 		UWorld* World = GetWorld();
+		int32 StartX = static_cast<int32>(StartLocation.X) / (CellHalfSize * 2);
+		int32 StartY = static_cast<int32>(-StartLocation.Y) / (CellHalfSize * 2);
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Start Location : %d, %d"), StartX, StartY));
 
 		for (int y = 0; y < Height; y++)
 		{
@@ -49,9 +52,16 @@ void AMazeActor::BeginPlay()
 						CellActor->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);	// 미로 액터에 붙임
 						CellActor->Initialize(Cell);	// 셀 데이터 초기화
 					}
+
+					if (x == StartX && y == StartY)
+					{
+						CellActor->SetClear();			// 시작 셀은 Clear 상태로 시작
+					}
 				}
 			}
 		}
+
+		
 	}
 
 	// 미로 데이터 정리

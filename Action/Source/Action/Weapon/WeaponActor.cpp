@@ -67,8 +67,8 @@ void AWeaponActor::OnWeaponBeginOverlap(AActor* OverlappedActor, AActor* OtherAc
 {
 	if (OtherActor && OtherActor != OwnerPlayer)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, 
-			FString::Printf(TEXT("Weapon Overlap : %s"), *OtherActor->GetActorLabel()));
+		/*GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, 
+			FString::Printf(TEXT("Weapon Overlap : %s"), *OtherActor->GetActorLabel()));*/
 		UGameplayStatics::ApplyDamage(OtherActor, Damage, nullptr, nullptr, nullptr);
 	}
 }

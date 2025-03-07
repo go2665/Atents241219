@@ -19,6 +19,7 @@ public:
 	void Initialize(class CellData* InCellData);
 
 	float GetCellHalfSize() const { return CellHalfSize; }
+	void SetClear() { bIsClear = true; }
 
 protected:
 	virtual void BeginPlay() override;

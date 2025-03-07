@@ -18,26 +18,32 @@ ACellActor::ACellActor()
 
 	BackgroundMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BackgroundMesh"));
 	BackgroundMesh->SetupAttachment(RootComponent);
+	BackgroundMesh->SetMobility(EComponentMobility::Static);
+	BackgroundMesh->SetCollisionProfileName(TEXT("BlockAll"));
 
 	UStaticMeshComponent* Gate = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GateNorth"));
 	Gate->SetupAttachment(BackgroundMesh);
+	Gate->SetCollisionProfileName(TEXT("GateProfile"));
 	Gate->SetRelativeLocation(FVector::ForwardVector * (CellHalfSize - GateHalfThickness));
 	GateMeshArray.Add(Gate);
 
 	Gate = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GateEast"));
 	Gate->SetupAttachment(BackgroundMesh);
+	Gate->SetCollisionProfileName(TEXT("GateProfile"));
 	Gate->SetRelativeLocation(FVector::RightVector * (CellHalfSize - GateHalfThickness));
 	Gate->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));
 	GateMeshArray.Add(Gate);
 
 	Gate = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GateSouth"));
 	Gate->SetupAttachment(BackgroundMesh);
+	Gate->SetCollisionProfileName(TEXT("GateProfile"));
 	Gate->SetRelativeLocation(FVector::BackwardVector * (CellHalfSize - GateHalfThickness));
 	Gate->SetRelativeRotation(FRotator(0.0f, 180.0f, 0.0f));
 	GateMeshArray.Add(Gate);
 
 	Gate = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GateWest"));
 	Gate->SetupAttachment(BackgroundMesh);
+	Gate->SetCollisionProfileName(TEXT("GateProfile"));
 	Gate->SetRelativeLocation(FVector::LeftVector * (CellHalfSize - GateHalfThickness));
 	Gate->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
 	GateMeshArray.Add(Gate);
@@ -51,6 +57,8 @@ ACellActor::ACellActor()
 	UArrowComponent* Arrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow"));
 	Arrow->SetupAttachment(RootComponent);
 	Arrow->SetRelativeLocation(FVector(0.0f, 0.0f, 200.0f));
+
+	this->SetCanBeDamaged(false);	// 데미지를 받지 않음
 }
 
 void ACellActor::Initialize(CellData* InCellData)

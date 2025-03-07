@@ -59,6 +59,7 @@ void AActionPlayerCharacter::DoAttack()
 	}
 	else if (CurrentMontage == AttackMontage)	// 현재 재생 중인 몽타주가 공격용 몽타주면
 	{
+		SetActorRotation(GetLastMovementInputVector().Rotation(), ETeleportType::ResetPhysics);
 		SectionJumpForCombo();					// 콤보용 섹션 점프	
 	}
 }
