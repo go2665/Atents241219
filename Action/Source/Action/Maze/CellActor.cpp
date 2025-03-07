@@ -2,8 +2,8 @@
 
 
 #include "CellActor.h"
-#include "EDirectionType.h"
 #include "Components/ArrowComponent.h"
+#include "Components/BoxComponent.h"
 #include "CellData.h"
 
 // Sets default values
@@ -41,6 +41,11 @@ ACellActor::ACellActor()
 	Gate->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
 	GateMeshArray.Add(Gate);
 
+	SensorCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("SensorCollision"));
+	SensorCollision->SetupAttachment(RootComponent);
+	SensorCollision->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
+	SensorCollision->SetBoxExtent(FVector(CellHalfSize * 0.75f, CellHalfSize * 0.75f, 200.0f));
+
 	UArrowComponent* Arrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow"));
 	Arrow->SetupAttachment(RootComponent);
 	Arrow->SetRelativeLocation(FVector(0.0f, 0.0f, 200.0f));
@@ -50,8 +55,31 @@ void ACellActor::Initialize(CellData* InCellData)
 {
 	if (InCellData)
 	{
-		EDirectionType Path = InCellData->GetPath();
+		Path = InCellData->GetPath();
+		OpenGate();
+	}
+}
 
+void ACellActor::BeginPlay()
+{
+	Super::BeginPlay();
+	SensorCollision->OnComponentBeginOverlap.AddDynamic(this, &ACellActor::OnSensorBeginOverlap);
+}
+
+void ACellActor::OnSensorBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (!bIsClear && OtherActor->ActorHasTag("Player"))
+	{
+		CloseGate();
+	}
+}
+
+void ACellActor::OpenGate()
+{
+	if (!bIsOpened)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("OpenGate"));
+		bIsOpened = true;
 		for (int i = 0; i < 4; i++)
 		{
 			if ((Path & static_cast<EDirectionType>(1 << i)) != EDirectionType::None)
@@ -59,6 +87,20 @@ void ACellActor::Initialize(CellData* InCellData)
 				GateMeshArray[i]->SetVisibility(false);
 				GateMeshArray[i]->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			}
+		}
+	}
+}
+
+void ACellActor::CloseGate()
+{
+	if (bIsOpened)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("CloseGate"));
+		bIsOpened = false;
+		for (int i = 0; i < 4; i++)
+		{
+			GateMeshArray[i]->SetVisibility(true);
+			GateMeshArray[i]->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		}
 	}
 }

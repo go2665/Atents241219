@@ -30,6 +30,8 @@ AActionPlayerCharacter::AActionPlayerCharacter()
 	PlayerCamera->SetRelativeRotation(FRotator(-20.0f, 0.0f, 0.0f));	// 카메라의 기본 회전 설정
 
 	WeaponManager = CreateDefaultSubobject<UWeaponManagerComponent>(TEXT("WeaponManager"));
+
+	Tags.Add(FName("Player"));	// 플레이어 태그 추가
 }
 
 void AActionPlayerCharacter::Movement(const FVector& Direction)

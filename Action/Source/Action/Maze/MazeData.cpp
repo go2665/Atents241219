@@ -22,10 +22,16 @@ void MazeData::MakeMaze(int8 InWidth, int8 InHeight, int32 Seed)
 	Height = InHeight;
 
 	// 랜덤 시드 설정
-	if (Seed != -1)
+	if (Seed == -1)
+	{
+		RandomStream.GenerateNewSeed();		
+	}
+	else
 	{
 		RandomStream.Initialize(Seed);
 	}
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, 
+	//	FString::Printf(TEXT("Seed : %d"), RandomStream.GetInitialSeed()));
 
 	// 기존 미로 데이터 삭제
 	ClearMaze();
