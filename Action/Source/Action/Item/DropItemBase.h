@@ -45,6 +45,9 @@ protected:
 	class UItemDataAsset* ItemDataAsset = nullptr;
 
 private:
+	// 바닥에 떨어졌을 때 움직임 처리용 변수
 	float ElapsedTime = 0.0f;
+
+	// 회전 시작 여부(바닥에 떨어지면 시작)
 	bool bStartRotate = false;
 };

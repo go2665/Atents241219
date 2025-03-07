@@ -16,8 +16,8 @@ ADropItemBase::ADropItemBase()
 	CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
 	SetRootComponent(CollisionSphere);
 	CollisionSphere->SetCollisionProfileName(TEXT("DropItemProfile"));
-	CollisionSphere->SetSimulatePhysics(true);
-	CollisionSphere->BodyInstance.bLockXRotation = true;
+	CollisionSphere->SetSimulatePhysics(true);				// 물리 시뮬레이션 시작
+	CollisionSphere->BodyInstance.bLockXRotation = true;	// 회전 제한
 	CollisionSphere->BodyInstance.bLockYRotation = true;
 	CollisionSphere->BodyInstance.bLockZRotation = true;
 	CollisionSphere->BodyInstance.bLockRotation = true;
@@ -37,7 +37,7 @@ void ADropItemBase::BeginPlay()
 	
 	if (ItemDataAsset)
 	{
-		ItemMesh->SetStaticMesh(ItemDataAsset->ItemMesh);
+		ItemMesh->SetStaticMesh(ItemDataAsset->ItemMesh);	// 데이터 에셋에서 메시 가져오기
 	}
 
 	OnActorHit.AddDynamic(this, &ADropItemBase::OnDropItemHit);
@@ -48,7 +48,7 @@ void ADropItemBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (bStartRotate)
+	if (bStartRotate)	// 바닥에 떨어졌을 때 회전하며 움직이기 시작
 	{
 		ItemMesh->AddRelativeRotation(FRotator(0.0f, 360.0f * DeltaTime, 0.0f));
 
@@ -60,10 +60,10 @@ void ADropItemBase::Tick(float DeltaTime)
 
 void ADropItemBase::OnDropItemHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (!OtherActor->ActorHasTag(TEXT("Item")))
+	if (!OtherActor->ActorHasTag(TEXT("Item")))	// 아이템을 제외하고 충돌이 발생하면 바닥에 닿은 것으로 간주
 	{
-		CollisionSphere->SetSimulatePhysics(false);
-		bStartRotate = true;
+		CollisionSphere->SetSimulatePhysics(false);	// 물리 시뮬레이션 중지
+		bStartRotate = true;						// 회전 시작	
 	}
 }
 

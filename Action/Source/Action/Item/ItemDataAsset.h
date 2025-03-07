@@ -7,7 +7,7 @@
 #include "ItemDataAsset.generated.h"
 
 /**
- * 
+ * 아이템 정보 저장용 데이터 에셋
  */
 UCLASS(BlueprintType)
 class ACTION_API UItemDataAsset : public UDataAsset

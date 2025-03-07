@@ -16,16 +16,16 @@ ACellActor::ACellActor()
 	USceneComponent* Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = Root;
 
-	BackgroundMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BackgroundMesh"));
+	BackgroundMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BackgroundMesh"));	// 배경 매시 생성
 	BackgroundMesh->SetupAttachment(RootComponent);
-	BackgroundMesh->SetMobility(EComponentMobility::Static);
-	BackgroundMesh->SetCollisionProfileName(TEXT("BlockAll"));
+	BackgroundMesh->SetMobility(EComponentMobility::Static);	// 안움직임으로 설정
+	BackgroundMesh->SetCollisionProfileName(TEXT("BlockAll"));	// 충돌 프로필 설정
 
-	UStaticMeshComponent* Gate = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GateNorth"));
-	Gate->SetupAttachment(BackgroundMesh);
-	Gate->SetCollisionProfileName(TEXT("GateProfile"));
-	Gate->SetRelativeLocation(FVector::ForwardVector * (CellHalfSize - GateHalfThickness));
-	GateMeshArray.Add(Gate);
+	UStaticMeshComponent* Gate = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GateNorth"));	// 문 생성
+	Gate->SetupAttachment(BackgroundMesh);				// 배경 매시에 붙임
+	Gate->SetCollisionProfileName(TEXT("GateProfile"));	// 문의 충돌 프로필 설정
+	Gate->SetRelativeLocation(FVector::ForwardVector * (CellHalfSize - GateHalfThickness));	// 문의 위치 설정
+	GateMeshArray.Add(Gate);	// 문 배열에 추가해서 저장
 
 	Gate = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GateEast"));
 	Gate->SetupAttachment(BackgroundMesh);
@@ -48,11 +48,11 @@ ACellActor::ACellActor()
 	Gate->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
 	GateMeshArray.Add(Gate);
 
-	SensorCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("SensorCollision"));
+	SensorCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("SensorCollision"));	// 플레이어 감지용 센서 콜리젼
 	SensorCollision->SetupAttachment(RootComponent);
 	SensorCollision->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
-	SensorCollision->SetBoxExtent(FVector(CellHalfSize * 0.75f, CellHalfSize * 0.75f, 100.0f));
-	SensorCollision->SetRelativeLocation(FVector(0.0f, 0.0f, 100.0f));
+	SensorCollision->SetBoxExtent(FVector(CellHalfSize * 0.75f, CellHalfSize * 0.75f, 100.0f));	// 크기 설정
+	SensorCollision->SetRelativeLocation(FVector(0.0f, 0.0f, 100.0f));							// 위치 설정
 
 	UArrowComponent* Arrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow"));
 	Arrow->SetupAttachment(RootComponent);
@@ -63,10 +63,10 @@ ACellActor::ACellActor()
 
 void ACellActor::Initialize(CellData* InCellData)
 {
-	if (InCellData)
+	if (InCellData)	// 셀 데이터를 받았을 때만 처리
 	{
-		Path = InCellData->GetPath();
-		OpenGate();
+		Path = InCellData->GetPath();	// 길 정보 받아와서 저장
+		OpenGate();						// 길 정보에 따라 문 열기	
 	}
 }
 
@@ -96,35 +96,36 @@ void ACellActor::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEv
 
 void ACellActor::OnSensorBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	// 센서 안에 아직 "클리어가 되지 않았고" "문이 열려있고" "플레이어가 들어왔을 때"
 	if (!bIsClear && bIsOpened && OtherActor->ActorHasTag("Player"))
 	{
-		CloseGate();
-		SpawnEnemy();
+		CloseGate();	// 모든 문을 닫고
+		SpawnEnemy();	// 적을 스폰
 	}
 }
 
 void ACellActor::OnEnemyDie()
 {
-	SpawnCount--;
-	if (SpawnCount <= 0)
+	SpawnCount--;	// 적이 죽었을 때 스폰 카운트 감소
+	if (SpawnCount <= 0)	// 적이 모두 죽었으면
 	{
-		bIsClear = true;
-		OpenGate();
+		bIsClear = true;	// 클리어 상태로 변경
+		OpenGate();			// 모든 문을 열어줌
 	}
 }
 
 void ACellActor::OpenGate()
 {
-	if (!bIsOpened)
+	if (!bIsOpened)	// 문이 닫혀있을 때만 열기
 	{
 		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("OpenGate"));
 		bIsOpened = true;
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < 4; i++)	// 4방향에 대해서
 		{
-			if ((Path & static_cast<EDirectionType>(1 << i)) != EDirectionType::None)
+			if ((Path & static_cast<EDirectionType>(1 << i)) != EDirectionType::None)	// 비트 플래그가 켜져있으면
 			{
-				GateMeshArray[i]->SetVisibility(false);
-				GateMeshArray[i]->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+				GateMeshArray[i]->SetVisibility(false);									// 문을 안보이게 하고
+				GateMeshArray[i]->SetCollisionEnabled(ECollisionEnabled::NoCollision);	// 충돌을 없앰( = 문이 열린 것 처럼 보임)
 			}
 		}
 	}
@@ -136,7 +137,7 @@ void ACellActor::CloseGate()
 	{
 		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("CloseGate"));
 		bIsOpened = false;
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < 4; i++)	// 모든 문을 닫기
 		{
 			GateMeshArray[i]->SetVisibility(true);
 			GateMeshArray[i]->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
@@ -149,15 +150,15 @@ void ACellActor::SpawnEnemy()
 	if (EnemyClass)
 	{
 		UWorld* World = GetWorld();
-		SpawnCount = FMath::RandRange(EnemyCountMin, EnemyCountMax);
+		SpawnCount = FMath::RandRange(EnemyCountMin, EnemyCountMax);	// Min ~ Max 사이의 랜덤한 수로 스폰 카운트 설정
 
-		for (int i = 0; i < SpawnCount; i++)
+		for (int i = 0; i < SpawnCount; i++)	// 스폰 카운트만큼 적 스폰
 		{
 			FVector Location = FMath::RandPointInBox(SensorCollision->Bounds.GetBox());
-			Location.Z = 0.0f;
+			Location.Z = 0.0f;	// 위치는 센서 콜리젼 안에서 랜덤하게(높이는 0)
 
 			AEnemyBase* Enemy = World->SpawnActor<AEnemyBase>(EnemyClass, Location, FRotator::ZeroRotator);
-			Enemy->OnDie.AddDynamic(this, &ACellActor::OnEnemyDie);
+			Enemy->OnDie.AddDynamic(this, &ACellActor::OnEnemyDie);	// 적이 죽었을 때 호출할 함수 설정
 		}
 	}
 }
