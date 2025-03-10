@@ -103,13 +103,13 @@ void AActionPlayerCharacter::RestoreHealth(float Health, float Duration)
 
 	if (Duration <= 0.0f)	// 즉시 회복
 	{
-		CurrentHealth += Health;
+		//CurrentHealth += Health;
+		SetCurrentHealth(CurrentHealth + Health);
 	}
 	else	// 지속 회복
 	{
-		FTimerHandle RestoreHealthTimer;
-		FTimerDelegate TimerDelegate = FTimerDelegate::CreateUObject(this, &AActionPlayerCharacter::RestoreHealth, Health, 0.0f);
-		TimerManager.SetTimer(RestoreHealthTimer, TimerDelegate, Duration, false);
+		// 데이터 추가
+		RestoreDatas.Add(FRestoreData(Health / Duration, Duration, 0.0f));		
 	}
 	
 }
@@ -121,7 +121,9 @@ void AActionPlayerCharacter::BeginPlay()
 	
 	AnimInstance = GetMesh()->GetAnimInstance();	// 애님 인스턴스 캐싱
 
-	CurrentHealth = MaxHealth;	// 체력 초기화
+	SetCurrentHealth(MaxHealth);	// 체력 초기화
+
+	OnHealthChange.AddDynamic(this, &AActionPlayerCharacter::TestPrintHealth);
 }
 
 void AActionPlayerCharacter::PlayHighPriorityMontage(UAnimMontage* Montage, FName StartSectionName)
@@ -150,6 +152,27 @@ void AActionPlayerCharacter::SectionJumpForCombo()
 void AActionPlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (RestoreDatas.Num() > 0)	// 회복 데이터가 있으면
+	{
+		// 회복 데이터 처리
+		for (auto& Data : RestoreDatas)
+		{
+			Data.ElapsedTime += DeltaTime;	// 경과 시간 누적
+			CurrentHealth += Data.RestoreHealthPerSec * DeltaTime;	// 체력 회복
+		}
+
+		// 데이터 삭제
+		RestoreDatas.RemoveAll(
+			[](const FRestoreData& Data)
+			{
+				return Data.ElapsedTime >= Data.Duration;
+			}
+		);
+
+		// 체력 변경 이벤트 알림(틱 안쪽이라 최소한으로 브로드캐스트하기 위해 SetCurrentHealth를 사용하지 않음)
+		OnHealthChange.Broadcast(CurrentHealth);	
+	}
 
 }
 

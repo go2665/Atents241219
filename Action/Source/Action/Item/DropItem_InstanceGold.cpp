@@ -3,3 +3,6 @@
 
 #include "DropItem_InstanceGold.h"
 
+void ADropItem_InstanceGold::OnGetItem(AActor* Target)
+{
+}

@@ -9,10 +9,15 @@
 #include "../Weapon/WeaponActor.h"
 #include "ActionPlayerCharacter.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChange, float, Health);
+
 UCLASS()
 class ACTION_API AActionPlayerCharacter : public ACharacter
 {
 	GENERATED_BODY()
+
+public:
+	FOnHealthChange OnHealthChange;
 
 public:
 	// Sets default values for this character's properties
@@ -71,6 +76,14 @@ protected:
 private:
 	void SectionJumpForCombo();
 
+	inline void SetCurrentHealth(float Health) { CurrentHealth = Health; OnHealthChange.Broadcast(CurrentHealth); };
+
+	UFUNCTION()
+	inline void TestPrintHealth(float Health) {
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red,
+			FString::Printf(TEXT("Health : %.1f / %.1f"), CurrentHealth, MaxHealth));
+	};
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -78,7 +91,9 @@ public:
 
 protected:
 	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	virtual void BeginPlay() override;	
+
+
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Camera")
@@ -125,6 +140,18 @@ private:
 	// 콤보가 가능한 상황인지 확인하기 위한 플래그(true면 가능, false면 불가능)
 	bool bIsComboReady = false;
 
+	// 지속 회복 데이터
+	struct FRestoreData
+	{
+		FRestoreData(float InRestoreHealthPerSec, float InDuration, float InElapsedTime)
+			: RestoreHealthPerSec(InRestoreHealthPerSec), Duration(InDuration), ElapsedTime(InElapsedTime) {
+		}
+		float RestoreHealthPerSec = 0.0f;
+		float Duration = 0.0f;
+		float ElapsedTime = 0.0f;
+	};
 
+	// 틱에서 처리할 지속 회복 데이터	
+	TArray<FRestoreData> RestoreDatas;
 
 };
