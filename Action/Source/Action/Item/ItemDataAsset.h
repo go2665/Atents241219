@@ -29,6 +29,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	class UMaterialInterface* ItemMaterial;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
+	class UNiagaraSystem* HighlightEffect = nullptr;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (ClampMin = "0"))
 	int32 ItemPrice = 0;
 

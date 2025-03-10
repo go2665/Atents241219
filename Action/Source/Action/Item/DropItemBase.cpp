@@ -33,24 +33,36 @@ ADropItemBase::ADropItemBase()
 	HighlightEffect->SetAutoActivate(false);
 }
 
+void ADropItemBase::InitializeItemDataAsset(UItemDataAsset* InItemDataAsset)
+{	
+	if (InItemDataAsset && !ItemDataAsset) // InItemDataAsset는 null이 아니고 ItemDataAsset이 nullptr일때만 데이터 세팅
+	{
+		ItemDataAsset = InItemDataAsset;
+
+		// 메시 설정
+		ItemMesh->SetStaticMesh(ItemDataAsset->ItemMesh);			// 데이터 에셋에서 메시 가져오기
+
+		// 머티리얼 설정
+		if (ItemDataAsset->ItemMaterial)
+		{
+			ItemMesh->SetMaterial(0, ItemDataAsset->ItemMaterial);	// 데이터 에셋에서 머티리얼 가져오기
+		}
+
+		// 강조 이펙트 설정
+		HighlightEffect->SetAsset(ItemDataAsset->HighlightEffect);	// 데이터 에셋에서 강조 이펙트 가져오기
+		if (HighlightEffect)
+		{
+			HighlightEffect->Activate();	// 강조 이펙트 활성화
+		}
+	}	
+}
+
 // Called when the game starts or when spawned
 void ADropItemBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	if (ItemDataAsset)
-	{
-		ItemMesh->SetStaticMesh(ItemDataAsset->ItemMesh);			// 데이터 에셋에서 메시 가져오기
-
-		if (ItemDataAsset->ItemMaterial)
-		{
-			ItemMesh->SetMaterial(0, ItemDataAsset->ItemMaterial);	// 데이터 에셋에서 머티리얼 가져오기
-		}
-	}
-	if (HighlightEffect)
-	{
-		HighlightEffect->Activate();	// 강조 이펙트 활성화
-	}
+	InitializeItemDataAsset(ItemDataAsset);
 
 	OnActorHit.AddDynamic(this, &ADropItemBase::OnDropItemHit);
 
