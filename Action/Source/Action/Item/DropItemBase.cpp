@@ -81,7 +81,7 @@ void ADropItemBase::OnDropItemHit(AActor* SelfActor, AActor* OtherActor, FVector
 
 void ADropItemBase::OnDropItemOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
-	if (OtherActor->ActorHasTag(TEXT("Player")))	// 플레이어와 충돌하면
+	if (OtherActor->ActorHasTag(TEXT("Player")))	// 플레이어와 오버랩되면
 	{
 		//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Player Overlap"));
 

@@ -4,7 +4,7 @@
 #include "DropItem_Pickup.h"
 #include "ItemDataAsset.h"
 
-void ADropItem_Pickup::OnGetItem()
+void ADropItem_Pickup::OnGetItem(AActor* Target)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue,
 		FString::Printf(TEXT("ADropItem_Pickup::OnGetItem - %s"), *ItemDataAsset->ItemName.ToString()));

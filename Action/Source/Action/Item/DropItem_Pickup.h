@@ -15,5 +15,5 @@ class ACTION_API ADropItem_Pickup : public ADropItemBase
 	GENERATED_BODY()
 
 protected:
-	virtual void OnGetItem() override;
+	virtual void OnGetItem(AActor* Target) override;
 };

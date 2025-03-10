@@ -76,8 +76,21 @@ protected:
 private:
 	void SectionJumpForCombo();
 
-	inline void SetCurrentHealth(float Health) { CurrentHealth = Health; OnHealthChange.Broadcast(CurrentHealth); };
+	// CurrentHealth변경은 이 함수를 통해서만 하는 것이 원칙
+	inline void SetCurrentHealth(float Health) { 
+		CurrentHealth = Health;		// CurrentHealth 변경
+		if (CurrentHealth < 0)		// 체력이 0보다 작으면
+		{
+			// 사망 처리
+		}
+		else
+		{
+			CurrentHealth = FMath::Clamp(CurrentHealth, 0.0f, MaxHealth);	// 적정 범위로 클램프
+			OnHealthChange.Broadcast(CurrentHealth); // CurrentHealth 변경 알림
+		}
+	};
 
+	// OnHealthChange에 붙여서 테스트용으로 사용할 함수
 	UFUNCTION()
 	inline void TestPrintHealth(float Health) {
 		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red,
@@ -120,9 +133,11 @@ protected:
 	UPROPERTY()
 	class AWeaponActor* CurrentWeapon = nullptr;
 
+	// 최대 체력
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player|Health")
 	float MaxHealth = 100.0f;
 
+	// 현재 체력
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Health")
 	float CurrentHealth = 100.0f;
 

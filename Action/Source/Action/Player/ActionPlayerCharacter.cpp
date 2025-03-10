@@ -98,17 +98,13 @@ void AActionPlayerCharacter::SetCurrentWeapon(EWeaponType WeaponType)
 
 void AActionPlayerCharacter::RestoreHealth(float Health, float Duration)
 {
-	UWorld* World = GetWorld();
-	FTimerManager& TimerManager = World->GetTimerManager();
-
 	if (Duration <= 0.0f)	// 즉시 회복
-	{
-		//CurrentHealth += Health;
-		SetCurrentHealth(CurrentHealth + Health);
+	{		
+		SetCurrentHealth(CurrentHealth + Health);	//CurrentHealth += Health;
 	}
 	else	// 지속 회복
 	{
-		// 데이터 추가
+		// 회복 데이터 추가
 		RestoreDatas.Add(FRestoreData(Health / Duration, Duration, 0.0f));		
 	}
 	
@@ -153,22 +149,31 @@ void AActionPlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// 지속 회복 데이터 처리(SetCurrentHealth의 예외 처리 부분)
 	if (RestoreDatas.Num() > 0)	// 회복 데이터가 있으면
-	{
-		// 회복 데이터 처리
-		for (auto& Data : RestoreDatas)
+	{		
+		for (auto& Data : RestoreDatas)		// 회복 데이터 전체 순회
 		{
 			Data.ElapsedTime += DeltaTime;	// 경과 시간 누적
-			CurrentHealth += Data.RestoreHealthPerSec * DeltaTime;	// 체력 회복
+			CurrentHealth += Data.RestoreHealthPerSec * DeltaTime;	// 지정된 수치만큼 체력 회복
 		}
 
 		// 데이터 삭제
 		RestoreDatas.RemoveAll(
 			[](const FRestoreData& Data)
 			{
-				return Data.ElapsedTime >= Data.Duration;
+				return Data.ElapsedTime >= Data.Duration;	// ElapsedTime이 Duration을 초과하면 항목 삭제
 			}
 		);
+
+		if (CurrentHealth < 0)
+		{
+			// 사망 처리
+		}
+		else
+		{
+			CurrentHealth = FMath::Clamp(CurrentHealth, 0.0f, MaxHealth);	// 최대 체력을 넘지 않도록 클램프
+		}
 
 		// 체력 변경 이벤트 알림(틱 안쪽이라 최소한으로 브로드캐스트하기 위해 SetCurrentHealth를 사용하지 않음)
 		OnHealthChange.Broadcast(CurrentHealth);	
