@@ -35,8 +35,9 @@ ADropItemBase::ADropItemBase()
 
 void ADropItemBase::InitializeItemDataAsset(UItemDataAsset* InItemDataAsset)
 {	
-	if (InItemDataAsset && !ItemDataAsset) // InItemDataAsset는 null이 아니고 ItemDataAsset이 nullptr일때만 데이터 세팅
+	if (!bInitialized && InItemDataAsset) // 초기화 되지 않았고 InItemDataAsset가 null이 아닐때만 데이터 세팅
 	{
+		bInitialized = true;
 		ItemDataAsset = InItemDataAsset;
 
 		// 메시 설정

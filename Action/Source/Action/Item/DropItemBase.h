@@ -56,4 +56,7 @@ private:
 
 	// 회전 시작 여부(바닥에 떨어지면 시작)
 	bool bStartRotate = false;
+
+	// 초기화 여부
+	bool bInitialized = false;
 };
