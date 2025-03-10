@@ -27,6 +27,9 @@ private:
 	UFUNCTION()
 	void OnDropItemHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
 
+	UFUNCTION()
+	void OnDropItemOverlap(AActor* OverlappedActor, AActor* OtherActor);
+
 protected:
 	// 메시
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")

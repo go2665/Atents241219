@@ -27,7 +27,8 @@ ADropItemBase::ADropItemBase()
 	ItemMesh->SetCollisionProfileName(TEXT("NoCollision"));
 	
 	HighlightEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("HighlightEffect"));
-	HighlightEffect->SetupAttachment(CollisionSphere);
+	HighlightEffect->SetupAttachment(ItemMesh);
+	HighlightEffect->SetAutoActivate(false);
 }
 
 // Called when the game starts or when spawned
@@ -37,10 +38,21 @@ void ADropItemBase::BeginPlay()
 	
 	if (ItemDataAsset)
 	{
-		ItemMesh->SetStaticMesh(ItemDataAsset->ItemMesh);	// 데이터 에셋에서 메시 가져오기
+		ItemMesh->SetStaticMesh(ItemDataAsset->ItemMesh);			// 데이터 에셋에서 메시 가져오기
+
+		if (ItemDataAsset->ItemMaterial)
+		{
+			ItemMesh->SetMaterial(0, ItemDataAsset->ItemMaterial);	// 데이터 에셋에서 머티리얼 가져오기
+		}
+	}
+	if (HighlightEffect)
+	{
+		HighlightEffect->Activate();	// 강조 이펙트 활성화
 	}
 
 	OnActorHit.AddDynamic(this, &ADropItemBase::OnDropItemHit);
+
+	OnActorBeginOverlap.AddDynamic(this, &ADropItemBase::OnDropItemOverlap);
 }
 
 // Called every frame
@@ -64,6 +76,17 @@ void ADropItemBase::OnDropItemHit(AActor* SelfActor, AActor* OtherActor, FVector
 	{
 		CollisionSphere->SetSimulatePhysics(false);	// 물리 시뮬레이션 중지
 		bStartRotate = true;						// 회전 시작	
+	}
+}
+
+void ADropItemBase::OnDropItemOverlap(AActor* OverlappedActor, AActor* OtherActor)
+{
+	if (OtherActor->ActorHasTag(TEXT("Player")))	// 플레이어와 충돌하면
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Player Overlap"));
+
+		// 아이템 획득 처리
+		Destroy();	// 아이템 제거
 	}
 }
 
