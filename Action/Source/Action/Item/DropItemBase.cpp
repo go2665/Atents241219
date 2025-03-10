@@ -17,6 +17,8 @@ ADropItemBase::ADropItemBase()
 	SetRootComponent(CollisionSphere);
 	CollisionSphere->SetCollisionProfileName(TEXT("DropItemProfile"));
 	CollisionSphere->SetSimulatePhysics(true);				// 물리 시뮬레이션 시작
+	CollisionSphere->SetNotifyRigidBodyCollision(true);		// 충돌 이벤트 발생	
+
 	CollisionSphere->BodyInstance.bLockXRotation = true;	// 회전 제한
 	CollisionSphere->BodyInstance.bLockYRotation = true;
 	CollisionSphere->BodyInstance.bLockZRotation = true;
@@ -68,6 +70,8 @@ void ADropItemBase::Tick(float DeltaTime)
 		//(0.5f * (FMath::Cos(ElapsedTime) - 1)) * 150.0f;
 		ItemMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 150.0f * (0.5f * (1 - FMath::Cos(ElapsedTime)))));
 	}	
+
+	//GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Red, FString::Printf(TEXT("ADropItemBase::Tick - %s"), *ItemDataAsset->ItemName.ToString()));
 }
 
 void ADropItemBase::OnDropItemHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
