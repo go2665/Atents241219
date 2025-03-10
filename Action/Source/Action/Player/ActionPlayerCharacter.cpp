@@ -96,12 +96,32 @@ void AActionPlayerCharacter::SetCurrentWeapon(EWeaponType WeaponType)
 	CurrentWeapon->WeaponActivate(true);		// 새로운 무기 활성화	
 }
 
+void AActionPlayerCharacter::RestoreHealth(float Health, float Duration)
+{
+	UWorld* World = GetWorld();
+	FTimerManager& TimerManager = World->GetTimerManager();
+
+	if (Duration <= 0.0f)	// 즉시 회복
+	{
+		CurrentHealth += Health;
+	}
+	else	// 지속 회복
+	{
+		FTimerHandle RestoreHealthTimer;
+		FTimerDelegate TimerDelegate = FTimerDelegate::CreateUObject(this, &AActionPlayerCharacter::RestoreHealth, Health, 0.0f);
+		TimerManager.SetTimer(RestoreHealthTimer, TimerDelegate, Duration, false);
+	}
+	
+}
+
 // Called when the game starts or when spawned
 void AActionPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
 	AnimInstance = GetMesh()->GetAnimInstance();	// 애님 인스턴스 캐싱
+
+	CurrentHealth = MaxHealth;	// 체력 초기화
 }
 
 void AActionPlayerCharacter::PlayHighPriorityMontage(UAnimMontage* Montage, FName StartSectionName)

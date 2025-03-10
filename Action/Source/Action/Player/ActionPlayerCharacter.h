@@ -40,6 +40,23 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Player Weapon")
 	void SetCurrentWeapon(EWeaponType WeaponType);
 
+	// 플레이어의 체력을 회복시키는 함수(전체 회복량, 회복 시간(회복시간이 0보다 작으면 즉시 회복)
+	void RestoreHealth(float Health, float Duration = -1.0f);
+
+	// Getter
+
+	// 범위 공격용 데미지
+	inline float GetAreaDamage() const { return CurrentWeapon != nullptr ? CurrentWeapon->GetDamage() * 2.0f : 1.0f; };
+	
+	// 최대 체력
+	inline float GetMaxHealth() const { return MaxHealth; };
+
+	// 현재 체력
+	inline float GetCurrentHealth() const { return CurrentHealth; };
+
+
+	// Setter
+	
 	// 달리기 모드로 설정
 	UFUNCTION(BlueprintCallable, Category = "Player Movement")
 	inline void SetSprintMode() { GetCharacterMovement()->MaxWalkSpeed = SprintSpeed; };
@@ -47,9 +64,6 @@ public:
 	// 걷기 모드로 설정
 	UFUNCTION(BlueprintCallable, Category = "Player Movement")
 	inline void SetWalkMode() { GetCharacterMovement()->MaxWalkSpeed = WalkSpeed; };	
-
-	// 범위 공격용 데미지
-	inline float GetAreaDamage() const { return CurrentWeapon != nullptr ? CurrentWeapon->GetDamage() * 2.0f : 1.0f; }
 
 protected:
 	void PlayHighPriorityMontage(UAnimMontage* Montage, FName StartSectionName = NAME_None);
@@ -67,29 +81,35 @@ protected:
 	virtual void BeginPlay() override;
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player Camera")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Camera")
 	class USpringArmComponent* SpringArm = nullptr;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player Camera")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Camera")
 	class UCameraComponent* PlayerCamera = nullptr;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player Weapon")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Weapon")
 	class UWeaponManagerComponent* WeaponManager = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player Movement")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Movement")
 	float WalkSpeed = 600.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player Movement")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Movement")
 	float SprintSpeed = 1250.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player Movement")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Movement")
 	UAnimMontage* RollMontage = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player Attack")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Attack")
 	UAnimMontage* AttackMontage = nullptr;
 
 	UPROPERTY()
 	class AWeaponActor* CurrentWeapon = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player|Health")
+	float MaxHealth = 100.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Health")
+	float CurrentHealth = 100.0f;
 
 private:
 	// 콤보용 노티파이
@@ -104,5 +124,7 @@ private:
 
 	// 콤보가 가능한 상황인지 확인하기 위한 플래그(true면 가능, false면 불가능)
 	bool bIsComboReady = false;
+
+
 
 };
