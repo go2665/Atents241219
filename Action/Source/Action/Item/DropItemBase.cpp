@@ -31,6 +31,8 @@ ADropItemBase::ADropItemBase()
 	HighlightEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("HighlightEffect"));
 	HighlightEffect->SetupAttachment(ItemMesh);
 	HighlightEffect->SetAutoActivate(false);
+
+	SetLifeSpan(LifeSpan);
 }
 
 void ADropItemBase::InitializeItemDataAsset(UItemDataAsset* InItemDataAsset)
@@ -56,6 +58,11 @@ void ADropItemBase::InitializeItemDataAsset(UItemDataAsset* InItemDataAsset)
 			HighlightEffect->Activate();	// 강조 이펙트 활성화
 		}
 	}	
+}
+
+void ADropItemBase::SetVelocity(const FVector& InVelocity)
+{
+	CollisionSphere->AddImpulse(InVelocity, NAME_None, true);	// 특정 방향으로 물리 힘을 가함
 }
 
 // Called when the game starts or when spawned
@@ -91,6 +98,7 @@ void ADropItemBase::OnDropItemHit(AActor* SelfActor, AActor* OtherActor, FVector
 {
 	if (!OtherActor->ActorHasTag(TEXT("Item")))	// 아이템을 제외하고 충돌이 발생하면 바닥에 닿은 것으로 간주
 	{
+		//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Hit"));
 		CollisionSphere->SetSimulatePhysics(false);	// 물리 시뮬레이션 중지
 		bStartRotate = true;						// 회전 시작	
 	}

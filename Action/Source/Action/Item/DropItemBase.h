@@ -16,6 +16,7 @@ public:
 	ADropItemBase();
 
 	void InitializeItemDataAsset(class UItemDataAsset* InItemDataAsset);
+	void SetVelocity(const FVector& InVelocity);
 
 protected:
 	// Called when the game starts or when spawned
@@ -49,6 +50,9 @@ protected:
 	// 아이템 데이터 에셋
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Data")
 	class UItemDataAsset* ItemDataAsset = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Data")
+	float LifeSpan = 5.0f;
 
 private:
 	// 바닥에 떨어졌을 때 움직임 처리용 변수

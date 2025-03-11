@@ -2,10 +2,9 @@
 
 
 #include "ActionGameMode.h"
-#include "../Item/DropItemFactoryComponent.h"
 
 AActionGameMode::AActionGameMode()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 	DropItemFactory = CreateDefaultSubobject<UDropItemFactoryComponent>(TEXT("DropItemFactoryComponent"));
 }

@@ -28,7 +28,7 @@ public:
 protected:
 	virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	virtual void Die();
-
+	void DropItems();
 
 public:
 	FOnDie OnDie;
@@ -39,6 +39,14 @@ protected:
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Enemy")
 	float CurrentHealth = 10.0f;
+
+	// 드랍 아이템 데이터 테이블
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Drop Item")
+	class UDataTable* DropItemDataTable = nullptr;
+
+	// 아이템을 얼마나 멀리 던질지 결정하는 변수
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Drop Item")
+	float ItemLaunchPower = 500.0f;
 
 private:
 	bool bIsAlive = true;
