@@ -32,7 +32,7 @@ ADropItemBase::ADropItemBase()
 	HighlightEffect->SetupAttachment(ItemMesh);
 	HighlightEffect->SetAutoActivate(false);
 
-	SetLifeSpan(LifeSpan);
+	SetLifeSpan(LifeSpan);	// 일정 시간이 지나면 제거
 }
 
 void ADropItemBase::InitializeItemDataAsset(UItemDataAsset* InItemDataAsset)

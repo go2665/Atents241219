@@ -47,10 +47,10 @@ void AEnemyBase::Die()
 
 void AEnemyBase::DropItems()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("DropItems"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("DropItems"));
 	if (DropItemDataTable)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Table Check OK"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Table Check OK"));
 
 		UWorld* World = GetWorld();
 		AActionGameMode* GameMode = Cast<AActionGameMode>(World->GetAuthGameMode());
@@ -89,10 +89,10 @@ void AEnemyBase::DropItems()
 	
 		TMap<FName, uint8*> RowMap = DropItemDataTable->GetRowMap();
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, 
-			FString::Printf(TEXT("Table map Size : %d"), RowMap.Num()));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, 
+		//	FString::Printf(TEXT("Table map Size : %d"), RowMap.Num()));
 		
-
+		//  - 데이터 테이블을 이용해서 아이템 드랍 확률 기록하고 드랍할 때 사용하기
 		for (auto& Elem : RowMap)
 		{
 			FDropItemDataTableRow* Row = (FDropItemDataTableRow*)Elem.Value;
@@ -108,9 +108,5 @@ void AEnemyBase::DropItems()
 				}
 			}
 		}
-		//  - 데이터 테이블을 이용해서 아이템 드랍 확률 기록하고 드랍할 때 사용하기
-		//		- 데이터 테이블을 만드려면 FTableRowBase를 상속받은 구조체 필요
-		//  - 아이템은 5초 후 사라짐(DropItemBase 클래스 수정)
-
 	}
 }

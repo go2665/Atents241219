@@ -5,6 +5,6 @@
 
 void ADummyEnemy_DropItem::TestDropItem()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("ADummyEnemy_DropItem::TestDropItem"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("ADummyEnemy_DropItem::TestDropItem"));
 	DropItems();
 }
