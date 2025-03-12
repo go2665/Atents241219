@@ -12,9 +12,16 @@ class ACTION_API InvenSlotBase
 public:
 	virtual ~InvenSlotBase() = default;
 
+	// 아이템 개수 증가
+	inline void IncreaseItemCount() { ++ItemCount; }
+
+	// 아이템 개수 감소
+	inline void DecreaseItemCount() { --ItemCount; }
+
 	// getter
 	inline int8 GetSlotIndex() const { return SlotIndex; }
 	inline class UItemDataAsset* GetItemDataAsset() const { return ItemDataAsset; }
+	inline int32 GetItemCount() const { return ItemCount; }
 
 	// setter
 	inline void SetSlotIndex(int8 InSlotIndex) { SlotIndex = InSlotIndex; }

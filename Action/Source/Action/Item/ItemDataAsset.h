@@ -17,6 +17,9 @@ class ACTION_API UItemDataAsset : public UDataAsset
 public:
 	UItemDataAsset();
 
+	// 스택 가능한 아이템인지 확인(가능하면 true, 아니면 false)
+	inline bool IsStackable() const { return ItemStackCount > 1; }
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	FText ItemName;
 
@@ -35,6 +38,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (ClampMin = "0"))
 	int32 ItemPrice = 0;
 
+	// 인벤토리 한칸에 들어갈 수 있는 최대 아이템 개수
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (ClampMin = "1"))
 	int32 ItemStackCount = 1;
 };
