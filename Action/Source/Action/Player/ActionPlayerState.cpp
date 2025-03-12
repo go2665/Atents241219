@@ -3,8 +3,13 @@
 
 #include "ActionPlayerState.h"
 
+AActionPlayerState::AActionPlayerState()
+{
+	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
+}
+
 void AActionPlayerState::BeginPlay()
 {
 	Super::BeginPlay();
-	OnGoldChange.AddDynamic(this, &AActionPlayerState::TestGoldChange);
+	
 }

@@ -82,7 +82,7 @@ void ADropItemBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (bStartRotate)	// 바닥에 떨어졌을 때 회전하며 움직이기 시작
+	if (bIsActivated)	// 바닥에 떨어졌을 때 회전하며 움직이기 시작
 	{
 		ItemMesh->AddRelativeRotation(FRotator(0.0f, 360.0f * DeltaTime, 0.0f));
 
@@ -100,13 +100,13 @@ void ADropItemBase::OnDropItemHit(AActor* SelfActor, AActor* OtherActor, FVector
 	{
 		//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Hit"));
 		CollisionSphere->SetSimulatePhysics(false);	// 물리 시뮬레이션 중지
-		bStartRotate = true;						// 회전 시작	
+		bIsActivated = true;						// 회전 시작	
 	}
 }
 
 void ADropItemBase::OnDropItemOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
-	if (OtherActor->ActorHasTag(TEXT("Player")))	// 플레이어와 오버랩되면
+	if (bIsActivated && OtherActor->ActorHasTag(TEXT("Player")))	// 활성화 되어 있고 플레이어와 오버랩되면
 	{
 		//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Player Overlap"));
 

@@ -58,8 +58,8 @@ private:
 	// 바닥에 떨어졌을 때 움직임 처리용 변수
 	float ElapsedTime = 0.0f;
 
-	// 회전 시작 여부(바닥에 떨어지면 시작)
-	bool bStartRotate = false;
+	// 활성화 여부(바닥에 떨어지면 활성화하고 습득 및 회전 시작)
+	bool bIsActivated = false;
 
 	// 초기화 여부
 	bool bInitialized = false;
