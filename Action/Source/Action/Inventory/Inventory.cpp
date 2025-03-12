@@ -3,12 +3,35 @@
 
 #include "Inventory.h"
 #include "../Item/ItemData/ItemDataAsset.h"
+#include "../Item/Interface/UsableItem.h"
+#include "../Player/ActionPlayerCharacter.h"
 
-void Inventory::Initialize()
+void Inventory::Initialize(AActionPlayerCharacter* InOwner)
 {
+	// 반드시 BeginPlay에서 호출되어야 함
+
 	for (int i = 0; i < MaxSlotCount; ++i)
 	{
 		InvenSlots[i].SetSlotIndex(i);	// 순서대로 슬롯 인덱스 설정
+	}
+
+	Owner = InOwner;
+}
+
+void Inventory::UseItem(int8 InSlotIndex)
+{
+	if (IsValidIndex(InSlotIndex))
+	{
+		InvenSlotBase* Slot = GetInvenSlot(InSlotIndex);
+		if (!Slot->IsEmpty())
+		{
+			UItemDataAsset* Data = Slot->GetItemDataAsset();
+			IUsableItem* UsableItem = Cast<IUsableItem>(Data);
+			if (UsableItem)
+			{
+				UsableItem->UseItem(Owner);
+			}
+		}
 	}
 }
 

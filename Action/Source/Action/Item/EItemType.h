@@ -12,4 +12,8 @@ enum class EItemType : uint8
 	Club,
 	Sword,
 	Gem,
+	HealPotionSmall,
+	HealPotionLarge,
+	Apple,
+	Banana,
 };

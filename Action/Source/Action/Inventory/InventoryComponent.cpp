@@ -19,7 +19,10 @@ void UInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Inven.Initialize();	// 인벤토리 초기화
+	UWorld* World = GetWorld();
+	APlayerController* PlayerController = World->GetFirstPlayerController();
+	AActionPlayerCharacter* Player = Cast<AActionPlayerCharacter>(PlayerController->GetPawn());
+	Inven.Initialize(Player);	// 인벤토리 초기화
 
 	OnGoldChange.AddDynamic(this, &UInventoryComponent::TestGoldChange);	// 골드 변화 델리게이트에 함수 추가
 }
