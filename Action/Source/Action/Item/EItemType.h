@@ -11,4 +11,5 @@ enum class EItemType : uint8
 	Axe,
 	Club,
 	Sword,
+	Gem,
 };

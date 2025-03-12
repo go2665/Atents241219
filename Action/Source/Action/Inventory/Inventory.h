@@ -20,8 +20,7 @@ public:
 private:
 	InvenSlotBase* GetEmptySlot();
 
-	static const int8 TestMaxSlotCount = 4;
-	static const int8 MaxSlotCount = 10;
-	InvenSlotBase InvenSlots[TestMaxSlotCount];
+	static const int8 MaxSlotCount = 4;
+	InvenSlotBase InvenSlots[MaxSlotCount];
 
 };

@@ -27,6 +27,10 @@ bool Inventory::AddItem(UItemDataAsset* InItemDataAsset)
 
 	//return EmptySlot != nullptr;	// 빈슬롯이 있었으면 true, 없었으면 false 반환
 	return bIsSuccess;
+
+	// 스택 가능한 아이템인지 확인
+	//	- 스택 가능하면 같은 아이템이 있는지 확인하고 해당 슬롯에 추가
+	//		- 넘치면 다음 빈 슬롯에 추가
 }
 
 InvenSlotBase* Inventory::GetEmptySlot()
