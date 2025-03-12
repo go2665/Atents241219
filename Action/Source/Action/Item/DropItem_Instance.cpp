@@ -4,8 +4,11 @@
 #include "DropItem_Instance.h"
 #include "ItemDataAsset.h"
 
-//void ADropItem_Instance::OnGetItem()
+
+//void ADropItem_Instance::OnGetItem(AActor* InTarget)
 //{
-//	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, 
-//		FString::Printf(TEXT("ADropItem_Instance::OnGetItem - %s"), *ItemDataAsset->ItemName.ToString()));
+////	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, 
+////	FString::Printf(TEXT("ADropItem_Instance::OnGetItem - %s"), *ItemDataAsset->ItemName.ToString()));
+//
+//	Destroy();
 //}

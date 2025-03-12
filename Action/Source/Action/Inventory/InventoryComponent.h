@@ -18,7 +18,7 @@ public:
 	// Sets default values for this component's properties
 	UInventoryComponent();
 
-	void AddItemToInventory(class UItemDataAsset* InItemDataAsset);
+	bool AddItemToInventory(class UItemDataAsset* InItemDataAsset);
 
 	inline int32 GetGold() const { return Gold; }
 	inline void AddGold(int32 Amount) { SetGold(Gold + Amount); }

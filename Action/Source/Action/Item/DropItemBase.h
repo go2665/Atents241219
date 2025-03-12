@@ -48,7 +48,7 @@ protected:
 	class UNiagaraComponent* HighlightEffect = nullptr;
 	
 	// 아이템 데이터 에셋
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Data")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Data")
 	class UItemDataAsset* ItemDataAsset = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Data")

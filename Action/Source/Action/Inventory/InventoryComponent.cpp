@@ -9,9 +9,9 @@ UInventoryComponent::UInventoryComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-void UInventoryComponent::AddItemToInventory(UItemDataAsset* InItemDataAsset)
+bool UInventoryComponent::AddItemToInventory(UItemDataAsset* InItemDataAsset)
 {
-	Inven.AddItem(InItemDataAsset);
+	return Inven.AddItem(InItemDataAsset);
 }
 
 // Called when the game starts

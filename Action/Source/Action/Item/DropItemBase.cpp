@@ -110,9 +110,7 @@ void ADropItemBase::OnDropItemOverlap(AActor* OverlappedActor, AActor* OtherActo
 		//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Player Overlap"));
 
 		// 아이템 획득 처리
-		OnGetItem(OtherActor);	// 즉시 사용되는 아이템(ADropItem_Instance) or 인벤토리에 추가되는 아이템(ADropItem_Pickup)
-
-		Destroy();	// 아이템 제거
+		OnGetItem(OtherActor);	// 즉시 사용되는 아이템(ADropItem_Instance) or 인벤토리에 추가되는 아이템(ADropItem_Pickup)		
 	}
 }
 

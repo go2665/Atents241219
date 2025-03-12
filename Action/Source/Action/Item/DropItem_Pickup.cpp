@@ -19,7 +19,10 @@ void ADropItem_Pickup::OnGetItem(AActor* InTarget)
 			AActionPlayerState* PlayerState = PlayerController->GetPlayerState<AActionPlayerState>();
 			if (PlayerState)
 			{
-				PlayerState->AddItemToInventory(ItemDataAsset);
+				if (PlayerState->AddItemToInventory(ItemDataAsset))	// 인벤토리에 추가 성공하면
+				{
+					Destroy();	// 아이템 제거
+				}
 			}
 		}
 	}

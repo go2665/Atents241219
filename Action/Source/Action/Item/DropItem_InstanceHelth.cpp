@@ -12,5 +12,7 @@ void ADropItem_InstanceHelth::OnGetItem(AActor* InTarget)
 	if (Player && HealData)	// 아이템 사용 대상이 플레이어고 이 아이템의 데이터가 회복 아이템이라면
 	{
 		Player->RestoreHealth(HealData->HealAmount, HealData->HealDuration);	// 플레이어의 체력 회복 처리
+
+		Destroy();
 	}
 }
