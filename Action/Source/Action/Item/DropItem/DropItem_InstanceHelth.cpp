@@ -2,8 +2,8 @@
 
 
 #include "DropItem_InstanceHelth.h"
-#include "../Player/ActionPlayerCharacter.h"
-#include "ItemDataAsset_Heal.h"
+#include "../../Player/ActionPlayerCharacter.h"
+#include "../ItemData/ItemDataAsset_Heal.h"
 
 void ADropItem_InstanceHelth::OnGetItem(AActor* InTarget)
 {

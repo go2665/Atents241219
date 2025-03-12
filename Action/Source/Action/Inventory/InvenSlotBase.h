@@ -25,7 +25,10 @@ public:
 
 	// setter
 	inline void SetSlotIndex(int8 InSlotIndex) { SlotIndex = InSlotIndex; }
-	inline void SetItemDataAsset(class UItemDataAsset* InItemDataAsset) { ItemDataAsset = InItemDataAsset; }
+	inline void SetItemDataAsset(class UItemDataAsset* InItemDataAsset, int32 Count = 1) { 
+		ItemDataAsset = InItemDataAsset; 
+		ItemCount = Count;
+	}
 
 	// check
 	inline bool IsEmpty() const { return ItemDataAsset == nullptr; }

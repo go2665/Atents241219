@@ -3,7 +3,7 @@
 
 #include "EnemyBase.h"
 #include "../Framework/ActionGameMode.h"
-#include "../Item/DropItemBase.h"
+#include "../Item/DropItem/DropItemBase.h"
 #include "../Item/FDropItemDataTableRow.h"
 
 // Sets default values

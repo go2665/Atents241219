@@ -2,7 +2,7 @@
 
 
 #include "DropItem_InstanceGold.h"
-#include "Action/Item/ItemDataAsset.h"
+#include "Action/Item/ItemData/ItemDataAsset.h"
 #include "Action/Player/ActionPlayerState.h"
 #include "Action/Player/ActionPlayerCharacter.h"
 

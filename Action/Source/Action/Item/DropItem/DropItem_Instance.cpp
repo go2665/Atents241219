@@ -2,7 +2,7 @@
 
 
 #include "DropItem_Instance.h"
-#include "ItemDataAsset.h"
+#include "../ItemData/ItemDataAsset.h"
 
 
 //void ADropItem_Instance::OnGetItem(AActor* InTarget)

@@ -2,8 +2,8 @@
 
 
 #include "DropItem_Pickup.h"
-#include "ItemDataAsset.h"
-#include "../Player/ActionPlayerState.h"
+#include "../ItemData/ItemDataAsset.h"
+#include "../../Player/ActionPlayerState.h"
 
 void ADropItem_Pickup::OnGetItem(AActor* InTarget)
 {

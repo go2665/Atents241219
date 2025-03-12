@@ -2,7 +2,7 @@
 
 
 #include "TestItemSpawnActor.h"
-#include "../Item/DropItem_InstanceGold.h"
+#include "../Item/DropItem/DropItem_InstanceGold.h"
 
 // Sets default values
 ATestItemSpawnActor::ATestItemSpawnActor()

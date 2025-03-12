@@ -5,7 +5,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "NiagaraComponent.h"
-#include "../Item/ItemDataAsset.h"
+#include "../ItemData/ItemDataAsset.h"
 
 // Sets default values
 ADropItemBase::ADropItemBase()

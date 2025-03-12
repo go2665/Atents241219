@@ -2,8 +2,8 @@
 
 
 #include "DropItemFactoryComponent.h"
-#include "DropItemBase.h"
-#include "ItemDataAsset.h"
+#include "./DropItem/DropItemBase.h"
+#include "./ItemData/ItemDataAsset.h"
 
 
 // Sets default values for this component's properties

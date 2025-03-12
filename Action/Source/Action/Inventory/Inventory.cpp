@@ -2,7 +2,7 @@
 
 
 #include "Inventory.h"
-#include "../Item/ItemDataAsset.h"
+#include "../Item/ItemData/ItemDataAsset.h"
 
 void Inventory::Initialize()
 {
