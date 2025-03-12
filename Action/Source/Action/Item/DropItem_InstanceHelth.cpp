@@ -5,9 +5,9 @@
 #include "../Player/ActionPlayerCharacter.h"
 #include "ItemDataAsset_Heal.h"
 
-void ADropItem_InstanceHelth::OnGetItem(AActor* Target)
+void ADropItem_InstanceHelth::OnGetItem(AActor* InTarget)
 {
-	AActionPlayerCharacter* Player = Cast<AActionPlayerCharacter>(Target);
+	AActionPlayerCharacter* Player = Cast<AActionPlayerCharacter>(InTarget);
 	UItemDataAsset_Heal* HealData = Cast<UItemDataAsset_Heal>(ItemDataAsset);
 	if (Player && HealData)	// 아이템 사용 대상이 플레이어고 이 아이템의 데이터가 회복 아이템이라면
 	{

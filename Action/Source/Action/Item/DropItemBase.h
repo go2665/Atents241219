@@ -21,7 +21,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	virtual void OnGetItem(AActor* Target) {};
+	virtual void OnGetItem(AActor* InTarget) {};
 
 public:	
 	// Called every frame

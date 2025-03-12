@@ -43,10 +43,7 @@ ADropItemBase* UDropItemFactoryComponent::GetDropItem(EItemType InItemType, FVec
 // Called when the game starts
 void UDropItemFactoryComponent::BeginPlay()
 {
-	Super::BeginPlay();
-
-	// ...
-	
+	Super::BeginPlay();	
 }
 
 

@@ -7,5 +7,8 @@ enum class EItemType : uint8
 {
 	HealOrb	= 0,
 	DealOrb,
-	GoldCoin	
+	GoldCoin,
+	Axe,
+	Club,
+	Sword,
 };

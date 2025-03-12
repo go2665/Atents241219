@@ -15,5 +15,5 @@ class ACTION_API ADropItem_InstanceHelth : public ADropItem_Instance
 	GENERATED_BODY()
 	
 protected:
-	virtual void OnGetItem(AActor* Target) override;
+	virtual void OnGetItem(AActor* InTarget) override;
 };

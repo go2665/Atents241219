@@ -11,10 +11,16 @@
 class ACTION_API Inventory
 {
 public:
+	void Initialize();
+
 	void AddItem(class UItemDataAsset* InItemDataAsset);
 
 	inline InvenSlotBase* GetInvenSlot(int8 InSlotIndex) { return &InvenSlots[InSlotIndex]; }
 	
 private:
-	InvenSlotBase InvenSlots[10];
+	InvenSlotBase* GetEmptySlot();
+
+	static const int8 MaxSlotCount = 10;
+	InvenSlotBase InvenSlots[MaxSlotCount];
+
 };

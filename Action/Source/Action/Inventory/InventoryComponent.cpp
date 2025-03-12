@@ -19,6 +19,7 @@ void UInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	OnGoldChange.AddDynamic(this, &UInventoryComponent::TestGoldChange);
-	
+	Inven.Initialize();
+
+	OnGoldChange.AddDynamic(this, &UInventoryComponent::TestGoldChange);	
 }

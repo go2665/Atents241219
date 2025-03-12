@@ -31,8 +31,6 @@ ADropItemBase::ADropItemBase()
 	HighlightEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("HighlightEffect"));
 	HighlightEffect->SetupAttachment(ItemMesh);
 	HighlightEffect->SetAutoActivate(false);
-
-	SetLifeSpan(LifeSpan);	// 일정 시간이 지나면 제거
 }
 
 void ADropItemBase::InitializeItemDataAsset(UItemDataAsset* InItemDataAsset)
@@ -71,6 +69,7 @@ void ADropItemBase::BeginPlay()
 	Super::BeginPlay();
 	
 	InitializeItemDataAsset(ItemDataAsset);
+	SetLifeSpan(LifeSpan);	// 일정 시간이 지나면 제거
 
 	OnActorHit.AddDynamic(this, &ADropItemBase::OnDropItemHit);
 

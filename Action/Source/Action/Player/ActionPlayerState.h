@@ -24,7 +24,8 @@ protected:
 public:
 	inline int32 GetGold() const { return InventoryComponent ? InventoryComponent->GetGold() : 0; }
 	inline void AddGold(int32 Amount) { if (InventoryComponent) InventoryComponent->AddGold(Amount); }
-
+	inline void AddItemToInventory(class UItemDataAsset* InItemDataAsset) { 
+		if (InventoryComponent) InventoryComponent->AddItemToInventory(InItemDataAsset); }
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")

@@ -5,7 +5,7 @@
 #include "Action/Item/ItemDataAsset.h"
 #include "Action/Player/ActionPlayerState.h"
 
-void ADropItem_InstanceGold::OnGetItem(AActor* Target)
+void ADropItem_InstanceGold::OnGetItem(AActor* InTarget)
 {
 	// 플레이어 스테이트 가져오기
 	UWorld* World = GetWorld();

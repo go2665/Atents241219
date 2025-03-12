@@ -11,5 +11,4 @@ AActionPlayerState::AActionPlayerState()
 void AActionPlayerState::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }

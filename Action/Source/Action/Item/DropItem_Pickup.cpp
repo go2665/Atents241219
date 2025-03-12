@@ -3,9 +3,24 @@
 
 #include "DropItem_Pickup.h"
 #include "ItemDataAsset.h"
+#include "../Player/ActionPlayerState.h"
 
-void ADropItem_Pickup::OnGetItem(AActor* Target)
+void ADropItem_Pickup::OnGetItem(AActor* InTarget)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue,
-		FString::Printf(TEXT("ADropItem_Pickup::OnGetItem - %s"), *ItemDataAsset->ItemName.ToString()));
+	//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue,
+	//	FString::Printf(TEXT("ADropItem_Pickup::OnGetItem - %s"), *ItemDataAsset->ItemName.ToString()));
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		APlayerController* PlayerController = World->GetFirstPlayerController();
+		if (PlayerController)
+		{
+			AActionPlayerState* PlayerState = PlayerController->GetPlayerState<AActionPlayerState>();
+			if (PlayerState)
+			{
+				PlayerState->AddItemToInventory(ItemDataAsset);
+			}
+		}
+	}
 }
