@@ -117,7 +117,7 @@ void AActionPlayerCharacter::RestoreHealthPerTick(float InHeal, float InInterval
 	RestoreTickDatas.Add(FRestoreTickData(InCount));
 	FRestoreTickData& ArrayRef = RestoreTickDatas.Last();
 
-	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Cyan, FString::Printf(TEXT("Tick Data Count : %d"), RestoreTickDatas.Num()));
+	//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Cyan, FString::Printf(TEXT("Tick Data Count : %d"), RestoreTickDatas.Num()));
 
 	FTimerDelegate TimerDelegate = FTimerDelegate::CreateLambda(
 		[this, InHeal, &ArrayRef]()
@@ -128,14 +128,14 @@ void AActionPlayerCharacter::RestoreHealthPerTick(float InHeal, float InInterval
 			if (ArrayRef.Count <= 0)		// 횟수가 0이하면
 			{
 				//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Cyan, TEXT("Remove"));
-				GetWorldTimerManager().ClearTimer(ArrayRef.TimerHandle);	// 타이머 해제
 
+				FTimerHandle Handle = ArrayRef.TimerHandle;
 				int32 Index = RestoreTickDatas.IndexOfByKey(ArrayRef);		// 인덱스 찾기
 				if (Index != INDEX_NONE)									// 인덱스가 유효하면
-					RestoreTickDatas.RemoveAt(Index);						// FRestoreTickData 삭제				
-
-				//RestoreTickDatas.Remove(ArrayRef);	// FRestoreTickData 삭제
-				GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Cyan, FString::Printf(TEXT("Tick Data Count : %d"), RestoreTickDatas.Num()));
+					RestoreTickDatas.RemoveAt(Index);						// FRestoreTickData 삭제
+				
+				GetWorldTimerManager().ClearTimer(Handle);					// 타이머 해제
+				//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Cyan, FString::Printf(TEXT("Tick Data Count : %d"), RestoreTickDatas.Num()));
 			}
 		}
 	);
