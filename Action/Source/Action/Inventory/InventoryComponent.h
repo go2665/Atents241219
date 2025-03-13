@@ -24,6 +24,7 @@ public:
 
 	// 아이템을 인벤토리에 추가
 	bool AddItemToInventory(class UItemDataAsset* InItemDataAsset);
+	void UseItemFromInventory(int8 InSlotIndex);
 
 	// 인벤토리에 들어있는 골드 양 확인
 	inline int32 GetGold() const { return Gold; }
@@ -34,9 +35,18 @@ public:
 	// 골드 변환를 알리는 델리게이트
 	FOnPlayerGoldChange OnGoldChange;
 
+
+	UFUNCTION(BlueprintCallable)
+	inline void TestUseItem(int32 InSlotIndex)
+	{
+		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, FString::Printf(TEXT("Use item in slot %d"), InSlotIndex));
+		UseItemFromInventory(InSlotIndex);
+	}
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+
 
 private:
 	// 골드에 변화가 있을 때 데이터 변화와 델리게이트 발동을 한번에 처리하기 위한 세터

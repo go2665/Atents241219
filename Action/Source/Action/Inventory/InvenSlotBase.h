@@ -16,7 +16,13 @@ public:
 	inline void IncreaseItemCount() { ++ItemCount; }
 
 	// 아이템 개수 감소
-	inline void DecreaseItemCount() { --ItemCount; }
+	inline void DecreaseItemCount() { 
+		--ItemCount; 
+		if (ItemCount <= 0)
+		{
+			ClearSlot();
+		}
+	}
 
 	// getter
 	inline int8 GetSlotIndex() const { return SlotIndex; }
@@ -32,6 +38,9 @@ public:
 
 	// check
 	inline bool IsEmpty() const { return ItemDataAsset == nullptr; }
+
+protected:
+	void ClearSlot() { ItemDataAsset = nullptr; ItemCount = 0; }
 
 protected:
 	// 슬롯의 인덱스

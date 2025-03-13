@@ -96,15 +96,19 @@ void AEnemyBase::DropItems()
 		for (auto& Elem : RowMap)
 		{
 			FDropItemDataTableRow* Row = (FDropItemDataTableRow*)Elem.Value;
-			if (FMath::FRand() < Row->Chance)
+
+			for (int i = 0; i < Row->Count; ++i)	// Count만큼 아이템 생성
 			{
-				ADropItemBase* Item = GameMode->GetDropItem(Row->ItemType, DropLocation);
-				if (Item)
+				if (FMath::FRand() < Row->Chance)	// 확률로 아이템 생성
 				{
-					LaunchVelocity = LaunchVelocity.RotateAngleAxis(FMath::RandRange(-15.0f, 15.0f), FVector::RightVector);
-					LaunchVelocity = LaunchVelocity.RotateAngleAxis(FMath::RandRange(0.0f, 360.0f), FVector::UpVector);
-					DrawDebugLine(World, DropLocation, DropLocation + LaunchVelocity, FColor::Green, false, 3.0f);
-					Item->SetVelocity(LaunchVelocity);
+					ADropItemBase* Item = GameMode->GetDropItem(Row->ItemType, DropLocation);
+					if (Item)
+					{
+						LaunchVelocity = LaunchVelocity.RotateAngleAxis(FMath::RandRange(-15.0f, 15.0f), FVector::RightVector);
+						LaunchVelocity = LaunchVelocity.RotateAngleAxis(FMath::RandRange(0.0f, 360.0f), FVector::UpVector);
+						DrawDebugLine(World, DropLocation, DropLocation + LaunchVelocity, FColor::Green, false, 3.0f);
+						Item->SetVelocity(LaunchVelocity);
+					}
 				}
 			}
 		}

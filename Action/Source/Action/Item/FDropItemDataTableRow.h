@@ -15,4 +15,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Chance = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Count = 1;
 };

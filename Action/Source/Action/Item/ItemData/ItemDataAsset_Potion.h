@@ -8,7 +8,7 @@
 #include "ItemDataAsset_Potion.generated.h"
 
 /**
- * 
+ * 사용자의 체력을 퍼센트 단위로 즉시 회복시키는 아이템
  */
 UCLASS()
 class ACTION_API UItemDataAsset_Potion : public UItemDataAsset, public IUsableItem

@@ -29,7 +29,10 @@ void Inventory::UseItem(int8 InSlotIndex)
 			IUsableItem* UsableItem = Cast<IUsableItem>(Data);
 			if (UsableItem)
 			{
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan,
+				//	FString::Printf(TEXT("Use Item(%d) : %s"), InSlotIndex, *Data->ItemName.ToString()));
 				UsableItem->UseItem(Owner);
+				Slot->DecreaseItemCount();
 			}
 		}
 	}

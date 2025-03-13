@@ -12,5 +12,4 @@ void UItemDataAsset_Potion::UseItem(AActor* Target)
 	{
 		Player->RestoreHealth(Player->GetMaxHealth() * HealAmount);
 	}
-
 }
