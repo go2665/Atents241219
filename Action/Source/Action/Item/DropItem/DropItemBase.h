@@ -19,13 +19,15 @@ public:
 	void SetVelocity(const FVector& InVelocity);
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 	virtual void OnGetItem(AActor* InTarget) {};
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
 private:
 	UFUNCTION()
@@ -52,7 +54,7 @@ protected:
 	class UItemDataAsset* ItemDataAsset = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Item Data")
-	float LifeSpan = 5.0f;
+	float LifeSpan = 10.0f;
 
 private:
 	// 바닥에 떨어졌을 때 움직임 처리용 변수
