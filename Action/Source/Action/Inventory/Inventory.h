@@ -22,6 +22,9 @@ public:
 
 	// 인벤토리의 특정 슬롯 반환
 	inline InvenSlotBase* GetInvenSlot(int8 InSlotIndex) { return &InvenSlots[InSlotIndex]; }
+
+	// 테스트용 함수
+	void TestPrintInventory();
 	
 private:
 	// 비어있는 슬롯 반환

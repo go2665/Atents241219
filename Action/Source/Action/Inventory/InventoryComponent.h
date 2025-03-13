@@ -43,6 +43,9 @@ public:
 		UseItemFromInventory(InSlotIndex);
 	}
 
+	UFUNCTION(BlueprintCallable)
+	inline void TestPrintInventory(){ Inven.TestPrintInventory(); }
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

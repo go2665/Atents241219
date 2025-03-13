@@ -76,6 +76,37 @@ bool Inventory::AddItem(UItemDataAsset* InItemDataAsset)
 	return bIsSuccess;
 }
 
+void Inventory::TestPrintInventory()
+{
+	// 인벤토리에 포션3개, 사과3개, 바나나2개가 있을 경우 아래처럼 출력(화면과 로그 모두 출력)
+
+	// [0] : 포션 x 3, [1] : 사과 x 3, [2] : 바나나 x 2
+
+	FString PrintString = TEXT("");
+	for (int i = 0; i < MaxSlotCount; i++)
+	{
+		UItemDataAsset* ItemData = InvenSlots[i].GetItemDataAsset();
+		FString Item;
+		if (ItemData)
+		{
+			Item = FString::Printf(TEXT("[%d] : %s x %d"), i, *ItemData->ItemName.ToString(), InvenSlots[i].GetItemCount());			
+		}
+		else
+		{
+			Item = FString::Printf(TEXT("[%d] : Empty"), i);
+		}
+		if (i < MaxSlotCount - 1)
+		{
+			Item += TEXT(", ");
+		}
+		PrintString += Item;
+	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, PrintString);
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *PrintString);
+
+}
+
 InvenSlotBase* Inventory::GetEmptySlot()
 {
 	InvenSlotBase* EmptySlot = nullptr;
