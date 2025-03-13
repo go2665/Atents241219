@@ -22,7 +22,7 @@ void Inventory::UseItem(int8 InSlotIndex)
 {
 	if (IsValidIndex(InSlotIndex))
 	{
-		InvenSlotBase* Slot = GetInvenSlot(InSlotIndex);
+		InvenSlotBase* Slot = GetInvenSlot(static_cast<EInvenSlotType>(InSlotIndex));
 		if (!Slot->IsEmpty())
 		{
 			UItemDataAsset* Data = Slot->GetItemDataAsset();
@@ -76,10 +76,46 @@ bool Inventory::AddItem(UItemDataAsset* InItemDataAsset)
 	return bIsSuccess;
 }
 
+void Inventory::MoveItem(EInvenSlotType InFromSlot, EInvenSlotType InToSlot)
+{
+	InvenSlotBase* FromSlot = GetInvenSlot(InFromSlot);
+	InvenSlotBase* ToSlot = GetInvenSlot(InToSlot);
+
+	if (!FromSlot->IsEmpty())	// FromSlot에는 무조건 아이템이 있어야 함
+	{
+		if (ToSlot->IsEmpty())	
+		{
+			// ToSlot이 비어있을 경우
+			ToSlot->SetItemDataAsset(FromSlot->GetItemDataAsset(), FromSlot->GetItemCount());
+			FromSlot->ClearSlot();
+		}
+		else 
+		{
+			// ToSlot이 비어있지 않을 경우
+
+			if (FromSlot->GetItemDataAsset() == ToSlot->GetItemDataAsset()
+				&& FromSlot->GetItemDataAsset()->IsStackable())
+			{
+				// 같은 종류의 아이템이면서 스택이 가능한 아이템인 경우(ToSlot은 FromSlot과 같은 아이템이므로 따로 체크 안함)
+				UItemDataAsset* ItemData = FromSlot->GetItemDataAsset();
+				int32 MaxCount = ItemData->ItemStackCount - ToSlot->GetItemCount();	// ToSlot에 최대로 들어갈 수 있는 개수
+				int32 MergeCount = FMath::Min(MaxCount, FromSlot->GetItemCount());	// FromSlot에 있는 아이템 개수와 MaxCount 중 작은 것을 선택
+								
+				FromSlot->DecreaseItemCount(MergeCount);	// FromSlot에서 MergeCount만큼 감소				
+				ToSlot->IncreaseItemCount(MergeCount);		// ToSlot에서 MergeCount만큼 증가
+			}
+			else
+			{
+				// 다른 종류의 아이템이면 그냥 스왑
+				std::swap(FromSlot, ToSlot);
+			}
+		}
+	}
+}
+
 void Inventory::TestPrintInventory()
 {
 	// 인벤토리에 포션3개, 사과3개, 바나나2개가 있을 경우 아래처럼 출력(화면과 로그 모두 출력)
-
 	// [0] : 포션 x 3, [1] : 사과 x 3, [2] : 바나나 x 2
 
 	FString PrintString = TEXT("");
@@ -89,18 +125,26 @@ void Inventory::TestPrintInventory()
 		FString Item;
 		if (ItemData)
 		{
-			Item = FString::Printf(TEXT("[%d] : %s x %d"), i, *ItemData->ItemName.ToString(), InvenSlots[i].GetItemCount());			
+			Item = FString::Printf(TEXT("[%d] : %s x %d, "), i, *ItemData->ItemName.ToString(), InvenSlots[i].GetItemCount());			
 		}
 		else
 		{
-			Item = FString::Printf(TEXT("[%d] : Empty"), i);
-		}
-		if (i < MaxSlotCount - 1)
-		{
-			Item += TEXT(", ");
+			Item = FString::Printf(TEXT("[%d] : Empty, "), i);
 		}
 		PrintString += Item;
 	}
+
+	UItemDataAsset* TempItemData = TempSlot.GetItemDataAsset();
+	FString TempItem;
+	if (TempItemData)
+	{
+		TempItem = FString::Printf(TEXT("[Temp] : %s x %d, "), *TempItemData->ItemName.ToString(), TempSlot.GetItemCount());
+	}
+	else
+	{
+		TempItem = FString::Printf(TEXT("[Temp] : Empty, "));
+	}
+	PrintString += TempItem;
 
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, PrintString);
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *PrintString);

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EInvenSlotType.h"
 #include "InvenSlotBase.h"
 
 /**
@@ -20,8 +21,21 @@ public:
 	// 인벤토리에 아이템 추가
 	bool AddItem(class UItemDataAsset* InItemDataAsset);
 
+	// 인벤토리에 있는 아이템 옮기기
+	void MoveItem(EInvenSlotType InFromSlot, EInvenSlotType InToSlot);
+
 	// 인벤토리의 특정 슬롯 반환
-	inline InvenSlotBase* GetInvenSlot(int8 InSlotIndex) { return &InvenSlots[InSlotIndex]; }
+	inline InvenSlotBase* GetInvenSlot(EInvenSlotType InSlotType) {
+		if (static_cast<uint8>(InSlotType) < MaxSlotCount)	// 일반 슬롯을 요구할 경우
+		{
+			return &InvenSlots[static_cast<uint8>(InSlotType)];
+		}
+		else if (InSlotType == EInvenSlotType::Temporary)	// 임시 슬롯을 요구할 경우
+		{
+			return &TempSlot;
+		}
+		return nullptr;
+	};
 
 	// 테스트용 함수
 	void TestPrintInventory();
@@ -43,6 +57,9 @@ private:
 
 	// 인벤토리의 모든 슬롯을 저장하는 배열
 	InvenSlotBase InvenSlots[MaxSlotCount];
+
+	// 임시 슬롯
+	InvenSlotBase TempSlot;
 
 	class AActionPlayerCharacter* Owner = nullptr;
 
