@@ -10,16 +10,6 @@ UInventoryComponent::UInventoryComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-bool UInventoryComponent::AddItemToInventory(UItemDataAsset* InItemDataAsset)
-{
-	return Inven.AddItem(InItemDataAsset);	// 인벤토리에 있는 아이템 추가 함수 실행
-}
-
-void UInventoryComponent::UseItemFromInventory(int8 InSlotIndex)
-{
-	Inven.UseItem(InSlotIndex);	// 인벤토리에 있는 아이템 사용 함수 실행
-}
-
 // Called when the game starts
 void UInventoryComponent::BeginPlay()
 {

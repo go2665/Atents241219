@@ -18,7 +18,7 @@ void Inventory::Initialize(AActionPlayerCharacter* InOwner)
 	Owner = InOwner;
 }
 
-void Inventory::UseItem(int8 InSlotIndex)
+void Inventory::UseItem(uint8 InSlotIndex)
 {
 	if (IsValidIndex(InSlotIndex))
 	{
@@ -106,8 +106,11 @@ void Inventory::MoveItem(EInvenSlotType InFromSlot, EInvenSlotType InToSlot)
 			}
 			else
 			{
-				// 다른 종류의 아이템이면 그냥 스왑
-				std::swap(FromSlot, ToSlot);
+				// 다른 종류의 아이템이면 그냥 스왑				
+				UItemDataAsset* TempItemData = ToSlot->GetItemDataAsset();
+				int32 TempItemCount = ToSlot->GetItemCount();
+				ToSlot->SetItemDataAsset(FromSlot->GetItemDataAsset(), FromSlot->GetItemCount());
+				FromSlot->SetItemDataAsset(TempItemData, TempItemCount);
 			}
 		}
 	}
@@ -149,6 +152,12 @@ void Inventory::TestPrintInventory()
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, PrintString);
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *PrintString);
 
+}
+
+void Inventory::TestInventoryAddDefaultItems()
+{
+	// 인벤토리에 사과10개, 도끼 1개, 사과3개
+	
 }
 
 InvenSlotBase* Inventory::GetEmptySlot()

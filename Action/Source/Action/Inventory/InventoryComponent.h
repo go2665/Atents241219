@@ -23,8 +23,22 @@ public:
 	UInventoryComponent();
 
 	// 아이템을 인벤토리에 추가
-	bool AddItemToInventory(class UItemDataAsset* InItemDataAsset);
-	void UseItemFromInventory(int8 InSlotIndex);
+	UFUNCTION(BlueprintCallable)
+	inline bool AddItemToInventory(class UItemDataAsset* InItemDataAsset) { 
+		return Inven.AddItem(InItemDataAsset);	/*인벤토리에 있는 아이템 추가 함수 실행*/ 
+	};
+
+	// 인벤토리에 있는 아이템을 옮기는 함수
+	UFUNCTION(BlueprintCallable)
+	inline void MoveItemFromInventory(EInvenSlotType InFromSlot, EInvenSlotType InToSlot) {
+		Inven.MoveItem(InFromSlot, InToSlot);
+	}
+
+	// 인벤토리에 있는 아이템 사용
+	UFUNCTION(BlueprintCallable)
+	inline void UseItemFromInventory(uint8 InSlotIndex) {
+		Inven.UseItem(InSlotIndex);	// 인벤토리에 있는 아이템 사용 함수 실행
+	}
 
 	// 인벤토리에 들어있는 골드 양 확인
 	inline int32 GetGold() const { return Gold; }
@@ -35,16 +49,12 @@ public:
 	// 골드 변환를 알리는 델리게이트
 	FOnPlayerGoldChange OnGoldChange;
 
-
-	UFUNCTION(BlueprintCallable)
-	inline void TestUseItem(int32 InSlotIndex)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, FString::Printf(TEXT("Use item in slot %d"), InSlotIndex));
-		UseItemFromInventory(InSlotIndex);
-	}
-
+	// 테스트용 함수
 	UFUNCTION(BlueprintCallable)
 	inline void TestPrintInventory(){ Inven.TestPrintInventory(); }
+
+	UFUNCTION(BlueprintCallable)
+	inline void TestInventoryAddDefaultItems() { Inven.TestInventoryAddDefaultItems(); }
 
 protected:
 	// Called when the game starts

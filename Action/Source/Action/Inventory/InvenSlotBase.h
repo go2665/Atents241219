@@ -42,6 +42,20 @@ public:
 	// check
 	inline bool IsEmpty() const { return ItemDataAsset == nullptr; }
 
+	// operator
+	InvenSlotBase& operator=(const InvenSlotBase& Other)
+	{
+		if (this == &Other)
+		{
+			return *this;	// 자기 자신과 대입이면 그냥 리턴
+		}
+
+		ItemDataAsset = Other.ItemDataAsset;
+		ItemCount = Other.ItemCount;
+
+		return *this;
+	}
+
 protected:
 	// 슬롯의 인덱스
 	int8 SlotIndex = -1;

@@ -16,7 +16,7 @@ public:
 	void Initialize(class AActionPlayerCharacter* InOwner);
 
 	// 특정 슬롯에 있는 아이템 사용
-	void UseItem(int8 InSlotIndex);
+	void UseItem(uint8 InSlotIndex);
 
 	// 인벤토리에 아이템 추가
 	bool AddItem(class UItemDataAsset* InItemDataAsset);
@@ -39,6 +39,7 @@ public:
 
 	// 테스트용 함수
 	void TestPrintInventory();
+	void TestInventoryAddDefaultItems();
 	
 private:
 	// 비어있는 슬롯 반환
@@ -48,8 +49,8 @@ private:
 	bool AddItemToEmptySlot(class UItemDataAsset* InItemDataAsset);
 
 	// 적절한 인덱스인지 확인하는 함수
-	inline bool IsValidIndex(int8 InSlotIndex) {
-		return 0 <= InSlotIndex && MaxSlotCount > InSlotIndex;
+	inline bool IsValidIndex(uint8 InSlotIndex) {
+		return InSlotIndex < MaxSlotCount;
 	}
 
 	// 최대 슬롯 갯수
