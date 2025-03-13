@@ -39,7 +39,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	inline void TestUseItem(int32 InSlotIndex)
 	{
-		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, FString::Printf(TEXT("Use item in slot %d"), InSlotIndex));
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, FString::Printf(TEXT("Use item in slot %d"), InSlotIndex));
 		UseItemFromInventory(InSlotIndex);
 	}
 

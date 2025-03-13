@@ -110,15 +110,46 @@ void AActionPlayerCharacter::RestoreHealth(float Health, float Duration)
 	
 }
 
+void AActionPlayerCharacter::RestoreHealthPerTick(float InHeal, float InInterval, float InCount)
+{
+	//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Cyan, TEXT("RestoreHealthPerTick"));
+
+	RestoreTickDatas.Add(FRestoreTickData(InCount));
+	FRestoreTickData& ArrayRef = RestoreTickDatas.Last();
+
+	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Cyan, FString::Printf(TEXT("Tick Data Count : %d"), RestoreTickDatas.Num()));
+
+	FTimerDelegate TimerDelegate = FTimerDelegate::CreateLambda(
+		[this, InHeal, &ArrayRef]()
+		{
+			RestoreHealth(InHeal);			// 틱 회복
+			ArrayRef.Count--;				// 횟수 감소
+			//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Cyan, FString::Printf(TEXT("Count : %d"), ArrayRef.Count));
+			if (ArrayRef.Count <= 0)		// 횟수가 0이하면
+			{
+				//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Cyan, TEXT("Remove"));
+				GetWorldTimerManager().ClearTimer(ArrayRef.TimerHandle);	// 타이머 해제
+
+				int32 Index = RestoreTickDatas.IndexOfByKey(ArrayRef);		// 인덱스 찾기
+				if (Index != INDEX_NONE)									// 인덱스가 유효하면
+					RestoreTickDatas.RemoveAt(Index);						// FRestoreTickData 삭제				
+
+				//RestoreTickDatas.Remove(ArrayRef);	// FRestoreTickData 삭제
+				GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Cyan, FString::Printf(TEXT("Tick Data Count : %d"), RestoreTickDatas.Num()));
+			}
+		}
+	);
+
+	GetWorldTimerManager().SetTimer(ArrayRef.TimerHandle, TimerDelegate, InInterval, true);	// 타이머 설정
+}
+
 // Called when the game starts or when spawned
 void AActionPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	SetCurrentHealth(MaxHealth);	// 체력 초기화	
 	AnimInstance = GetMesh()->GetAnimInstance();	// 애님 인스턴스 캐싱
-
-	SetCurrentHealth(MaxHealth);	// 체력 초기화
-
 	OnHealthChange.AddDynamic(this, &AActionPlayerCharacter::TestPrintHealth);
 }
 

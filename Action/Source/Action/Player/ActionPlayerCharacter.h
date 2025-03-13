@@ -48,6 +48,9 @@ public:
 	// 플레이어의 체력을 회복시키는 함수(전체 회복량, 회복 시간(회복시간이 0보다 작으면 즉시 회복)
 	void RestoreHealth(float Health, float Duration = -1.0f);
 
+	// 플레이어의 체력을 틱 단위로 지속적으로 회복시키는 함수(회복량, 회복 간격, 회복 횟수)
+	void RestoreHealthPerTick(float InHeal, float InInterval, float InCount);
+
 	// Getter
 
 	// 범위 공격용 데미지
@@ -69,6 +72,10 @@ public:
 	// 걷기 모드로 설정
 	UFUNCTION(BlueprintCallable, Category = "Player Movement")
 	inline void SetWalkMode() { GetCharacterMovement()->MaxWalkSpeed = WalkSpeed; };	
+
+	// 테스트용으로 체력을 변경하는 함수
+	UFUNCTION(BlueprintCallable, Category = "Test")
+	inline void TestHealthChange(float Health) { SetCurrentHealth(Health); };
 
 protected:
 	void PlayHighPriorityMontage(UAnimMontage* Montage, FName StartSectionName = NAME_None);
@@ -168,5 +175,23 @@ private:
 
 	// 틱에서 처리할 지속 회복 데이터	
 	TArray<FRestoreData> RestoreDatas;
+
+	// 틱 회복용	데이터
+	struct FRestoreTickData
+	{
+		FRestoreTickData(int32 InCount)
+			: Count(InCount) {
+		}
+		FTimerHandle TimerHandle;
+		int32 Count = 0;
+
+		virtual bool operator==(const FRestoreTickData& Other) const
+		{
+			return TimerHandle == Other.TimerHandle;
+		}
+	};
+
+	// 틱 회복용	타이머 핸들
+	TArray<FRestoreTickData> RestoreTickDatas;
 
 };
