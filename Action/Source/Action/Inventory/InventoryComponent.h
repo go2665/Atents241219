@@ -62,6 +62,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void TestInventoryAddDefaultItems(class UDataTable* TestTable = nullptr);
 
+	UFUNCTION(BlueprintCallable)
+	void TestItemEquip(EInvenSlotType InSlotType) { Inven.EquipItem(static_cast<uint8>(InSlotType)); };
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
