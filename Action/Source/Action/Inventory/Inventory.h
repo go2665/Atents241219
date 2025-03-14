@@ -27,6 +27,9 @@ public:
 	// 인벤토리에 있는 아이템 옮기기
 	void MoveItem(EInvenSlotType InFromSlot, EInvenSlotType InToSlot);
 
+	// 인벤토리의 특정 슬롯에 있는 아이템을 판매
+	int32 SellItem(uint8 InSlotIndex);
+
 	// 인벤토리의 특정 슬롯 반환
 	inline InvenSlotBase* GetInvenSlot(EInvenSlotType InSlotType) {
 		if (static_cast<uint8>(InSlotType) < MaxSlotCount)	// 일반 슬롯을 요구할 경우

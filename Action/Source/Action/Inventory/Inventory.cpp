@@ -143,6 +143,25 @@ void Inventory::MoveItem(EInvenSlotType InFromSlot, EInvenSlotType InToSlot)
 	}
 }
 
+int32 Inventory::SellItem(uint8 InSlotIndex)
+{
+	// InSlotIndex 슬롯에 있는 아이템을 판매하고 얻는 골드 반환	
+
+	int32 SellPrice = 0;
+	InvenSlotBase* Slot = GetInvenSlot(static_cast<EInvenSlotType>(InSlotIndex));
+	if (!Slot)
+	{
+		UItemDataAsset* Data = Slot->GetItemDataAsset();	
+		if (!Data)
+		{
+			SellPrice = 0.5f * Data->ItemPrice * Slot->GetItemCount();	// 판매 금액은 Price의 절반 * 개수
+			Slot->ClearSlot();	// 슬롯 비우기
+		}
+	}
+
+	return SellPrice;
+}
+
 void Inventory::TestPrintInventory()
 {
 	// 인벤토리에 포션3개, 사과3개, 바나나2개가 있을 경우 아래처럼 출력(화면과 로그 모두 출력)
