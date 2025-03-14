@@ -7,12 +7,14 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../Weapon/WeaponType.h"
 #include "../Weapon/WeaponActor.h"
+#include "EquipTarget.h"
+#include "Action/Item/EItemType.h"
 #include "ActionPlayerCharacter.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChange, float, Health);
 
 UCLASS()
-class ACTION_API AActionPlayerCharacter : public ACharacter
+class ACTION_API AActionPlayerCharacter : public ACharacter, public IEquipTarget
 {
 	GENERATED_BODY()
 
@@ -42,14 +44,23 @@ public:
 	UFUNCTION()
 	void SetCurrentWeaponCollisionActivate(bool bActivate);
 
-	UFUNCTION(BlueprintCallable, Category = "Player Weapon")
-	void SetCurrentWeapon(EWeaponType WeaponType);
+	//UFUNCTION(BlueprintCallable, Category = "Player Weapon")
+	//void SetCurrentWeapon(EWeaponType WeaponType);
 
 	// 플레이어의 체력을 회복시키는 함수(전체 회복량, 회복 시간(회복시간이 0보다 작으면 즉시 회복)
 	void RestoreHealth(float Health, float Duration = -1.0f);
 
 	// 플레이어의 체력을 틱 단위로 지속적으로 회복시키는 함수(회복량, 회복 간격, 회복 횟수)
 	void RestoreHealthPerTick(float InHeal, float InInterval, float InCount);
+
+	// 무기 장비 인터페이스 구현
+
+	// 무기 장비
+	UFUNCTION(BlueprintCallable, Category = "Player Weapon")
+	virtual void Equip(EWeaponType InWeaponType) override;
+
+	// 무기 해제
+	virtual void UnEquip() override;
 
 	// Getter
 
@@ -147,6 +158,9 @@ protected:
 	// 현재 체력
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Health")
 	float CurrentHealth = 100.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Weapon")
+	EItemType DefaultWeapon = EItemType::Axe;
 
 private:
 	// 콤보용 노티파이

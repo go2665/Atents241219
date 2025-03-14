@@ -4,6 +4,7 @@
 #include "Inventory.h"
 #include "../Item/ItemData/ItemDataAsset.h"
 #include "../Item/Interface/UsableItem.h"
+#include "../Item/Interface/EquipableItem.h"
 #include "../Player/ActionPlayerCharacter.h"
 #include "../Framework/ActionGameMode.h"
 
@@ -34,6 +35,31 @@ void Inventory::UseItem(uint8 InSlotIndex)
 				//	FString::Printf(TEXT("Use Item(%d) : %s"), InSlotIndex, *Data->ItemName.ToString()));
 				UsableItem->UseItem(Owner);
 				Slot->DecreaseItemCount();
+			}
+		}
+	}
+}
+
+void Inventory::EquipItem(uint8 InSlotIndex)
+{
+	if (IsValidIndex(InSlotIndex))
+	{
+		InvenSlotBase* Slot = GetInvenSlot(static_cast<EInvenSlotType>(InSlotIndex));
+		if (!Slot->IsEmpty())
+		{
+			UItemDataAsset* Data = Slot->GetItemDataAsset();
+
+			if (WeaponSlot.GetItemDataAsset() != Data)	// 다른 아이템일 경우에만 실행
+			{
+				IEquipableItem* EquipableItem = Cast<IEquipableItem>(Data);
+				if (EquipableItem)	// 장비 가능한 아이템인 경우에만 실행
+				{
+					//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan,
+					//	FString::Printf(TEXT("Equip Item(%d) : %s"), InSlotIndex, *Data->ItemName.ToString()));
+									
+					EquipableItem->EquipItem(Owner);	// 오너에게 장비
+					MoveItem(static_cast<EInvenSlotType>(InSlotIndex), EInvenSlotType::Weapon);	// 슬롯 위치 바꾸기
+				}
 			}
 		}
 	}
@@ -149,6 +175,18 @@ void Inventory::TestPrintInventory()
 		TempItem = FString::Printf(TEXT("[Temp] : Empty, "));
 	}
 	PrintString += TempItem;
+
+	UItemDataAsset* WeaponItemData = WeaponSlot.GetItemDataAsset();
+	FString WeaponItem;
+	if (WeaponItemData)
+	{
+		WeaponItem = FString::Printf(TEXT("[Weapon] : %s, "), *WeaponItemData->ItemName.ToString());
+	}
+	else
+	{
+		WeaponItem = FString::Printf(TEXT("[Weapon] : Empty, "));
+	}
+	PrintString += WeaponItem;
 
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, PrintString);
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *PrintString);

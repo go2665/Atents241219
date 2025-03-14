@@ -18,6 +18,9 @@ public:
 	// 특정 슬롯에 있는 아이템 사용
 	void UseItem(uint8 InSlotIndex);
 
+	// 특정 슬롯에 있는 무기 아이템 장비
+	void EquipItem(uint8 InSlotIndex);
+
 	// 인벤토리에 아이템 추가
 	bool AddItem(class UItemDataAsset* InItemDataAsset);
 
@@ -33,6 +36,10 @@ public:
 		else if (InSlotType == EInvenSlotType::Temporary)	// 임시 슬롯을 요구할 경우
 		{
 			return &TempSlot;
+		}
+		else if (InSlotType == EInvenSlotType::Weapon)	// 무기 슬롯을 요구할 경우
+		{
+			return &WeaponSlot;
 		}
 		return nullptr;
 	};
@@ -60,6 +67,9 @@ private:
 
 	// 임시 슬롯
 	InvenSlotBase TempSlot;
+
+	// 무기 슬롯
+	InvenSlotBase WeaponSlot;
 
 	class AActionPlayerCharacter* Owner = nullptr;
 

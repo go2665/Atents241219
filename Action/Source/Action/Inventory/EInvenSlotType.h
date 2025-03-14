@@ -16,4 +16,5 @@ enum class EInvenSlotType : uint8
 	Slot_8,
 	Slot_9,
 	Temporary = 100,
+	Weapon = 101
 };

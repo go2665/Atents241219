@@ -26,5 +26,4 @@ public:
 
 	virtual void Equip(EWeaponType InWeaponType) = 0;
 	virtual void UnEquip() = 0;
-	virtual void ToggleEquip(EWeaponType InWeaponType = EWeaponType::Max) = 0;
 };

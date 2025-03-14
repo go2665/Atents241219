@@ -17,38 +17,41 @@ UInventoryComponent::UInventoryComponent()
 void UInventoryComponent::TestInventoryAddDefaultItems(UDataTable* TestTable)
 {
 	UWorld* World = GetWorld();
-	AActionGameMode* GameMode = World->GetAuthGameMode<AActionGameMode>();
-
-	if (TestTable)
+	if (World)
 	{
-		TMap<FName, uint8*> RowMap = TestTable->GetRowMap();
-		for (auto& Elem : RowMap)
-		{
-			FDropItemDataTableRow* Row = (FDropItemDataTableRow*)Elem.Value;
+		AActionGameMode* GameMode = World->GetAuthGameMode<AActionGameMode>();
 
-			for (int i = 0; i < Row->Count; ++i)	// Count만큼 아이템 생성
+		if (TestTable)
+		{
+			TMap<FName, uint8*> RowMap = TestTable->GetRowMap();
+			for (auto& Elem : RowMap)
 			{
-				UItemDataAsset* Data = GameMode->GetItemDataAsset(Row->ItemType);
-				AddItemToInventory(Data);
+				FDropItemDataTableRow* Row = (FDropItemDataTableRow*)Elem.Value;
+
+				for (int i = 0; i < Row->Count; ++i)	// Count만큼 아이템 생성
+				{
+					UItemDataAsset* Data = GameMode->GetItemDataAsset(Row->ItemType);
+					AddItemToInventory(Data);
+				}
 			}
 		}
-	}
-	else
-	{
-		// 데이터 테이블이 없으면 인벤토리에 사과10개, 도끼 1개, 사과3개
-		UItemDataAsset* Data = GameMode->GetItemDataAsset(EItemType::Apple);
-		for (int i = 0; i < 10; i++)
+		else
 		{
-			AddItemToInventory(Data);
-		}
+			// 데이터 테이블이 없으면 인벤토리에 사과10개, 도끼 1개, 사과3개
+			UItemDataAsset* Data = GameMode->GetItemDataAsset(EItemType::Apple);
+			for (int i = 0; i < 10; i++)
+			{
+				AddItemToInventory(Data);
+			}
 
-		Data = GameMode->GetItemDataAsset(EItemType::Axe);
-		AddItemToInventory(Data);
-
-		Data = GameMode->GetItemDataAsset(EItemType::Apple);
-		for (int i = 0; i < 3; i++)
-		{
+			Data = GameMode->GetItemDataAsset(EItemType::Axe);
 			AddItemToInventory(Data);
+
+			Data = GameMode->GetItemDataAsset(EItemType::Apple);
+			for (int i = 0; i < 3; i++)
+			{
+				AddItemToInventory(Data);
+			}
 		}
 	}
 }

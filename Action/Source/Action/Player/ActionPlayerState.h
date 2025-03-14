@@ -30,6 +30,9 @@ public:
 		else
 			return false;
 	}
+	inline void EquipItemFromInventory(uint8 InSlotIndex) {
+		if (InventoryComponent) InventoryComponent->EquipItemFromInventory(InSlotIndex);
+	}
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")

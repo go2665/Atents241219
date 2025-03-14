@@ -7,6 +7,8 @@
 #include "../AnimNotify/ANS_SectionJump.h"
 #include "../Weapon/WeaponActor.h"
 #include "../Weapon/WeaponManagerComponent.h"
+#include "Action/Framework/ActionGameMode.h"
+#include "Action/Player/ActionPlayerState.h"
 
 // Sets default values
 AActionPlayerCharacter::AActionPlayerCharacter()
@@ -86,15 +88,15 @@ void AActionPlayerCharacter::SetCurrentWeaponCollisionActivate(bool bActivate)
 	}
 }
 
-void AActionPlayerCharacter::SetCurrentWeapon(EWeaponType WeaponType)
-{
-	if (CurrentWeapon)
-	{
-		CurrentWeapon->WeaponActivate(false);	// 현재 무기가 있으면 비활성화		
-	}
-	CurrentWeapon = WeaponManager->GetWeapon(WeaponType);	
-	CurrentWeapon->WeaponActivate(true);		// 새로운 무기 활성화	
-}
+//void AActionPlayerCharacter::SetCurrentWeapon(EWeaponType WeaponType)
+//{
+//	if (CurrentWeapon)
+//	{
+//		CurrentWeapon->WeaponActivate(false);	// 현재 무기가 있으면 비활성화		
+//	}
+//	CurrentWeapon = WeaponManager->GetWeapon(WeaponType);	
+//	CurrentWeapon->WeaponActivate(true);		// 새로운 무기 활성화	
+//}
 
 void AActionPlayerCharacter::RestoreHealth(float Health, float Duration)
 {
@@ -143,6 +145,21 @@ void AActionPlayerCharacter::RestoreHealthPerTick(float InHeal, float InInterval
 	GetWorldTimerManager().SetTimer(ArrayRef.TimerHandle, TimerDelegate, InInterval, true);	// 타이머 설정
 }
 
+void AActionPlayerCharacter::Equip(EWeaponType InWeaponType)
+{
+	UnEquip();
+	CurrentWeapon = WeaponManager->GetWeapon(InWeaponType);
+	CurrentWeapon->WeaponActivate(true);		// 새로운 무기 활성화	
+}
+
+void AActionPlayerCharacter::UnEquip()
+{
+	if (CurrentWeapon)
+	{
+		CurrentWeapon->WeaponActivate(false);	// 현재 무기가 있으면 비활성화		
+	}
+}
+
 // Called when the game starts or when spawned
 void AActionPlayerCharacter::BeginPlay()
 {
@@ -150,6 +167,15 @@ void AActionPlayerCharacter::BeginPlay()
 
 	SetCurrentHealth(MaxHealth);	// 체력 초기화	
 	AnimInstance = GetMesh()->GetAnimInstance();	// 애님 인스턴스 캐싱
+
+	// 기본무기 추가 및 장착
+	UWorld* World = GetWorld();
+	AActionGameMode* GameMode = World->GetAuthGameMode<AActionGameMode>();
+	UItemDataAsset* DataAsset = GameMode->GetItemDataAsset(DefaultWeapon);
+	AActionPlayerState* ActionPlayerState = GetPlayerState<AActionPlayerState>();
+	ActionPlayerState->AddItemToInventory(DataAsset);
+	ActionPlayerState->EquipItemFromInventory(0);
+
 	OnHealthChange.AddDynamic(this, &AActionPlayerCharacter::TestPrintHealth);
 }
 
