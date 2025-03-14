@@ -60,10 +60,13 @@ public:
 	inline void TestPrintInventory(){ Inven.TestPrintInventory(); }
 
 	UFUNCTION(BlueprintCallable)
-	void TestInventoryAddDefaultItems(class UDataTable* TestTable = nullptr);
+	inline void TestInventoryAddDefaultItems(class UDataTable* TestTable = nullptr);
 
 	UFUNCTION(BlueprintCallable)
-	void TestItemEquip(EInvenSlotType InSlotType) { Inven.EquipItem(static_cast<uint8>(InSlotType)); };
+	inline void TestItemEquip(EInvenSlotType InSlotType) { Inven.EquipItem(static_cast<uint8>(InSlotType)); };
+
+	UFUNCTION(BlueprintCallable)
+	inline void TestUseItem(int32 InSlotIndex) { Inven.UseItem(InSlotIndex); };
 
 protected:
 	// Called when the game starts
