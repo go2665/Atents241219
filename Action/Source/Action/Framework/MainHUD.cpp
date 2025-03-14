@@ -3,6 +3,7 @@
 
 #include "MainHUD.h"
 #include "Blueprint/UserWidget.h"
+#include "Action/UI/MainWidget.h"
 
 void AMainHUD::BeginPlay()
 {
@@ -12,10 +13,10 @@ void AMainHUD::BeginPlay()
 	{
 		UWorld* World = GetWorld();
 
-		MainWidget = CreateWidget<UUserWidget>(World, MainWidgetClass);
+		MainWidget = CreateWidget<UMainWidget>(World, MainWidgetClass);
 		if (MainWidget)
 		{
-			MainWidget->AddToViewport();
+			MainWidget->AddToViewport();			
 		}
 	}
 }

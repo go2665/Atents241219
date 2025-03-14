@@ -13,7 +13,7 @@ public:
 	virtual ~InvenSlotBase() = default;
 
 	// 아이템 개수 증가(넘치지 않는 경우에만 사용해야 함)
-	inline void IncreaseItemCount(int32 Count = 1) { ItemCount += Count; }
+	inline void IncreaseItemCount(int32 Count = 1) { ItemCount += Count; RunDelegate(); }
 
 	// 아이템 개수 감소(음수가 되지 않는 경우에만 사용해야 함)
 	inline void DecreaseItemCount(int32 Count = 1) { 
@@ -22,10 +22,11 @@ public:
 		{
 			ClearSlot();
 		}
+		RunDelegate();
 	}
 
 	// 슬롯 비우기
-	inline void ClearSlot() { ItemDataAsset = nullptr; ItemCount = 0; }
+	inline void ClearSlot() { ItemDataAsset = nullptr; ItemCount = 0; RunDelegate(); }
 
 	// getter
 	inline int8 GetSlotIndex() const { return SlotIndex; }
@@ -37,6 +38,7 @@ public:
 	inline void SetItemDataAsset(class UItemDataAsset* InItemDataAsset, int32 Count = 1) { 
 		ItemDataAsset = InItemDataAsset; 
 		ItemCount = Count;
+		RunDelegate();
 	}
 
 	// check
@@ -52,9 +54,16 @@ public:
 
 		ItemDataAsset = Other.ItemDataAsset;
 		ItemCount = Other.ItemCount;
+		RunDelegate();
 
 		return *this;
 	}
+
+private:
+	inline void RunDelegate() { if (OnSlotUpdated) OnSlotUpdated(); }
+
+public:
+	std::function<void()> OnSlotUpdated;
 
 protected:
 	// 슬롯의 인덱스

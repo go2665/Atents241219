@@ -13,5 +13,13 @@ UCLASS()
 class ACTION_API UMainWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+public:
+	virtual void NativeConstruct() override;
+
+	UFUNCTION(BlueprintCallable)	
+	void ShowInventory(bool bShow);
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (BindWidget))
+	class UInventoryWidget* InventoryWidget;
 };

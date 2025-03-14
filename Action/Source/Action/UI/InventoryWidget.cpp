@@ -46,5 +46,12 @@ void UInventoryWidget::NativeConstruct()
 			}
 		}
 	}
+}
 
+void UInventoryWidget::RefreshInventory()
+{
+	for (auto& ItemSlotWidget : ItemSlotWidgets)
+	{
+		ItemSlotWidget->RefreshSlot();
+	}
 }

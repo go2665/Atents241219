@@ -17,10 +17,13 @@ class ACTION_API AMainHUD : public AHUD
 protected:
 	virtual void BeginPlay() override;
 
+	UFUNCTION(BlueprintCallable)
+	inline class UMainWidget* GetMainWidget() const { return MainWidget; };
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<class UUserWidget> MainWidgetClass;
 
 	UPROPERTY()
-	class UUserWidget* MainWidget = nullptr;
+	class UMainWidget* MainWidget = nullptr;
 };

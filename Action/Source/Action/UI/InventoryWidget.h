@@ -16,6 +16,8 @@ class ACTION_API UInventoryWidget : public UUserWidget
 
 public:
 	virtual void NativeConstruct() override;
+	void RefreshInventory();
+	
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (BindWidget))
