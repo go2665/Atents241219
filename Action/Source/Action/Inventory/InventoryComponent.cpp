@@ -5,6 +5,7 @@
 #include "../Player/ActionPlayerCharacter.h"
 #include "../Framework/ActionGameMode.h"
 #include "../Item/EItemType.h"
+#include "../Item/FDropItemDataTableRow.h"
 
 
 // Sets default values for this component's properties
@@ -13,25 +14,42 @@ UInventoryComponent::UInventoryComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-void UInventoryComponent::TestInventoryAddDefaultItems()
+void UInventoryComponent::TestInventoryAddDefaultItems(UDataTable* TestTable)
 {
-	// 인벤토리에 사과10개, 도끼 1개, 사과3개
 	UWorld* World = GetWorld();
 	AActionGameMode* GameMode = World->GetAuthGameMode<AActionGameMode>();
 
-	UItemDataAsset* Data = GameMode->GetItemDataAsset(EItemType::Apple);
-	for (int i = 0; i < 10; i++)
+	if (TestTable)
 	{
-		AddItemToInventory(Data);
+		TMap<FName, uint8*> RowMap = TestTable->GetRowMap();
+		for (auto& Elem : RowMap)
+		{
+			FDropItemDataTableRow* Row = (FDropItemDataTableRow*)Elem.Value;
+
+			for (int i = 0; i < Row->Count; ++i)	// Count만큼 아이템 생성
+			{
+				UItemDataAsset* Data = GameMode->GetItemDataAsset(Row->ItemType);
+				AddItemToInventory(Data);
+			}
+		}
 	}
-
-	Data = GameMode->GetItemDataAsset(EItemType::Axe);
-	AddItemToInventory(Data);
-
-	Data = GameMode->GetItemDataAsset(EItemType::Apple);
-	for (int i = 0; i < 3; i++)
+	else
 	{
+		// 데이터 테이블이 없으면 인벤토리에 사과10개, 도끼 1개, 사과3개
+		UItemDataAsset* Data = GameMode->GetItemDataAsset(EItemType::Apple);
+		for (int i = 0; i < 10; i++)
+		{
+			AddItemToInventory(Data);
+		}
+
+		Data = GameMode->GetItemDataAsset(EItemType::Axe);
 		AddItemToInventory(Data);
+
+		Data = GameMode->GetItemDataAsset(EItemType::Apple);
+		for (int i = 0; i < 3; i++)
+		{
+			AddItemToInventory(Data);
+		}
 	}
 }
 
