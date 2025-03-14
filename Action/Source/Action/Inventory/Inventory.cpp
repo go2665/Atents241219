@@ -5,6 +5,7 @@
 #include "../Item/ItemData/ItemDataAsset.h"
 #include "../Item/Interface/UsableItem.h"
 #include "../Player/ActionPlayerCharacter.h"
+#include "../Framework/ActionGameMode.h"
 
 void Inventory::Initialize(AActionPlayerCharacter* InOwner)
 {
@@ -152,12 +153,6 @@ void Inventory::TestPrintInventory()
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, PrintString);
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *PrintString);
 
-}
-
-void Inventory::TestInventoryAddDefaultItems()
-{
-	// 인벤토리에 사과10개, 도끼 1개, 사과3개
-	
 }
 
 InvenSlotBase* Inventory::GetEmptySlot()

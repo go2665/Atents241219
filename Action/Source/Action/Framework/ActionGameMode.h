@@ -27,6 +27,11 @@ public:
 		return DropItemFactory ? DropItemFactory->GetDropItem(InItemType, InLocation, InRotation) : nullptr;
 	}
 
+	UFUNCTION(BlueprintCallable, Category = "DropItem")
+	inline class UItemDataAsset* GetItemDataAsset(EItemType InItemType) const {
+		return DropItemFactory ? DropItemFactory->GetItemDataAsset(InItemType) : nullptr;
+	};
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item")
 	UDropItemFactoryComponent* DropItemFactory = nullptr;

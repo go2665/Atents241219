@@ -33,6 +33,11 @@ public:
 		EItemType InItemType, 
 		FVector InLocation = FVector::ZeroVector, FRotator InRotation = FRotator::ZeroRotator);
 
+	UFUNCTION(BlueprintCallable, Category = "DropItem")
+	inline class UItemDataAsset* GetItemDataAsset(EItemType InItemType) const {
+		return DropItemDataMap.Contains(InItemType) ? DropItemDataMap[InItemType].ItemDataAsset : nullptr;	
+	};
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

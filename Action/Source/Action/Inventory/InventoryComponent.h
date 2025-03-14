@@ -54,7 +54,7 @@ public:
 	inline void TestPrintInventory(){ Inven.TestPrintInventory(); }
 
 	UFUNCTION(BlueprintCallable)
-	inline void TestInventoryAddDefaultItems() { Inven.TestInventoryAddDefaultItems(); }
+	void TestInventoryAddDefaultItems();
 
 protected:
 	// Called when the game starts

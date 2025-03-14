@@ -39,7 +39,6 @@ public:
 
 	// 테스트용 함수
 	void TestPrintInventory();
-	void TestInventoryAddDefaultItems();
 	
 private:
 	// 비어있는 슬롯 반환
