@@ -27,6 +27,9 @@ public:
 	FText ItemDescription;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+	class UTexture2D* ItemIcon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	class UStaticMesh* ItemMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
