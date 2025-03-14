@@ -33,6 +33,9 @@ public:
 	inline void EquipItemFromInventory(uint8 InSlotIndex) {
 		if (InventoryComponent) InventoryComponent->EquipItemFromInventory(InSlotIndex);
 	}
+	inline InvenSlotBase* GetInvenSlot(EInvenSlotType InSlotType) {
+		return InventoryComponent ? InventoryComponent->GetInvenSlot(InSlotType) : nullptr;
+	}
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")

@@ -46,6 +46,9 @@ public:
 		Inven.EquipItem(InSlotIndex);	// 인벤토리에 있는 무기 장비 함수 실행
 	}
 
+	// 인벤토리에 있는 슬롯 주소 리턴
+	inline InvenSlotBase* GetInvenSlot(EInvenSlotType InSlotType) { return Inven.GetInvenSlot(InSlotType); }
+
 	// 인벤토리에 들어있는 골드 양 확인
 	inline int32 GetGold() const { return Gold; }
 

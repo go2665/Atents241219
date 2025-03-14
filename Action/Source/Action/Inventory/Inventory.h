@@ -63,7 +63,7 @@ private:
 	}
 
 	// 최대 슬롯 갯수
-	static const int8 MaxSlotCount = 4;
+	static const int8 MaxSlotCount = 10;
 
 	// 인벤토리의 모든 슬롯을 저장하는 배열
 	InvenSlotBase InvenSlots[MaxSlotCount];
