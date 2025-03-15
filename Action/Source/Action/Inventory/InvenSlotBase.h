@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 
 /**
- * 
+ * 더 이상 사용되지 않음. InvenSlot으로 변경됨.
  */
 class ACTION_API InvenSlotBase
 {

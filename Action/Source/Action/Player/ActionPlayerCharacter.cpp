@@ -174,7 +174,7 @@ void AActionPlayerCharacter::BeginPlay()
 	UItemDataAsset* DataAsset = GameMode->GetItemDataAsset(DefaultWeapon);
 	AActionPlayerState* ActionPlayerState = GetPlayerState<AActionPlayerState>();
 	ActionPlayerState->AddItemToInventory(DataAsset);
-	ActionPlayerState->EquipItemFromInventory(0);
+	ActionPlayerState->EquipItemFromInventory(EInvenSlotType::Slot_0);
 
 	OnHealthChange.AddDynamic(this, &AActionPlayerCharacter::TestPrintHealth);
 }

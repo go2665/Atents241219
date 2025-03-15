@@ -26,14 +26,14 @@ public:
 	inline void AddGold(int32 Amount) { if (InventoryComponent) InventoryComponent->AddGold(Amount); }
 	inline bool AddItemToInventory(class UItemDataAsset* InItemDataAsset) { 
 		if (InventoryComponent)
-			return InventoryComponent->AddItemToInventory(InItemDataAsset);
+			return InventoryComponent->AddItem(InItemDataAsset);
 		else
 			return false;
 	}
-	inline void EquipItemFromInventory(uint8 InSlotIndex) {
-		if (InventoryComponent) InventoryComponent->EquipItemFromInventory(InSlotIndex);
+	inline void EquipItemFromInventory(EInvenSlotType InSlotType) {
+		if (InventoryComponent) InventoryComponent->EquipItem(InSlotType);
 	}
-	inline InvenSlotBase* GetInvenSlot(EInvenSlotType InSlotType) {
+	inline UInvenSlot* GetInvenSlot(EInvenSlotType InSlotType) {
 		return InventoryComponent ? InventoryComponent->GetInvenSlot(InSlotType) : nullptr;
 	}
 	

@@ -4,7 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "Inventory.h"
+#include "EInvenSlotType.h"
+#include "InvenSlot.h"
 #include "InventoryComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerGoldChange, int32, NewGold);
@@ -22,69 +23,69 @@ public:
 	// Sets default values for this component's properties
 	UInventoryComponent();
 
-	// 아이템을 인벤토리에 추가
+	// 인벤토리 기본 기능들 --------------------------------------------------------------------------------------
+
+	// 인벤토리에 아이템 추가
 	UFUNCTION(BlueprintCallable)
-	inline bool AddItemToInventory(class UItemDataAsset* InItemDataAsset) { 
-		return Inven.AddItem(InItemDataAsset);	/*인벤토리에 있는 아이템 추가 함수 실행*/ 
-	};
+	bool AddItem(class UItemDataAsset* InItemDataAsset);
 
-	// 인벤토리에 있는 아이템을 옮기는 함수
+	// 인벤토리에 있는 아이템 옮기기
 	UFUNCTION(BlueprintCallable)
-	inline void MoveItemFromInventory(EInvenSlotType InFromSlot, EInvenSlotType InToSlot) {
-		Inven.MoveItem(InFromSlot, InToSlot);
-	}
+	void MoveItem(EInvenSlotType InFromSlot, EInvenSlotType InToSlot);
 
-	// 인벤토리에 있는 아이템 사용
+	// 인벤토리의 특정 슬롯에 있는 아이템을 판매
 	UFUNCTION(BlueprintCallable)
-	inline void UseItemFromInventory(uint8 InSlotIndex) {
-		Inven.UseItem(InSlotIndex);	// 인벤토리에 있는 아이템 사용 함수 실행
-	}
+	int32 SellItem(EInvenSlotType InSlot);
 
-	// 인벤토리에 있는 무기 장비
+	// 특정 슬롯에 있는 아이템 사용
 	UFUNCTION(BlueprintCallable)
-	inline void EquipItemFromInventory(uint8 InSlotIndex) {
-		Inven.EquipItem(InSlotIndex);	// 인벤토리에 있는 무기 장비 함수 실행
-	}
+	void UseItem(EInvenSlotType InSlot);
 
-	// 인벤토리에 있는 슬롯 주소 리턴
-	inline InvenSlotBase* GetInvenSlot(EInvenSlotType InSlotType) { return Inven.GetInvenSlot(InSlotType); }
-
-	// 인벤토리에 들어있는 골드 양 확인
-	inline int32 GetGold() const { return Gold; }
+	// 특정 슬롯에 있는 무기 아이템 장비
+	UFUNCTION(BlueprintCallable)
+	void EquipItem(EInvenSlotType InSlot);
 
 	// 인벤토리에 골드 추가
 	inline void AddGold(int32 Amount) { SetGold(Gold + Amount); }
 
+
+	// Getter -----------------------------------------------------------------------------------------------
+
+	// 인벤토리에 있는 특정 슬롯 주소 리턴
+	inline UInvenSlot* GetInvenSlot(EInvenSlotType InSlotType) { return InvenSlots[InSlotType]; }
+
+	// 인벤토리에 들어있는 골드 양 확인
+	inline int32 GetGold() const { return Gold; }
+
+public:
 	// 골드 변환를 알리는 델리게이트
 	FOnPlayerGoldChange OnGoldChange;
 
-	// 테스트용 함수
-	UFUNCTION(BlueprintCallable)
-	inline void TestPrintInventory(){ Inven.TestPrintInventory(); }
+public:
+	// 테스트용 함수 ------------------------------------------------------------------------------------------
 
+	// 인벤토리 로그로 출력
 	UFUNCTION(BlueprintCallable)
-	inline void TestInventoryAddDefaultItems(class UDataTable* TestTable = nullptr);
+	void TestPrintInventory();
 
+	// 인벤토리에 기본 아이템 추가
 	UFUNCTION(BlueprintCallable)
-	inline void TestItemEquip(EInvenSlotType InSlotType) { Inven.EquipItem(static_cast<uint8>(InSlotType)); };
+	void TestInventoryAddDefaultItems(class UDataTable* TestTable = nullptr);
 
-	UFUNCTION(BlueprintCallable)
-	inline void TestUseItem(int32 InSlotIndex) { Inven.UseItem(InSlotIndex); };
+	// 골드 변화를 화면에 출력
+	UFUNCTION()
+	inline void TestPrintGoldChange(int32 NewGold) {
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, FString::Printf(TEXT("Gold changed to %d"), NewGold));
+	}
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-
 private:
 	// 골드에 변화가 있을 때 데이터 변화와 델리게이트 발동을 한번에 처리하기 위한 세터
 	inline void SetGold(int32 NewGold) { Gold = NewGold; OnGoldChange.Broadcast(Gold); }
 
-	UFUNCTION()
-	inline void TestGoldChange(int32 NewGold)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, FString::Printf(TEXT("Gold changed to %d"), NewGold));
-	}
 
 public:	
 
@@ -94,7 +95,22 @@ protected:
 	int32 Gold = 0;
 
 private:
-	// 인벤토리 객체
-	Inventory Inven;
+	// 비어있는 슬롯 반환
+	UInvenSlot* GetEmptySlot();
+
+	// 비어있는 스롯에 아이템 추가
+	bool AddItemToEmptySlot(class UItemDataAsset* InItemDataAsset);
+
+	// 적절한 인덱스인지 확인하는 함수
+	inline bool IsValidIndex(uint8 InSlotIndex) { return InSlotIndex < MaxSlotCount; }
+
+	// 최대 일반 슬롯 갯수
+	static const int8 MaxSlotCount = 10;
+
+	// 인벤토리 슬롯 맵
+	TMap<EInvenSlotType, UInvenSlot*> InvenSlots;
+
+	// 인벤토리의 소유자(플레이어)
+	class AActionPlayerCharacter* Owner = nullptr;
 		
 };

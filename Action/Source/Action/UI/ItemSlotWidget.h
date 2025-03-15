@@ -16,15 +16,16 @@ class ACTION_API UItemSlotWidget : public UUserWidget
 	
 public:
 	// 초기화용
-	void InitializeItemSlot(int32 InItemSlotIndex, class InvenSlotBase* InSlotData);
+	void InitializeItemSlot(int32 InItemSlotIndex, class UInvenSlot* InSlotData);
 
 	// SlotData를 기반으로 UI 갱신
+	UFUNCTION()
 	void RefreshSlot();
 
 
 	// Getters
 	inline int32 GetItemSlotIndex() const { return ItemSlotIndex; }
-	inline class InvenSlotBase* GetSlotData() const { return SlotData; }
+	inline class UInvenSlot* GetSlotData() const { return SlotData; }
 
 	// Setters
 
@@ -35,5 +36,5 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ItemSlot", meta = (BindWidget))
 	class UImage* ItemIcon;
 
-	class InvenSlotBase* SlotData = nullptr;
+	class UInvenSlot* SlotData = nullptr;
 };

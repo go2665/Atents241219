@@ -21,6 +21,8 @@ void ADropItem_Pickup::OnGetItem(AActor* InTarget)
 			{
 				if (PlayerState->AddItemToInventory(ItemDataAsset))	// 인벤토리에 추가 성공하면
 				{
+					GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Cyan,
+						FString::Printf(TEXT("Add Item to Inventory : %s, Success "), *ItemDataAsset->ItemName.ToString()));
 					Destroy();	// 아이템 제거
 				}
 			}

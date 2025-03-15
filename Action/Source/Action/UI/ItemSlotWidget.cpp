@@ -2,15 +2,15 @@
 
 
 #include "ItemSlotWidget.h"
-#include "Action/Inventory/InvenSlotBase.h"
+#include "Action/Inventory/InvenSlot.h"
 #include "Action/Item/ItemData/ItemDataAsset.h"
 #include "Components/Image.h"
 
-void UItemSlotWidget::InitializeItemSlot(int32 InItemSlotIndex, InvenSlotBase* InSlotData)
+void UItemSlotWidget::InitializeItemSlot(int32 InItemSlotIndex, UInvenSlot* InSlotData)
 {
 	ItemSlotIndex = InItemSlotIndex; 
 	SlotData = InSlotData;
-	SlotData->OnSlotUpdated = std::bind(&UItemSlotWidget::RefreshSlot, this);	
+	SlotData->OnSlotUpdated.AddDynamic(this, &UItemSlotWidget::RefreshSlot);
 }
 
 void UItemSlotWidget::RefreshSlot()
