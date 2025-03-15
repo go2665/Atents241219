@@ -101,7 +101,7 @@ private:
 	// 비어있는 스롯에 아이템 추가
 	bool AddItemToEmptySlot(class UItemDataAsset* InItemDataAsset);
 
-	// 적절한 인덱스인지 확인하는 함수
+	// 적절한 인덱스인지 확인하는 함수(가능한 사용하지 말 것. EInvenSlotType을 사용해 슬롯에 접근하는 것을 권장)
 	inline bool IsValidIndex(uint8 InSlotIndex) { return InSlotIndex < MaxSlotCount; }
 
 	// 최대 일반 슬롯 갯수

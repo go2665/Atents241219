@@ -5,7 +5,6 @@
 #include "Components/CanvasPanel.h"
 #include "Components/UniformGridPanel.h"
 #include "ItemSlotWidget.h"
-#include "Action/Inventory/Inventory.h"
 #include "Action/Player/ActionPlayerState.h"
 
 void UInventoryWidget::NativeConstruct()
