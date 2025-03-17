@@ -18,6 +18,9 @@ public:
 	virtual void NativeConstruct() override;
 	void RefreshInventory();
 	
+private:
+	UFUNCTION()
+	void OnSlotClicked(int32 InSlotIndex);
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (BindWidget))

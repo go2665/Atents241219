@@ -39,6 +39,7 @@ void UInventoryWidget::NativeConstruct()
 					if (ItemSlotWidget)
 					{
 						ItemSlotWidget->InitializeItemSlot(i, PlayerState->GetInvenSlot(static_cast<EInvenSlotType>(i)));
+						ItemSlotWidget->OnSlotClicked.AddDynamic(this, &UInventoryWidget::OnSlotClicked);
 						ItemSlotWidgets.Add(ItemSlotWidget);
 					}
 				}
@@ -53,4 +54,9 @@ void UInventoryWidget::RefreshInventory()
 	{
 		ItemSlotWidget->RefreshSlot();
 	}
+}
+
+void UInventoryWidget::OnSlotClicked(int32 InSlotIndex)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Inventory : Slot(%d) Clicked"), InSlotIndex);
 }

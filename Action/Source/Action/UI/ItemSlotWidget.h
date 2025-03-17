@@ -6,6 +6,8 @@
 #include "Blueprint/UserWidget.h"
 #include "ItemSlotWidget.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSlotClicked, int32, InItemSlotIndex);
+
 /**
  * 
  */
@@ -16,18 +18,23 @@ class ACTION_API UItemSlotWidget : public UUserWidget
 	
 public:
 	// 초기화용
-	void InitializeItemSlot(int32 InItemSlotIndex, class UInvenSlot* InSlotData);
+	virtual void InitializeItemSlot(int32 InItemSlotIndex, class UInvenSlot* InSlotData);
 
 	// SlotData를 기반으로 UI 갱신
 	UFUNCTION()
 	void RefreshSlot();
 
+	// Delegate
+	FOnSlotClicked OnSlotClicked;
 
 	// Getters
 	inline int32 GetItemSlotIndex() const { return ItemSlotIndex; }
 	inline class UInvenSlot* GetSlotData() const { return SlotData; }
 
 	// Setters
+
+protected:
+	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent);
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ItemSlot")
@@ -45,5 +52,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ItemSlot", meta = (BindWidget))
 	class UTextBlock* MaxCountText;
 
+	UPROPERTY()
 	class UInvenSlot* SlotData = nullptr;
 };
