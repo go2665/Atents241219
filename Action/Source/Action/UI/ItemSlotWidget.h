@@ -34,7 +34,10 @@ public:
 	// Setters
 
 protected:
-	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent);
+	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent);	
+	
+	virtual void ShowSlotVisibility();
+	virtual void ClearSlotWidget();
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ItemSlot")

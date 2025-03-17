@@ -7,6 +7,9 @@
 #include "ItemSlotWidget.h"
 #include "Action/Player/ActionPlayerState.h"
 
+#include "Blueprint/WidgetLayoutLibrary.h"
+#include "Components/CanvasPanelSlot.h"
+
 void UInventoryWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -48,6 +51,32 @@ void UInventoryWidget::NativeConstruct()
 				TempSlotWidget->InitializeItemSlot(static_cast<int32>(EInvenSlotType::Temporary),
 					PlayerState->GetInvenSlot(EInvenSlotType::Temporary));
 				
+			}
+		}
+	}
+}
+
+void UInventoryWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+
+	if (TempSlotWidget)
+	{
+		FVector2D MousePosition;
+		if (UWidgetLayoutLibrary::GetMousePositionScaledByDPI(
+			GetWorld()->GetFirstPlayerController(), MousePosition.X, MousePosition.Y))
+		{
+			UCanvasPanelSlot* CanvasSlot = Cast<UCanvasPanelSlot>(TempSlotWidget->Slot);
+			if (CanvasSlot)
+			{
+				FGeometry CachedGeometry = GetCachedGeometry();				;
+				GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Green, FString::Printf(TEXT("CachedGeometry: %s"), *CachedGeometry.GetAbsolutePosition().ToString()));
+
+
+				FVector2D LocalMousePosition = MousePosition - CachedGeometry.GetAbsolutePosition();
+				GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Green, FString::Printf(TEXT("LocalMousePosition: %s"), *LocalMousePosition.ToString()));
+
+				CanvasSlot->SetPosition(LocalMousePosition);
 			}
 		}
 	}

@@ -30,14 +30,12 @@ void UItemSlotWidget::RefreshSlot()
 		CountText->SetVisibility(ESlateVisibility::HitTestInvisible);
 		SeparatorText->SetVisibility(ESlateVisibility::HitTestInvisible);
 		MaxCountText->SetVisibility(ESlateVisibility::HitTestInvisible);
+
+		ShowSlotVisibility();
 	}
 	else
 	{
-		ItemIcon->SetBrushFromTexture(nullptr);
-		ItemIcon->SetBrushTintColor(FLinearColor::Black);
-		CountText->SetVisibility(ESlateVisibility::Hidden);
-		SeparatorText->SetVisibility(ESlateVisibility::Hidden);
-		MaxCountText->SetVisibility(ESlateVisibility::Hidden);
+		ClearSlotWidget();
 	}
 }
 
@@ -53,5 +51,19 @@ FReply UItemSlotWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, con
 	}
 
 	return Reply;
+}
+
+void UItemSlotWidget::ShowSlotVisibility()
+{
+	SetVisibility(ESlateVisibility::Visible);
+}
+
+void UItemSlotWidget::ClearSlotWidget()
+{
+	ItemIcon->SetBrushFromTexture(nullptr);
+	ItemIcon->SetBrushTintColor(FLinearColor::Black);
+	CountText->SetVisibility(ESlateVisibility::Hidden);
+	SeparatorText->SetVisibility(ESlateVisibility::Hidden);
+	MaxCountText->SetVisibility(ESlateVisibility::Hidden);
 }
 

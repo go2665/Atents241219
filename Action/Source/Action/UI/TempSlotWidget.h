@@ -16,7 +16,17 @@ class ACTION_API UTempSlotWidget : public UItemSlotWidget
 	GENERATED_BODY()
 	
 public:
-	void UpdataLocation(FVector2D InLocation);
+	virtual void ShowSlotVisibility() override;
+	virtual void ClearSlotWidget() override;
 
 	inline bool IsEmpty() const { return SlotData->IsEmpty(); }
+
+protected:
+	virtual void NativeConstruct();
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
+private:
+	void UpdateLocation();
+
+	class APlayerController* PlayerController = nullptr;
 };

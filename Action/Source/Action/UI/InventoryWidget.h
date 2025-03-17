@@ -17,10 +17,13 @@ class ACTION_API UInventoryWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
-public:
-	virtual void NativeConstruct() override;
+public:	
 	void RefreshInventory();
 	
+protected:
+	virtual void NativeConstruct() override;
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
 private:
 	UFUNCTION()
 	void OnSlotClicked(int32 InSlotIndex);
