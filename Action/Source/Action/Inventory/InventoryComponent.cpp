@@ -105,6 +105,8 @@ void UInventoryComponent::MoveItem(EInvenSlotType InFromSlot, EInvenSlotType InT
 				int32 TempItemCount = ToSlot->GetItemCount();
 				ToSlot->SetItem(FromSlot->GetItemDataAsset(), FromSlot->GetItemCount());
 				FromSlot->SetItem(TempItemData, TempItemCount);
+
+				//Swap(FromSlot, ToSlot);	// FromSlot과 ToSlot을 스왑
 			}
 		}
 	}

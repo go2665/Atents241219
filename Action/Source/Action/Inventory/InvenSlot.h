@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "Action/Item/ItemData/ItemDataAsset.h"
 #include "InvenSlot.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSlotUpdatedDelegate);
@@ -30,7 +31,7 @@ public:
 	inline void AddItemCount(int32 Count) { SetItemCount(ItemCount + Count); }
 
 	// 아이템 설정(종류와 개수)
-	inline void SetItem(class UItemDataAsset* InItemDataAsset, int32 Count = 1) {
+	inline void SetItem(UItemDataAsset* InItemDataAsset, int32 Count = 1) {
 		if (ItemDataAsset != InItemDataAsset || ItemCount != Count)
 		{
 			ItemDataAsset = InItemDataAsset;
@@ -44,26 +45,13 @@ public:
 
 	// getter
 	inline int8 GetSlotIndex() const { return SlotIndex; }
-	inline class UItemDataAsset* GetItemDataAsset() const { return ItemDataAsset; }
+	inline UItemDataAsset* GetItemDataAsset() const { return ItemDataAsset; }
 	inline int32 GetItemCount() const { return ItemCount; }	
+	inline int32 GetMaxStackCount() const { return ItemDataAsset ? ItemDataAsset->ItemStackCount : 0; }
 
 	// check
 	inline bool IsEmpty() const { return ItemDataAsset == nullptr; }
 
-	//// operator
-	//UInvenSlot& operator=(const UInvenSlot& Other)
-	//{
-	//	if (this == &Other)
-	//	{
-	//		return *this;	// 자기 자신과 대입이면 그냥 리턴
-	//	}
-
-	//	ItemDataAsset = Other.ItemDataAsset;
-	//	ItemCount = Other.ItemCount;
-	//	OnSlotUpdated.Broadcast();
-
-	//	return *this;
-	//}
 
 private:
 	// setter
@@ -91,7 +79,7 @@ protected:
 	int8 SlotIndex = -1;
 
 	// 슬롯이 현재 가지고 있는 아이템 데이터
-	class UItemDataAsset* ItemDataAsset = nullptr;
+	UItemDataAsset* ItemDataAsset = nullptr;
 
 	// 슬롯에 들어있는 현재 아이템의 개수
 	int32 ItemCount = 0;

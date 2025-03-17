@@ -5,12 +5,15 @@
 #include "Action/Inventory/InvenSlot.h"
 #include "Action/Item/ItemData/ItemDataAsset.h"
 #include "Components/Image.h"
+#include "Components/TextBlock.h"
 
 void UItemSlotWidget::InitializeItemSlot(int32 InItemSlotIndex, UInvenSlot* InSlotData)
 {
 	ItemSlotIndex = InItemSlotIndex; 
 	SlotData = InSlotData;
 	SlotData->OnSlotUpdated.AddDynamic(this, &UItemSlotWidget::RefreshSlot);
+
+	RefreshSlot();
 }
 
 void UItemSlotWidget::RefreshSlot()
@@ -20,11 +23,21 @@ void UItemSlotWidget::RefreshSlot()
 	{
 		ItemIcon->SetBrushFromTexture(Data->ItemIcon);
 		ItemIcon->SetBrushTintColor(FLinearColor::White);
+
+		CountText->SetText(FText::AsNumber(SlotData->GetItemCount()));
+		MaxCountText->SetText(FText::AsNumber(SlotData->GetMaxStackCount()));
+
+		CountText->SetVisibility(ESlateVisibility::HitTestInvisible);
+		SeparatorText->SetVisibility(ESlateVisibility::HitTestInvisible);
+		MaxCountText->SetVisibility(ESlateVisibility::HitTestInvisible);
 	}
 	else
 	{
 		ItemIcon->SetBrushFromTexture(nullptr);
 		ItemIcon->SetBrushTintColor(FLinearColor::Black);
+		CountText->SetVisibility(ESlateVisibility::Hidden);
+		SeparatorText->SetVisibility(ESlateVisibility::Hidden);
+		MaxCountText->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 

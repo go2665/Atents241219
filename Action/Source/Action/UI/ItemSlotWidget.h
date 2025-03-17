@@ -36,5 +36,14 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ItemSlot", meta = (BindWidget))
 	class UImage* ItemIcon;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ItemSlot", meta = (BindWidget))
+	class UTextBlock* CountText;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ItemSlot", meta = (BindWidget))
+	class UTextBlock* SeparatorText;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ItemSlot", meta = (BindWidget))
+	class UTextBlock* MaxCountText;
+
 	class UInvenSlot* SlotData = nullptr;
 };
