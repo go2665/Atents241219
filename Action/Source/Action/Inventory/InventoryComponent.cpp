@@ -41,7 +41,7 @@ bool UInventoryComponent::AddItem(UItemDataAsset* InItemDataAsset)
 		{
 			for (int i = 0; i < MaxSlotCount; i++)
 			{
-				UInvenSlot* Slot = InvenSlots[static_cast<EInvenSlotType>(i)];
+				UInvenSlot* Slot = GetInvenSlot(static_cast<EInvenSlotType>(i));
 				if (Slot->GetItemDataAsset() == InItemDataAsset					// 같은 종류의 아이템이고
 					&& Slot->GetItemCount() < InItemDataAsset->ItemStackCount)	// 빈칸이 있다.
 				{
@@ -178,21 +178,24 @@ void UInventoryComponent::TestPrintInventory()
 	FString PrintString = TEXT("");
 	for (int i = 0; i < MaxSlotCount; i++)
 	{
-		UInvenSlot* InvenSlot = InvenSlots[static_cast<EInvenSlotType>(i)];
-		UItemDataAsset* ItemData = InvenSlot->GetItemDataAsset();
-		FString Item;
-		if (ItemData)
+		UInvenSlot* InvenSlot = GetInvenSlot(static_cast<EInvenSlotType>(i));
+		if (InvenSlot)
 		{
-			Item = FString::Printf(TEXT("[%d] : %s x %d, "), i, *ItemData->ItemName.ToString(), InvenSlot->GetItemCount());
+			UItemDataAsset* ItemData = InvenSlot->GetItemDataAsset();
+			FString Item;
+			if (ItemData)
+			{
+				Item = FString::Printf(TEXT("[%d] : %s x %d, "), i, *ItemData->ItemName.ToString(), InvenSlot->GetItemCount());
+			}
+			else
+			{
+				Item = FString::Printf(TEXT("[%d] : Empty, "), i);
+			}
+			PrintString += Item;
 		}
-		else
-		{
-			Item = FString::Printf(TEXT("[%d] : Empty, "), i);
-		}
-		PrintString += Item;
 	}
 
-	UInvenSlot* TempSlot = InvenSlots[EInvenSlotType::Temporary];
+	UInvenSlot* TempSlot = GetInvenSlot(EInvenSlotType::Temporary);
 	UItemDataAsset* TempItemData = TempSlot->GetItemDataAsset();
 	FString TempItem;
 	if (TempItemData)
@@ -205,7 +208,7 @@ void UInventoryComponent::TestPrintInventory()
 	}
 	PrintString += TempItem;
 
-	UItemDataAsset* WeaponItemData = InvenSlots[EInvenSlotType::Weapon]->GetItemDataAsset();
+	UItemDataAsset* WeaponItemData = GetInvenSlot(EInvenSlotType::Weapon)->GetItemDataAsset();
 	FString WeaponItem;
 	if (WeaponItemData)
 	{
@@ -282,7 +285,7 @@ UInvenSlot* UInventoryComponent::GetEmptySlot()
 	for (int i = 0; i < MaxSlotCount; ++i)
 	{
 		// InvenSlots 0~9는 반드시 있어야함.없을 경우 터지는게 나음
-		UInvenSlot* InvenSlot = InvenSlots[static_cast<EInvenSlotType>(i)];
+		UInvenSlot* InvenSlot = GetInvenSlot(static_cast<EInvenSlotType>(i));
 		if (InvenSlot->IsEmpty())
 		{
 			EmptySlot = InvenSlot;

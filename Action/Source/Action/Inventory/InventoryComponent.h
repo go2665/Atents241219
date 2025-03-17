@@ -52,7 +52,12 @@ public:
 	// Getter -----------------------------------------------------------------------------------------------
 
 	// 인벤토리에 있는 특정 슬롯 주소 리턴
-	inline UInvenSlot* GetInvenSlot(EInvenSlotType InSlotType) { return InvenSlots[InSlotType]; }
+	inline UInvenSlot* GetInvenSlot(EInvenSlotType InSlotType) {
+		if (InvenSlots.Contains(InSlotType)) 
+			return InvenSlots[InSlotType]; 
+		else 
+			return nullptr;
+	}
 
 	// 인벤토리에 들어있는 골드 양 확인
 	inline int32 GetGold() const { return Gold; }
@@ -108,6 +113,7 @@ private:
 	static const int8 MaxSlotCount = 10;
 
 	// 인벤토리 슬롯 맵
+	UPROPERTY()				// UPROPERTY를 붙이지 않으면 UInvenSlot*가 가비지 콜랙팅의 대상이 된다.
 	TMap<EInvenSlotType, UInvenSlot*> InvenSlots;
 
 	// 인벤토리의 소유자(플레이어)
