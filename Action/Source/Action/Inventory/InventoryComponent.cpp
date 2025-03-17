@@ -31,6 +31,16 @@ UInventoryComponent::UInventoryComponent()
 	InvenSlots.Add(EInvenSlotType::Weapon, WeaponSlot);
 }
 
+void UInventoryComponent::InitInventory(AActionPlayerCharacter* InOwner)
+{
+	for(auto& Elem : InvenSlots)
+	{
+		Elem.Value->ClearSlot();
+	}
+
+	Owner = InOwner;
+}
+
 bool UInventoryComponent::AddItem(UItemDataAsset* InItemDataAsset)
 {
 	bool bIsSuccess = false;
@@ -271,10 +281,10 @@ void UInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UWorld* World = GetWorld();
-	APlayerController* PlayerController = World->GetFirstPlayerController();
-	AActionPlayerCharacter* Player = Cast<AActionPlayerCharacter>(PlayerController->GetPawn());
-	Owner = Player;
+	//UWorld* World = GetWorld();
+	//APlayerController* PlayerController = World->GetFirstPlayerController();
+	//AActionPlayerCharacter* Player = Cast<AActionPlayerCharacter>(PlayerController->GetPawn());
+	//Owner = Player;
 
 	OnGoldChange.AddDynamic(this, &UInventoryComponent::TestPrintGoldChange);	// 골드 변화 델리게이트에 함수 추가
 }

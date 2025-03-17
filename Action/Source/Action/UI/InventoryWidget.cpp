@@ -28,7 +28,7 @@ void UInventoryWidget::NativeConstruct()
 		APlayerController* PlayerController = World->GetFirstPlayerController();
 		if (PlayerController)
 		{
-			AActionPlayerState* PlayerState = PlayerController->GetPlayerState<AActionPlayerState>();	
+			PlayerState = PlayerController->GetPlayerState<AActionPlayerState>();	
 
 			if (PlayerState)
 			{
@@ -38,11 +38,16 @@ void UInventoryWidget::NativeConstruct()
 					UItemSlotWidget* ItemSlotWidget = Cast<UItemSlotWidget>(ItemSlotsGrid->GetChildAt(i));
 					if (ItemSlotWidget)
 					{
-						ItemSlotWidget->InitializeItemSlot(i, PlayerState->GetInvenSlot(static_cast<EInvenSlotType>(i)));
+						EInvenSlotType SlotType = static_cast<EInvenSlotType>(i);
+						ItemSlotWidget->InitializeItemSlot(i, PlayerState->GetInvenSlot(SlotType));
 						ItemSlotWidget->OnSlotClicked.AddDynamic(this, &UInventoryWidget::OnSlotClicked);
 						ItemSlotWidgets.Add(ItemSlotWidget);
 					}
 				}
+
+				TempSlotWidget->InitializeItemSlot(static_cast<int32>(EInvenSlotType::Temporary),
+					PlayerState->GetInvenSlot(EInvenSlotType::Temporary));
+				
 			}
 		}
 	}
@@ -59,4 +64,15 @@ void UInventoryWidget::RefreshInventory()
 void UInventoryWidget::OnSlotClicked(int32 InSlotIndex)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Inventory : Slot(%d) Clicked"), InSlotIndex);
+
+	if (TempSlotWidget->IsEmpty())
+	{
+		// 임시 슬롯이 비어있으면 InSlotIndex슬롯에서 임시 슬롯으로 아이템 이동
+		PlayerState->MoveItemFromInventory(static_cast<EInvenSlotType>(InSlotIndex), EInvenSlotType::Temporary);
+	}
+	else
+	{
+		// 임시 슬롯이 차있으면 InSlotIndex슬롯과 임시 슬롯 아이템 교환
+		PlayerState->MoveItemFromInventory(EInvenSlotType::Temporary, static_cast<EInvenSlotType>(InSlotIndex));
+	}	
 }

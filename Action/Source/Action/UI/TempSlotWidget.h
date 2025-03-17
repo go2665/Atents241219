@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "ItemSlotWidget.h"
+#include "Action/Inventory/InvenSlot.h"
 #include "TempSlotWidget.generated.h"
 
 /**
@@ -16,4 +17,6 @@ class ACTION_API UTempSlotWidget : public UItemSlotWidget
 	
 public:
 	void UpdataLocation(FVector2D InLocation);
+
+	inline bool IsEmpty() const { return SlotData->IsEmpty(); }
 };

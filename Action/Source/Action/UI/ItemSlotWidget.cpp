@@ -43,12 +43,15 @@ void UItemSlotWidget::RefreshSlot()
 
 FReply UItemSlotWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
+	FReply Reply = Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
 	if (InMouseEvent.IsMouseButtonDown(EKeys::LeftMouseButton))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Left Mouse Button Down"));
 		OnSlotClicked.Broadcast(ItemSlotIndex);
+
+		Reply = FReply::Handled();	// 이벤트 처리 완료
 	}
 
-	return Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
+	return Reply;
 }
 

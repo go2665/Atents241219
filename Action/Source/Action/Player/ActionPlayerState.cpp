@@ -2,6 +2,7 @@
 
 
 #include "ActionPlayerState.h"
+#include "ActionPlayerCharacter.h"
 
 AActionPlayerState::AActionPlayerState()
 {
@@ -11,4 +12,5 @@ AActionPlayerState::AActionPlayerState()
 void AActionPlayerState::BeginPlay()
 {
 	Super::BeginPlay();
+	InventoryComponent->InitInventory(Cast<AActionPlayerCharacter>(this->GetPawn()));
 }

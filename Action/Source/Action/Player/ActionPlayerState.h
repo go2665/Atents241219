@@ -30,6 +30,9 @@ public:
 		else
 			return false;
 	}
+	inline void MoveItemFromInventory(EInvenSlotType InFromSlotType, EInvenSlotType InToSlotType) {
+		if (InventoryComponent) InventoryComponent->MoveItem(InFromSlotType, InToSlotType);
+	}
 	inline void EquipItemFromInventory(EInvenSlotType InSlotType) {
 		if (InventoryComponent) InventoryComponent->EquipItem(InSlotType);
 	}

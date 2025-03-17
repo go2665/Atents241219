@@ -25,6 +25,9 @@ public:
 
 	// 인벤토리 기본 기능들 --------------------------------------------------------------------------------------
 
+	// 인벤토리 초기화
+	void InitInventory(class AActionPlayerCharacter* InOwner);
+
 	// 인벤토리에 아이템 추가
 	UFUNCTION(BlueprintCallable)
 	bool AddItem(class UItemDataAsset* InItemDataAsset);
