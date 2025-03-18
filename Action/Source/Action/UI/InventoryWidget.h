@@ -8,6 +8,7 @@
 #include "ItemSlotWidget.h"
 #include "TempSlotWidget.h"
 #include "EquipSlotWidget.h"
+
 #include "InventoryWidget.generated.h"
 
 /**
@@ -46,6 +47,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (BindWidget))
 	class UTextBlock* GoldTextBlock;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (BindWidget))
+	class UImage* SellIcon;
 	
 	UPROPERTY()
 	TArray<UItemSlotWidget*> ItemSlotWidgets;
@@ -56,4 +60,7 @@ private:
 
 	UFUNCTION()
 	void RefreshGoldText(int32 NewGold);
+
+	UFUNCTION()
+	void OnSellIconClicked();
 };

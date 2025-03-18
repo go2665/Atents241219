@@ -286,6 +286,7 @@ void UInventoryComponent::BeginPlay()
 	//AActionPlayerCharacter* Player = Cast<AActionPlayerCharacter>(PlayerController->GetPawn());
 	//Owner = Player;
 
+	SetGold(0);
 	//OnGoldChange.AddDynamic(this, &UInventoryComponent::TestPrintGoldChange);	// 골드 변화 델리게이트에 함수 추가
 }
 

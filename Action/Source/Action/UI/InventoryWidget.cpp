@@ -6,6 +6,7 @@
 #include "Components/UniformGridPanel.h"
 #include "Components/CanvasPanelSlot.h"
 #include "Components/TextBlock.h"
+#include "Components/Image.h"
 #include "ItemSlotWidget.h"
 #include "Action/Player/ActionPlayerState.h"
 #include "Action/Item/Interface/EquipableItem.h"
@@ -61,6 +62,9 @@ void UInventoryWidget::NativeConstruct()
 			}
 		}
 	}
+
+	GoldTextBlock->SetText(FText::AsNumber(0));
+	SellIcon->OnMouseButtonDownEvent.BindUFunction(this, FName("OnSellIconClicked"));
 }
 
 void UInventoryWidget::RefreshInventory()
@@ -107,4 +111,15 @@ void UInventoryWidget::RefreshGoldText(int32 NewGold)
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, FString::Printf(TEXT("Gold changed to %d"), NewGold));
 	GoldTextBlock->SetText(FText::AsNumber(NewGold));
+}
+
+void UInventoryWidget::OnSellIconClicked()
+{
+	UInvenSlot* TempSlot = TempSlotWidget->GetSlotData();
+	if (TempSlot && !TempSlot->IsEmpty())
+	{
+		UItemDataAsset* DataAsset = TempSlot->GetItemDataAsset();
+		PlayerState->AddGold(DataAsset->ItemPrice * TempSlot->GetItemCount() * 0.5f);
+		TempSlot->ClearSlot();
+	}
 }
