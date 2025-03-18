@@ -7,6 +7,7 @@
 #include "ItemSlotWidget.h"
 #include "Action/Player/ActionPlayerState.h"
 #include "Components/CanvasPanelSlot.h"
+#include "Action/Item/Interface/EquipableItem.h"
 
 
 void UInventoryWidget::NativeConstruct()
@@ -42,7 +43,7 @@ void UInventoryWidget::NativeConstruct()
 					{
 						EInvenSlotType SlotType = static_cast<EInvenSlotType>(i);
 						ItemSlotWidget->InitializeItemSlot(i, PlayerState->GetInvenSlot(SlotType));
-						ItemSlotWidget->OnSlotClicked.AddDynamic(this, &UInventoryWidget::OnSlotClicked);
+						ItemSlotWidget->OnSlotClicked.AddDynamic(this, &UInventoryWidget::OnInvenSlotClicked);
 						ItemSlotWidgets.Add(ItemSlotWidget);
 					}
 				}
@@ -50,6 +51,10 @@ void UInventoryWidget::NativeConstruct()
 				TempSlotWidget->InitializeItemSlot(static_cast<int32>(EInvenSlotType::Temporary),
 					PlayerState->GetInvenSlot(EInvenSlotType::Temporary));
 				TempSlotWidget->SetParentCanvasSlot(Cast<UCanvasPanelSlot>(Slot));
+
+				EquipSlotWidget->InitializeItemSlot(static_cast<int32>(EInvenSlotType::Weapon),
+					PlayerState->GetInvenSlot(EInvenSlotType::Weapon));
+				EquipSlotWidget->OnSlotClicked.AddDynamic(this, &UInventoryWidget::OnEquipSlotClicked);
 			}
 		}
 	}
@@ -63,7 +68,7 @@ void UInventoryWidget::RefreshInventory()
 	}
 }
 
-void UInventoryWidget::OnSlotClicked(int32 InSlotIndex)
+void UInventoryWidget::OnInvenSlotClicked(int32 InSlotIndex)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Inventory : Slot(%d) Clicked"), InSlotIndex);
 
@@ -77,4 +82,20 @@ void UInventoryWidget::OnSlotClicked(int32 InSlotIndex)
 		// 임시 슬롯이 차있으면 InSlotIndex슬롯과 임시 슬롯 아이템 교환
 		PlayerState->MoveItemFromInventory(EInvenSlotType::Temporary, static_cast<EInvenSlotType>(InSlotIndex));
 	}	
+}
+
+void UInventoryWidget::OnEquipSlotClicked(int32 InSlotIndex)
+{
+	UInvenSlot* TempSlot = TempSlotWidget->GetSlotData();
+	if (TempSlot)
+	{
+		UItemDataAsset* DataAsset = TempSlot->GetItemDataAsset();
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("Equip Item : %s"), *DataAsset->ItemName.ToString()));
+		
+		if (Cast<IEquipableItem>(DataAsset))	// 임시 슬롯에 있는 아이템이 장비 아이템이면 장비
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, TEXT("Equip success"));
+			PlayerState->EquipItemFromInventory(EInvenSlotType::Temporary);
+		}
+	}
 }

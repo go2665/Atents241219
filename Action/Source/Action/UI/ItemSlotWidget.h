@@ -22,7 +22,7 @@ public:
 
 	// SlotData를 기반으로 UI 갱신
 	UFUNCTION()
-	void RefreshSlot();
+	virtual void RefreshSlot();
 
 	// Delegate
 	FOnSlotClicked OnSlotClicked;
