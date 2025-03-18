@@ -30,6 +30,7 @@ public:
 		else
 			return false;
 	}
+	inline FOnPlayerGoldChange& GetOnGoldChange() { return InventoryComponent->OnGoldChange; }
 	inline void MoveItemFromInventory(EInvenSlotType InFromSlotType, EInvenSlotType InToSlotType) {
 		if (InventoryComponent) InventoryComponent->MoveItem(InFromSlotType, InToSlotType);
 	}
@@ -38,6 +39,9 @@ public:
 	}
 	inline UInvenSlot* GetInvenSlot(EInvenSlotType InSlotType) {
 		return InventoryComponent ? InventoryComponent->GetInvenSlot(InSlotType) : nullptr;
+	}
+	inline void BindOnGoldChange(const FOnPlayerGoldChange::FDelegate& Delegate) {
+		if (InventoryComponent) InventoryComponent->OnGoldChange.Add(Delegate);
 	}
 	
 protected:

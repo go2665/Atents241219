@@ -4,9 +4,10 @@
 #include "InventoryWidget.h"
 #include "Components/CanvasPanel.h"
 #include "Components/UniformGridPanel.h"
+#include "Components/CanvasPanelSlot.h"
+#include "Components/TextBlock.h"
 #include "ItemSlotWidget.h"
 #include "Action/Player/ActionPlayerState.h"
-#include "Components/CanvasPanelSlot.h"
 #include "Action/Item/Interface/EquipableItem.h"
 
 
@@ -55,6 +56,8 @@ void UInventoryWidget::NativeConstruct()
 				EquipSlotWidget->InitializeItemSlot(static_cast<int32>(EInvenSlotType::Weapon),
 					PlayerState->GetInvenSlot(EInvenSlotType::Weapon));
 				EquipSlotWidget->OnSlotClicked.AddDynamic(this, &UInventoryWidget::OnEquipSlotClicked);
+								
+				PlayerState->GetOnGoldChange().AddDynamic(this, &UInventoryWidget::RefreshGoldText);
 			}
 		}
 	}
@@ -98,4 +101,10 @@ void UInventoryWidget::OnEquipSlotClicked(int32 InSlotIndex)
 			PlayerState->EquipItemFromInventory(EInvenSlotType::Temporary);
 		}
 	}
+}
+
+void UInventoryWidget::RefreshGoldText(int32 NewGold)
+{
+	//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, FString::Printf(TEXT("Gold changed to %d"), NewGold));
+	GoldTextBlock->SetText(FText::AsNumber(NewGold));
 }

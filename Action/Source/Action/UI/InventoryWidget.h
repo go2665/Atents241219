@@ -43,6 +43,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (BindWidget))
 	UEquipSlotWidget* EquipSlotWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (BindWidget))
+	class UTextBlock* GoldTextBlock;
 	
 	UPROPERTY()
 	TArray<UItemSlotWidget*> ItemSlotWidgets;
@@ -50,4 +53,7 @@ protected:
 private:
 
 	class AActionPlayerState* PlayerState = nullptr;
+
+	UFUNCTION()
+	void RefreshGoldText(int32 NewGold);
 };
