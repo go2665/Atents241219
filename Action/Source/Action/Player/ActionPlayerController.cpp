@@ -212,11 +212,14 @@ void AActionPlayerController::OnInventoryOpen(bool bIsOpen)
 		{
 			bShowMouseCursor = true;
 			InputSystem->RemoveMappingContext(MovementContext);	// 인풋 시스템에서 이동용 컨택스트 제거
+			SetInputMode(FInputModeGameAndUI());
 		}
 		else
 		{
 			bShowMouseCursor = false;
 			InputSystem->AddMappingContext(MovementContext, MovementInputPriority);
+			SetInputMode(FInputModeGameOnly());
+
 		}
 	}
 }
