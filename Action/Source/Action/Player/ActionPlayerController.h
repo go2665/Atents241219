@@ -34,26 +34,32 @@ protected:
 
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input Setup")
-	class UInputMappingContext* DefaultContext = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input Setup|Movement")
+	class UInputMappingContext* MovementContext = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input Setup")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input Setup|Movement")
 	class UInputAction* MoveAction = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input Setup")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input Setup|Movement")
 	class UInputAction* LookAction = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input Setup")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input Setup|Movement")
 	class UInputAction* SprintAction = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input Setup")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input Setup|Movement")
 	class UInputAction* RollAction = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input Setup")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input Setup|Movement")
 	class UInputAction* AttackAction = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input Setup")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input Setup|Movement")
 	class UInputAction* TestAction = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input Setup|UI")
+	class UInputMappingContext* UserInterfaceContext = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input Setup|UI")
+	class UInputAction* InventoryAction = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera Setup")
 	float CameraPitchMin = -40.0f;

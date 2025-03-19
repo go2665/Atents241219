@@ -7,6 +7,7 @@
 #include "Components/CanvasPanelSlot.h"
 #include "Components/TextBlock.h"
 #include "Components/Image.h"
+#include "Components/Button.h"
 #include "ItemSlotWidget.h"
 #include "Action/Player/ActionPlayerState.h"
 #include "Action/Item/Interface/EquipableItem.h"
@@ -65,6 +66,33 @@ void UInventoryWidget::NativeConstruct()
 
 	GoldTextBlock->SetText(FText::AsNumber(0));
 	SellIcon->OnMouseButtonDownEvent.BindUFunction(this, FName("OnSellIconClicked"));
+
+	CloseButton->OnClicked.AddDynamic(this, &UInventoryWidget::OnCloseClicked);
+	
+}
+
+void UInventoryWidget::OpenInventory()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, TEXT("Open Inventory"));
+	SetVisibility(ESlateVisibility::Visible);
+}
+
+void UInventoryWidget::CloseInventory()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, TEXT("Close Inventory"));
+	SetVisibility(ESlateVisibility::Hidden);
+}
+
+void UInventoryWidget::ToggleInventory()
+{
+	if (IsVisible())
+	{
+		CloseInventory();	// 보이면 닫고
+	}
+	else
+	{
+		OpenInventory();	// 안보이면 열기
+	}
 }
 
 void UInventoryWidget::RefreshInventory()
@@ -122,4 +150,9 @@ void UInventoryWidget::OnSellIconClicked()
 		PlayerState->AddGold(DataAsset->ItemPrice * TempSlot->GetItemCount() * 0.5f);
 		TempSlot->ClearSlot();
 	}
+}
+
+void UInventoryWidget::OnCloseClicked()
+{
+	CloseInventory();
 }

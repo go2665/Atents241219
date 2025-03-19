@@ -21,9 +21,9 @@ void AActionPlayerController::BeginPlay()
 	{
 		// 로컬 플레이어가 있으면 향상된 입력 로컬 플레이어 서브시스템 가져오기
 		UEnhancedInputLocalPlayerSubsystem* InputSystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
-		if (InputSystem && DefaultContext)	// 인풋 시스템과 입력 컨택스트가 둘 다 있으면
+		if (InputSystem && MovementContext)	// 인풋 시스템과 입력 컨택스트가 둘 다 있으면
 		{			
-			InputSystem->AddMappingContext(DefaultContext, 0);	// 인풋 시스템에 입력 컨택스트 추가
+			InputSystem->AddMappingContext(MovementContext, 0);	// 인풋 시스템에 입력 컨택스트 추가
 		}
 	}
 

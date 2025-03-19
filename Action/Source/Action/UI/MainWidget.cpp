@@ -7,10 +7,8 @@
 void UMainWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-	//if (InventoryWidget)
-	//{
-	//	InventoryWidget->SetVisibility(ESlateVisibility::Hidden);
-	//}
+
+	InventoryWidget->CloseInventory();
 }
 
 void UMainWidget::ShowInventory(bool bShow)
@@ -20,11 +18,19 @@ void UMainWidget::ShowInventory(bool bShow)
 		if (bShow)
 		{
 			InventoryWidget->RefreshInventory();
-			InventoryWidget->SetVisibility(ESlateVisibility::Visible);
+			InventoryWidget->OpenInventory();
 		}
 		else
 		{
-			InventoryWidget->SetVisibility(ESlateVisibility::Hidden);
+			InventoryWidget->CloseInventory();
 		}
+	}
+}
+
+void UMainWidget::ToggleInventory()
+{
+	if (InventoryWidget)
+	{
+		InventoryWidget->ToggleInventory();
 	}
 }

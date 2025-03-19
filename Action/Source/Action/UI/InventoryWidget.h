@@ -20,6 +20,9 @@ class ACTION_API UInventoryWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:	
+	void OpenInventory();
+	void CloseInventory();
+	void ToggleInventory();
 	void RefreshInventory();
 	
 protected:
@@ -50,6 +53,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (BindWidget))
 	class UImage* SellIcon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (BindWidget))
+	class UButton* CloseButton;
 	
 	UPROPERTY()
 	TArray<UItemSlotWidget*> ItemSlotWidgets;
@@ -63,4 +69,7 @@ private:
 
 	UFUNCTION()
 	void OnSellIconClicked();
+
+	UFUNCTION()
+	void OnCloseClicked();
 };

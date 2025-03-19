@@ -19,6 +19,9 @@ public:
 	UFUNCTION(BlueprintCallable)	
 	void ShowInventory(bool bShow);
 
+	UFUNCTION(BlueprintCallable)
+	void ToggleInventory();
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (BindWidget))
 	class UInventoryWidget* InventoryWidget;

@@ -35,5 +35,5 @@ void UEquipSlotWidget::RefreshSlot()
 void UEquipSlotWidget::ClearSlotWidget()
 {
 	ItemIcon->SetBrushFromTexture(nullptr);
-	ItemIcon->SetBrushTintColor(FLinearColor::Black);
+	ItemIcon->SetBrushTintColor(FLinearColor::Transparent);
 }
