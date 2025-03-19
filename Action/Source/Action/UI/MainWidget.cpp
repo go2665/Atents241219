@@ -2,7 +2,6 @@
 
 
 #include "MainWidget.h"
-#include "InventoryWidget.h"
 
 void UMainWidget::NativeConstruct()
 {
@@ -24,13 +23,5 @@ void UMainWidget::ShowInventory(bool bShow)
 		{
 			InventoryWidget->CloseInventory();
 		}
-	}
-}
-
-void UMainWidget::ToggleInventory()
-{
-	if (InventoryWidget)
-	{
-		InventoryWidget->ToggleInventory();
 	}
 }

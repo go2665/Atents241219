@@ -3,7 +3,7 @@
 
 #include "MainHUD.h"
 #include "Blueprint/UserWidget.h"
-#include "Action/UI/MainWidget.h"
+
 
 void AMainHUD::BeginPlay()
 {
@@ -19,4 +19,6 @@ void AMainHUD::BeginPlay()
 			MainWidget->AddToViewport();			
 		}
 	}
+
+	OnPostBeginPlay.Broadcast();
 }

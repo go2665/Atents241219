@@ -73,14 +73,16 @@ void UInventoryWidget::NativeConstruct()
 
 void UInventoryWidget::OpenInventory()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, TEXT("Open Inventory"));
+	//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, TEXT("Open Inventory"));
 	SetVisibility(ESlateVisibility::Visible);
+	OnInventoryOpen.Broadcast(true);
 }
 
 void UInventoryWidget::CloseInventory()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, TEXT("Close Inventory"));
+	//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, TEXT("Close Inventory"));
 	SetVisibility(ESlateVisibility::Hidden);
+	OnInventoryOpen.Broadcast(false);
 }
 
 void UInventoryWidget::ToggleInventory()

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Action/UI/InventoryWidget.h"
 #include "MainWidget.generated.h"
 
 /**
@@ -20,9 +21,11 @@ public:
 	void ShowInventory(bool bShow);
 
 	UFUNCTION(BlueprintCallable)
-	void ToggleInventory();
+	inline void ToggleInventory() { if (InventoryWidget) InventoryWidget->ToggleInventory(); };
+
+	inline FOnInventoryOpen& GetInventoryOpenDelegate() { return InventoryWidget->OnInventoryOpen; };
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (BindWidget))
-	class UInventoryWidget* InventoryWidget;
+	UInventoryWidget* InventoryWidget;
 };

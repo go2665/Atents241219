@@ -5,6 +5,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "ActionPlayerCharacter.h"
+#include "Action/Framework/MainHUD.h"
 
 
 AActionPlayerController::AActionPlayerController()
@@ -20,13 +21,22 @@ void AActionPlayerController::BeginPlay()
 	if (LocalPlayer)
 	{
 		// 로컬 플레이어가 있으면 향상된 입력 로컬 플레이어 서브시스템 가져오기
-		UEnhancedInputLocalPlayerSubsystem* InputSystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
-		if (InputSystem && MovementContext)	// 인풋 시스템과 입력 컨택스트가 둘 다 있으면
-		{			
-			InputSystem->AddMappingContext(MovementContext, 0);	// 인풋 시스템에 입력 컨택스트 추가
+		InputSystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+		if (InputSystem)	// 인풋 시스템이 있고
+		{
+			if (MovementContext)	// 이동용 컨택스트가 있으면
+			{			
+				InputSystem->AddMappingContext(MovementContext, MovementInputPriority);			// 인풋 시스템에 이동용 컨택스트 추가
+			}
+			if (UserInterfaceContext)	// UI용 컨택스트가 있으면
+			{
+				InputSystem->AddMappingContext(UserInterfaceContext, UserInterfaceInputPriority);	// 인풋 시스템에 UI용 컨택스트 추가
+			}
 		}
 	}
-
+	MainHUD = Cast<AMainHUD>(GetHUD());	// HUD 캐싱해두기
+	MainHUD->OnPostBeginPlay.AddDynamic(this, &AActionPlayerController::OnPostHudBeginPlay);	// HUD의 PostBeginPlay 이벤트 바인딩
+	
 	PlayerCameraManager->ViewPitchMin = CameraPitchMin;
 	PlayerCameraManager->ViewPitchMax = CameraPitchMax;
 
@@ -80,6 +90,12 @@ void AActionPlayerController::SetupInputComponent()
 			// InputAttack 함수와 바인딩
 			EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started,
 				this, &AActionPlayerController::InputAttack);
+		}
+
+		if (InventoryAction)
+		{
+			EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started,
+				this, &AActionPlayerController::InputInventory);
 		}
 
 		if (TestAction)
@@ -171,7 +187,36 @@ void AActionPlayerController::InputAttack(const FInputActionValue& Value)
 	}
 }
 
+void AActionPlayerController::InputInventory(const FInputActionValue& Value)
+{
+	MainHUD->ToggleInventory();	
+}
+
 void AActionPlayerController::InputTest(const FInputActionValue& Value)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Cyan, TEXT("InputTest"));
+}
+
+void AActionPlayerController::OnPostHudBeginPlay()
+{
+	FOnInventoryOpen& InventoryOpenDelegate = MainHUD->GetInventoryOpenDelegate();
+	InventoryOpenDelegate.AddDynamic(this, &AActionPlayerController::OnInventoryOpen);	// 인벤토리 열림 이벤트 바인딩
+
+}
+
+void AActionPlayerController::OnInventoryOpen(bool bIsOpen)
+{
+	if (InputSystem)	// 인풋 시스템이 있고
+	{
+		if (bIsOpen)
+		{
+			bShowMouseCursor = true;
+			InputSystem->RemoveMappingContext(MovementContext);	// 인풋 시스템에서 이동용 컨택스트 제거
+		}
+		else
+		{
+			bShowMouseCursor = false;
+			InputSystem->AddMappingContext(MovementContext, MovementInputPriority);
+		}
+	}
 }

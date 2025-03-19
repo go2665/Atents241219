@@ -11,6 +11,8 @@
 
 #include "InventoryWidget.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInventoryOpen, bool, bIsOpen);
+
 /**
  * 
  */
@@ -34,6 +36,9 @@ private:
 
 	UFUNCTION()
 	void OnEquipSlotClicked(int32 InSlotIndex);
+
+public:
+	FOnInventoryOpen OnInventoryOpen;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (BindWidget))

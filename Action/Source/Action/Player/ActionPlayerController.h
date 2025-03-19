@@ -30,8 +30,15 @@ protected:
 	void InputSprint(bool IsPress);
 	void InputRoll(const FInputActionValue& Value);
 	void InputAttack(const FInputActionValue& Value);
+	void InputInventory(const FInputActionValue& Value);
 	void InputTest(const FInputActionValue& Value);
 
+private:
+	UFUNCTION()
+	void OnPostHudBeginPlay();
+
+	UFUNCTION()
+	void OnInventoryOpen(bool bIsOpen);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input Setup|Movement")
@@ -69,5 +76,11 @@ protected:
 
 private:
 	class AActionPlayerCharacter* PlayerCharacter = nullptr;
+	class AMainHUD* MainHUD;
+
+	int32 MovementInputPriority = 1;
+	int32 UserInterfaceInputPriority = 0;
+
+	class UEnhancedInputLocalPlayerSubsystem* InputSystem = nullptr;
 };
 
