@@ -127,10 +127,10 @@ void UInventoryWidget::OnEquipSlotClicked(int32 InSlotIndex)
 	if (TempSlot)
 	{
 		UItemDataAsset* DataAsset = TempSlot->GetItemDataAsset();
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("Equip Item : %s"), *DataAsset->ItemName.ToString()));
 		
 		if (Cast<IEquipableItem>(DataAsset))	// 임시 슬롯에 있는 아이템이 장비 아이템이면 장비
 		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("Equip Item : %s"), *DataAsset->ItemName.ToString()));
 			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, TEXT("Equip success"));
 			PlayerState->EquipItemFromInventory(EInvenSlotType::Temporary);
 		}

@@ -219,7 +219,6 @@ void AActionPlayerController::OnInventoryOpen(bool bIsOpen)
 			bShowMouseCursor = false;
 			InputSystem->AddMappingContext(MovementContext, MovementInputPriority);
 			SetInputMode(FInputModeGameOnly());
-
 		}
 	}
 }
