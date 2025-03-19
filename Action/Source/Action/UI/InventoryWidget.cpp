@@ -11,6 +11,7 @@
 #include "ItemSlotWidget.h"
 #include "Action/Player/ActionPlayerState.h"
 #include "Action/Item/Interface/EquipableItem.h"
+#include "Action/UI/ItemDetailWidget.h"
 
 
 void UInventoryWidget::NativeConstruct()
@@ -47,6 +48,8 @@ void UInventoryWidget::NativeConstruct()
 						EInvenSlotType SlotType = static_cast<EInvenSlotType>(i);
 						ItemSlotWidget->InitializeItemSlot(i, PlayerState->GetInvenSlot(SlotType));
 						ItemSlotWidget->OnSlotClicked.AddDynamic(this, &UInventoryWidget::OnInvenSlotClicked);
+						ItemSlotWidget->OnSlotEnter.AddDynamic(this, &UInventoryWidget::OnInvenSlotEnter);
+						ItemSlotWidget->OnSlotLeave.AddDynamic(this, &UInventoryWidget::OnInvenSlotLeave);
 						ItemSlotWidgets.Add(ItemSlotWidget);
 					}
 				}
@@ -58,6 +61,8 @@ void UInventoryWidget::NativeConstruct()
 				EquipSlotWidget->InitializeItemSlot(static_cast<int32>(EInvenSlotType::Weapon),
 					PlayerState->GetInvenSlot(EInvenSlotType::Weapon));
 				EquipSlotWidget->OnSlotClicked.AddDynamic(this, &UInventoryWidget::OnEquipSlotClicked);
+				EquipSlotWidget->OnSlotEnter.AddDynamic(this, &UInventoryWidget::OnInvenSlotEnter);
+				EquipSlotWidget->OnSlotLeave.AddDynamic(this, &UInventoryWidget::OnInvenSlotLeave);
 								
 				PlayerState->GetOnGoldChange().AddDynamic(this, &UInventoryWidget::RefreshGoldText);
 			}
@@ -68,7 +73,7 @@ void UInventoryWidget::NativeConstruct()
 	SellIcon->OnMouseButtonDownEvent.BindUFunction(this, FName("OnSellIconClicked"));
 
 	CloseButton->OnClicked.AddDynamic(this, &UInventoryWidget::OnCloseClicked);
-	
+	ItemDetailWidget->SetParentCanvasSlot(Cast<UCanvasPanelSlot>(Slot));
 }
 
 void UInventoryWidget::OpenInventory()
@@ -130,8 +135,8 @@ void UInventoryWidget::OnEquipSlotClicked(int32 InSlotIndex)
 		
 		if (Cast<IEquipableItem>(DataAsset))	// 임시 슬롯에 있는 아이템이 장비 아이템이면 장비
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("Equip Item : %s"), *DataAsset->ItemName.ToString()));
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, TEXT("Equip success"));
+			//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("Equip Item : %s"), *DataAsset->ItemName.ToString()));
+			//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, TEXT("Equip success"));
 			PlayerState->EquipItemFromInventory(EInvenSlotType::Temporary);
 		}
 	}
@@ -157,4 +162,22 @@ void UInventoryWidget::OnSellIconClicked()
 void UInventoryWidget::OnCloseClicked()
 {
 	CloseInventory();
+}
+
+void UInventoryWidget::OnInvenSlotEnter(int32 InSlotIndex)
+{
+	UInvenSlot* ItemSlot = PlayerState->GetInvenSlot(static_cast<EInvenSlotType>(InSlotIndex));
+	if (ItemSlot)
+	{
+		UItemDataAsset* DataAsset = ItemSlot->GetItemDataAsset();
+		if (DataAsset)
+		{
+			ItemDetailWidget->Open(DataAsset);
+		}
+	}
+}
+
+void UInventoryWidget::OnInvenSlotLeave()
+{
+	ItemDetailWidget->Close();
 }

@@ -61,6 +61,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (BindWidget))
 	class UButton* CloseButton;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", meta = (BindWidget))
+	class UItemDetailWidget* ItemDetailWidget;
 	
 	UPROPERTY()
 	TArray<UItemSlotWidget*> ItemSlotWidgets;
@@ -77,4 +80,10 @@ private:
 
 	UFUNCTION()
 	void OnCloseClicked();
+
+	UFUNCTION()
+	void OnInvenSlotEnter(int32 InSlotIndex);
+
+	UFUNCTION()
+	void OnInvenSlotLeave();
 };

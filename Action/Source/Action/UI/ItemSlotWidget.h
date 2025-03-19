@@ -7,6 +7,9 @@
 #include "ItemSlotWidget.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSlotClicked, int32, InItemSlotIndex);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSlotEnter, int32, InItemSlotIndex);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSlotLeave);
+
 
 /**
  * 
@@ -26,6 +29,8 @@ public:
 
 	// Delegate
 	FOnSlotClicked OnSlotClicked;
+	FOnSlotEnter OnSlotEnter;
+	FOnSlotLeave OnSlotLeave;
 
 	// Getters
 	inline int32 GetItemSlotIndex() const { return ItemSlotIndex; }
@@ -34,7 +39,9 @@ public:
 	// Setters
 
 protected:
-	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent);	
+	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;	
+	virtual void NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+	virtual void NativeOnMouseLeave(const FPointerEvent& InMouseEvent) override;
 	
 	virtual void ShowSlotVisibility();
 	virtual void ClearSlotWidget();

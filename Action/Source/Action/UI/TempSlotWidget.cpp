@@ -102,7 +102,7 @@ void UTempSlotWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 
 void UTempSlotWidget::ShowSlotVisibility()
 {
-	UpdateLocation();	// 위치 이동 시키고 보여주기
+	//UpdateLocation();	// 위치 이동 시키고 보여주기
 	SetVisibility(ESlateVisibility::HitTestInvisible);
 }
 

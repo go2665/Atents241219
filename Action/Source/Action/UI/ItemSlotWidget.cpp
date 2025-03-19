@@ -53,6 +53,20 @@ FReply UItemSlotWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, con
 	return Reply;
 }
 
+void UItemSlotWidget::NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	Super::NativeOnMouseEnter(InGeometry, InMouseEvent);
+	UE_LOG(LogTemp, Warning, TEXT("Mouse Enter (%d)"), ItemSlotIndex);
+	OnSlotEnter.Broadcast(ItemSlotIndex);
+}
+
+void UItemSlotWidget::NativeOnMouseLeave(const FPointerEvent& InMouseEvent)
+{
+	Super::NativeOnMouseLeave(InMouseEvent);
+	UE_LOG(LogTemp, Warning, TEXT("Mouse Leave (%d)"), ItemSlotIndex);
+	OnSlotLeave.Broadcast();
+}
+
 void UItemSlotWidget::ShowSlotVisibility()
 {
 	SetVisibility(ESlateVisibility::Visible);
