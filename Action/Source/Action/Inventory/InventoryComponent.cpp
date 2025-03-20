@@ -180,6 +180,41 @@ void UInventoryComponent::EquipItem(EInvenSlotType InSlot)
 	}
 }
 
+bool UInventoryComponent::CanBuyItem(UItemDataAsset* InItemDataAsset, int32 InItemCount)
+{
+	bool Result = false;
+	if (Gold >= InItemDataAsset->ItemPrice * InItemCount)	// 골드가 충분한가?
+	{		
+		int32 EmptyCount = 0;
+		for (int i = 0; i < MaxSlotCount; i++)
+		{
+			UInvenSlot* Slot = GetInvenSlot(static_cast<EInvenSlotType>(i));
+			if (Slot->IsEmpty())
+			{
+				EmptyCount += InItemDataAsset->ItemStackCount;
+			}
+			else if (Slot->GetItemDataAsset() == InItemDataAsset)
+			{
+				int32 DiffCount = InItemDataAsset->ItemStackCount - Slot->GetItemCount();
+				EmptyCount += DiffCount;
+			}
+
+			if (EmptyCount >= InItemCount)
+			{
+				break;	// 빈칸이 충분하면 뒤에 있는 슬롯은 확인할 필요 없음
+			}
+		}
+
+		if (EmptyCount >= InItemCount)
+		{
+			// 빈칸이 충분히 남아있다.
+			Result = true;
+		}
+	}
+
+	return Result;
+}
+
 void UInventoryComponent::TestPrintInventory()
 {
 	// 인벤토리에 포션3개, 사과3개, 바나나2개가 있을 경우 아래처럼 출력(화면과 로그 모두 출력)

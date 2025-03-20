@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/EditableTextBox.h"
 #include "ShopItemWidget.generated.h"
 
 /**
@@ -13,7 +14,47 @@ UCLASS()
 class ACTION_API UShopItemWidget : public UUserWidget
 {
 	GENERATED_BODY()
+
+public:
+	// 아이템 데이터 세팅
+	UFUNCTION(BlueprintCallable)
+	void SetItemDataAsset(class UItemDataAsset* NewItemDataAsset);
+
+protected:
+	virtual void NativeConstruct() override;
 	
+private:
+	UFUNCTION()
+	void OnItemCountTextChanged(const FText& InText);
+
+	UFUNCTION()
+	void OnItemCountTextCommitted(const FText& InText, ETextCommit::Type CommitMethod);
+
+protected:
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "ShopItem")
+	class UItemDataAsset* ItemDataAsset = nullptr;
+	
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "ShopItem", meta = (WidgetBind))
+	class UImage* ItemIcon;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "ShopItem", meta = (WidgetBind))
+	class UTextBlock* ItemName;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "ShopItem", meta = (WidgetBind))
+	class UTextBlock* ItemPrice;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "ShopItem", meta = (WidgetBind))
+	class UTextBlock* ItemDescription;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "ShopItem", meta = (WidgetBind))
+	class UEditableTextBox* ItemCount;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "ShopItem", meta = (WidgetBind))
+	class UButton* ItemBuy;
+
+private:
+	class AActionPlayerState* PlayerState = nullptr;
+	const int32 MinimumItemCount = 1;
 };
 
 // 상점 아이템 위젯

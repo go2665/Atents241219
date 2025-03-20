@@ -43,6 +43,13 @@ public:
 	inline void BindOnGoldChange(const FOnPlayerGoldChange::FDelegate& Delegate) {
 		if (InventoryComponent) InventoryComponent->OnGoldChange.Add(Delegate);
 	}
+
+	inline bool CanBuyItem(class UItemDataAsset* InItemDataAsset, int32 InItemCount) const {
+		if (InventoryComponent)
+			return InventoryComponent->CanBuyItem(InItemDataAsset, InItemCount);
+		else
+			return false;
+	}
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")

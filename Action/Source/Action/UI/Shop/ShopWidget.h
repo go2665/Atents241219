@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "ShopItemWidget.h"
 #include "ShopWidget.generated.h"
 
 /**
@@ -14,10 +15,45 @@ class ACTION_API UShopWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
-};
+public:
+	// 상점 열기
+	UFUNCTION(BlueprintCallable)
+	void Open();
 
-// 상점 UI
-// 1. 열리고 닫힐 수 있다.
-//	1.1. 열리면 상점 아이템들을 보여준다.(ShopItemWidget들 채우기)
-//  1.2. 상점 아이템 데이터 테이블을 이용해서 아이템 목록을 가져온다.
-//  1.3. 데이터 테이블은 TArray로 여러개 가지고 있다가 그 중 하나를 랜덤으로 선택.
+	// 상점 닫기
+	UFUNCTION(BlueprintCallable)
+	void Close();
+
+protected:
+	virtual void NativeConstruct() override;
+
+protected:
+	// 상점 아이템 위젯들에 데이터를 세팅한다.
+	void RefreshShopItemWidgets();
+
+	// ShopItemDataTables에서 랜덤하게 데이터 테이블을 리턴
+	UDataTable* GetRandomShopItemDataTable();
+
+private:
+	UFUNCTION()
+	void OnMoneyChanged(int32 NewMoney);
+
+protected:
+	// 상점 아이템 데이터 테이블들
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Shop")
+	TArray<UDataTable*> ShopItemDataTables;
+
+	UPROPERTY()
+	// 상점 아이템 위젯 목록
+	TArray<UShopItemWidget*> ShopItemWidgets;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (WidgetBind))
+	class UVerticalBox* ShopItems;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (WidgetBind))
+	class UButton* Exit;
+
+private:
+	UPROPERTY()
+	UDataTable* CurrentDataTable = nullptr;
+};

@@ -48,6 +48,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void EquipItem(EInvenSlotType InSlot);
 
+	// 특정한 아이템을 특정 개수만큼 구매 가능한지 확인하는 함수
+	UFUNCTION(BlueprintCallable)
+	bool CanBuyItem(class UItemDataAsset* InItemDataAsset, int32 InItemCount);
+
 	// 인벤토리에 골드 추가
 	inline void AddGold(int32 Amount) { SetGold(Gold + Amount); }
 

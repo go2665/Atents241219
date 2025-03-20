@@ -8,6 +8,7 @@ void UMainWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	InventoryWidget->CloseInventory();
+	ShopWidget->Close();
 }
 
 void UMainWidget::ShowInventory(bool bShow)
@@ -22,6 +23,22 @@ void UMainWidget::ShowInventory(bool bShow)
 		else
 		{
 			InventoryWidget->CloseInventory();
+		}
+	}
+}
+
+void UMainWidget::ShowShop(bool bShow)
+{
+	if (ShopWidget)
+	{
+		if (bShow)
+		{
+			ShopWidget->Open();
+			InventoryWidget->OpenInventory();
+		}
+		else
+		{
+			ShopWidget->Close();
 		}
 	}
 }
