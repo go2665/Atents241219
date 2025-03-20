@@ -11,7 +11,7 @@
 #include "ItemSlotWidget.h"
 #include "Action/Player/ActionPlayerState.h"
 #include "Action/Item/Interface/EquipableItem.h"
-#include "Action/UI/ItemDetailWidget.h"
+#include "Action/UI/Inventory/ItemDetailWidget.h"
 
 
 void UInventoryWidget::NativeConstruct()
