@@ -3,6 +3,7 @@
 
 #include "ShopWidget.h"
 #include "Components/VerticalBox.h"
+#include "Components/Button.h"
 #include "Action/Item/FShopItemDataTableRow.h"
 #include "Action/Framework/ActionGameMode.h"
 #include "Action/Player/ActionPlayerState.h"
@@ -40,6 +41,11 @@ void UShopWidget::NativeConstruct()
 			}
 		}
 	}
+
+	if (Exit)
+	{
+		Exit->OnClicked.AddDynamic(this, &UShopWidget::Close);	// 닫기 버튼에 함수 바인딩
+	}
 }
 
 void UShopWidget::RefreshShopItemWidgets()
@@ -71,5 +77,5 @@ UDataTable* UShopWidget::GetRandomShopItemDataTable()
 
 void UShopWidget::OnMoneyChanged(int32 NewMoney)
 {
-	RefreshShopItemWidgets();
+	RefreshShopItemWidgets();	// 골드 변화가 있을 때마다 아이템 목록 갱신해서 버튼 활성화 상태 변경
 }

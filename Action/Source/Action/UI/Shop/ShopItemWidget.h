@@ -24,11 +24,17 @@ protected:
 	virtual void NativeConstruct() override;
 	
 private:
+	// 아이템 개수가 변경되었을 때 실행될 함수
 	UFUNCTION()
 	void OnItemCountTextChanged(const FText& InText);
 
+	// 아이템 개수를 확정지었을 때 실행될 함수
 	UFUNCTION()
 	void OnItemCountTextCommitted(const FText& InText, ETextCommit::Type CommitMethod);
+
+	// 구매 버튼이 클릭되었을 때 실행될 함수
+	UFUNCTION()
+	void OnBuyButtonClicked();
 
 protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "ShopItem")
@@ -53,14 +59,9 @@ protected:
 	class UButton* ItemBuy;
 
 private:
+	// 인벤토리에 접근하기 위한 플레이어 상태
 	class AActionPlayerState* PlayerState = nullptr;
+
+	// 최소 구매 개수
 	const int32 MinimumItemCount = 1;
 };
-
-// 상점 아이템 위젯
-// 1. ItemDataAsset을 가지고 있다.(ShopWidget에서 설정)
-// 2. 아이템 이미지, 이름, 가격, 설명을 보여준다.
-// 3. ItemCount를 설정할 수 있다.
-//   3.1. ItemCount는 0보다 커야 한다.
-//   3.2. ItemCount만큼 구매가 불가능할 경우 구매 버튼을 비활성화한다.(돈이 부족하거나 인벤토리 공간이 부족할 경우)
-// 4. 구매 버튼을 누르면 인벤토리에 아이템을 추가하고 구매 금액만큼 돈을 뺀다.

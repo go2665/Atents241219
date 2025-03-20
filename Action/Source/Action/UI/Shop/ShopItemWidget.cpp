@@ -10,9 +10,11 @@
 
 void UShopItemWidget::SetItemDataAsset(UItemDataAsset* NewItemDataAsset)
 {
+	// 아이뎀 데이터 세팅
 	ItemDataAsset = NewItemDataAsset;
 	if (ItemDataAsset)
 	{
+		// UI 위젯들 표시 변경
 		ItemIcon->SetBrushFromTexture(ItemDataAsset->ItemIcon);
 		ItemName->SetText(ItemDataAsset->ItemName);
 		ItemPrice->SetText(FText::AsNumber(ItemDataAsset->ItemPrice));
@@ -27,6 +29,7 @@ void UShopItemWidget::SetItemDataAsset(UItemDataAsset* NewItemDataAsset)
 		ItemDescription->SetText(FText::FromName(TEXT("")));
 	}
 
+	// 구매 버튼 활성화 여부 결정
 	ItemBuy->SetIsEnabled(PlayerState->CanBuyItem(ItemDataAsset, MinimumItemCount));
 }
 
@@ -38,33 +41,36 @@ void UShopItemWidget::NativeConstruct()
 	APlayerController* PlayerController = World->GetFirstPlayerController();
 	PlayerState = PlayerController->GetPlayerState<AActionPlayerState>();
 
-	ItemCount->HintText = FText::AsNumber(MinimumItemCount);
-	ItemCount->OnTextChanged.AddDynamic(this, &UShopItemWidget::OnItemCountTextChanged);
-	ItemCount->OnTextCommitted.AddDynamic(this, &UShopItemWidget::OnItemCountTextCommitted);
+	if (ItemCount)
+	{
+		ItemCount->HintText = FText::AsNumber(MinimumItemCount);
+		ItemCount->OnTextChanged.AddDynamic(this, &UShopItemWidget::OnItemCountTextChanged);		// 글자가 변경되었을 때
+		ItemCount->OnTextCommitted.AddDynamic(this, &UShopItemWidget::OnItemCountTextCommitted);	// 글자가 확정되었을 때
+	}
 	
-	//ItemCount->OnTextChanged
-	// 버튼에 함수 바인딩
+	if (ItemBuy)
+	{
+		// 버튼에 함수 바인딩
+		ItemBuy->OnClicked.AddDynamic(this, &UShopItemWidget::OnBuyButtonClicked);
+	}
 }
 
 void UShopItemWidget::OnItemCountTextChanged(const FText& InText)
 {
-	// ItemCount에 숫자만 입력되도록 설정
-	// 0보다 커야 한다.
-	// ItemCount만큼 구매가 불가능할 경우 구매 버튼을 비활성화한다.(돈이 부족하거나 인벤토리 공간이 부족할 경우)
-
 	if (ItemDataAsset)
 	{
 		FString str = InText.ToString();
 		if (str.IsNumeric())
 		{
-			int32 Count = FCString::Atoi(*str);
+			// 문자열에 숫자만 입력되었을 때 처리
+			int32 Count = FCString::Atoi(*str);	// 최소 구매 개수 이하로 내려가지 않도록 처리
 			if (Count < MinimumItemCount)
 			{
 				Count = MinimumItemCount;
 			}
 			ItemCount->SetText(FText::AsNumber(Count));
 
-			// 구매 버튼 활성화 여부 결정
+			// 변화된 개수에 따라 구매 버튼 활성화 여부 결정
 			ItemBuy->SetIsEnabled(PlayerState->CanBuyItem(ItemDataAsset, Count));
 		}
 	}	
@@ -75,6 +81,33 @@ void UShopItemWidget::OnItemCountTextCommitted(const FText& InText, ETextCommit:
 	FString str = InText.ToString();
 	if (!str.IsNumeric())
 	{
+		// 숫자가 아닌 문자열이 입력되었을 때 무조건 최소 구매 개수로 변경
 		ItemCount->SetText(FText::AsNumber(MinimumItemCount));
+	}
+}
+
+void UShopItemWidget::OnBuyButtonClicked()
+{
+	FString str;
+	if (ItemCount->GetText().IsEmptyOrWhitespace())
+	{
+		str = ItemCount->GetHintText().ToString();	// 입력된 값이 없으면 힌트 텍스트로 대체
+	}
+	else
+	{
+		str = ItemCount->GetText().ToString();
+	}
+
+	int32 Count = FCString::Atoi(*str);
+	//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, 
+	//	FString::Printf(TEXT("Item Count : %d"), Count));
+
+	int32 TotalPrice = ItemDataAsset->ItemPrice * Count;	// 최종 금액 계산
+
+	PlayerState->AddGold(-TotalPrice);	// 골드 차감
+	
+	for (int i = 0; i < Count; i++)
+	{
+		PlayerState->AddItemToInventory(ItemDataAsset);		// 구매한 수만큼 인벤토리에 아이템 추가
 	}
 }
