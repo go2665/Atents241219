@@ -38,6 +38,9 @@ private:
 	UFUNCTION()
 	void OnMoneyChanged(int32 NewMoney);
 
+	// 상점이 열려있는지 확인
+	inline bool IsOpen() const { return CurrentDataTable != nullptr; }
+
 protected:
 	// 상점 아이템 데이터 테이블들
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Shop")
