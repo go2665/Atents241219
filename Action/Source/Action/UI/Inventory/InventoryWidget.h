@@ -35,6 +35,9 @@ private:
 	void OnInvenSlotClicked(int32 InSlotIndex);
 
 	UFUNCTION()
+	void OnInvenSlotRClicked(int32 InSlotIndex);
+
+	UFUNCTION()
 	void OnEquipSlotClicked(int32 InSlotIndex);
 
 public:

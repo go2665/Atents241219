@@ -44,9 +44,15 @@ FReply UItemSlotWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, con
 	FReply Reply = Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
 	if (InMouseEvent.IsMouseButtonDown(EKeys::LeftMouseButton))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Left Mouse Button Down"));
+		//UE_LOG(LogTemp, Warning, TEXT("Left Mouse Button Down"));
 		OnSlotClicked.Broadcast(ItemSlotIndex);
 
+		Reply = FReply::Handled();	// 이벤트 처리 완료
+	}
+	else if (InMouseEvent.IsMouseButtonDown(EKeys::RightMouseButton))
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("Right Mouse Button Down"));
+		OnSlotRClicked.Broadcast(ItemSlotIndex);
 		Reply = FReply::Handled();	// 이벤트 처리 완료
 	}
 

@@ -311,6 +311,11 @@ void UInventoryComponent::TestInventoryAddDefaultItems(UDataTable* TestTable)
 	}
 }
 
+void UInventoryComponent::TestAddGold(int32 Amount)
+{
+	AddGold(Amount);
+}
+
 // Called when the game starts
 void UInventoryComponent::BeginPlay()
 {

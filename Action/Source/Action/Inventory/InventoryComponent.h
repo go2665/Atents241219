@@ -84,6 +84,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void TestInventoryAddDefaultItems(class UDataTable* TestTable = nullptr);
 
+	// 인벤토리에 돈 추가
+	UFUNCTION(BlueprintCallable)
+	void TestAddGold(int32 Amount);
+
 	// 골드 변화를 화면에 출력
 	UFUNCTION()
 	inline void TestPrintGoldChange(int32 NewGold) {

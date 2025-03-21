@@ -34,6 +34,9 @@ public:
 	inline void MoveItemFromInventory(EInvenSlotType InFromSlotType, EInvenSlotType InToSlotType) {
 		if (InventoryComponent) InventoryComponent->MoveItem(InFromSlotType, InToSlotType);
 	}
+	inline void UseItemFromInventory(EInvenSlotType InSlotType) {
+		if (InventoryComponent) InventoryComponent->UseItem(InSlotType);
+	}
 	inline void EquipItemFromInventory(EInvenSlotType InSlotType) {
 		if (InventoryComponent) InventoryComponent->EquipItem(InSlotType);
 	}

@@ -11,6 +11,7 @@
 #include "ItemSlotWidget.h"
 #include "Action/Player/ActionPlayerState.h"
 #include "Action/Item/Interface/EquipableItem.h"
+#include "Action/Item/Interface/UsableItem.h"
 #include "Action/UI/Inventory/ItemDetailWidget.h"
 
 
@@ -47,7 +48,8 @@ void UInventoryWidget::NativeConstruct()
 					{
 						EInvenSlotType SlotType = static_cast<EInvenSlotType>(i);
 						ItemSlotWidget->InitializeItemSlot(i, PlayerState->GetInvenSlot(SlotType));
-						ItemSlotWidget->OnSlotClicked.AddDynamic(this, &UInventoryWidget::OnInvenSlotClicked);
+						ItemSlotWidget->OnSlotClicked.AddDynamic(this, &UInventoryWidget::OnInvenSlotClicked);						
+						ItemSlotWidget->OnSlotRClicked.AddDynamic(this, &UInventoryWidget::OnInvenSlotRClicked);
 						ItemSlotWidget->OnSlotEnter.AddDynamic(this, &UInventoryWidget::OnInvenSlotEnter);
 						ItemSlotWidget->OnSlotLeave.AddDynamic(this, &UInventoryWidget::OnInvenSlotLeave);
 						ItemSlotWidgets.Add(ItemSlotWidget);
@@ -124,6 +126,25 @@ void UInventoryWidget::OnInvenSlotClicked(int32 InSlotIndex)
 		// 임시 슬롯이 차있으면 InSlotIndex슬롯과 임시 슬롯 아이템 교환
 		PlayerState->MoveItemFromInventory(EInvenSlotType::Temporary, static_cast<EInvenSlotType>(InSlotIndex));
 	}	
+
+	ItemDetailWidget->Close();
+}
+
+void UInventoryWidget::OnInvenSlotRClicked(int32 InSlotIndex)
+{
+	UInvenSlot* InvenSlot = PlayerState->GetInvenSlot(static_cast<EInvenSlotType>(InSlotIndex));
+	UItemDataAsset* ItemDataAsset = InvenSlot->GetItemDataAsset();
+	
+	if (IUsableItem* UsableItem = Cast<IUsableItem>(ItemDataAsset))	// ItemDataAsset이 IUsableItem를 상속받았으면
+	{
+		PlayerState->UseItemFromInventory(static_cast<EInvenSlotType>(InSlotIndex));	// 아이템 사용
+	}
+	else if (IEquipableItem* EquipableItem = Cast<IEquipableItem>(ItemDataAsset))	// ItemDataAsset이 IEquipableItem를 상속받았으면
+	{
+		PlayerState->EquipItemFromInventory(static_cast<EInvenSlotType>(InSlotIndex));	// 아이템 장비
+	}
+
+	ItemDetailWidget->Close();
 }
 
 void UInventoryWidget::OnEquipSlotClicked(int32 InSlotIndex)

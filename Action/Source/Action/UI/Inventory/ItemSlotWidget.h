@@ -29,6 +29,7 @@ public:
 
 	// Delegate
 	FOnSlotClicked OnSlotClicked;
+	FOnSlotClicked OnSlotRClicked;
 	FOnSlotEnter OnSlotEnter;
 	FOnSlotLeave OnSlotLeave;
 
