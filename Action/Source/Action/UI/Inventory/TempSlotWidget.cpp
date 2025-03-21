@@ -9,6 +9,8 @@
 
 void UTempSlotWidget::UpdateLocation()
 {
+	CalculateParentOrigin();
+
 	//FVector2D ViewportMousePosition;
 	//PlayerController->GetMousePosition(ViewportMousePosition.X, ViewportMousePosition.Y);	// 뷰포트 기준 마우스 위치
 	//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Green, 
@@ -96,13 +98,12 @@ void UTempSlotWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 	//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Tick"));
-	CalculateParentOrigin();
 	UpdateLocation();	
 }
 
 void UTempSlotWidget::ShowSlotVisibility()
 {
-	//UpdateLocation();	// 위치 이동 시키고 보여주기
+	UpdateLocation();	// 위치 이동 시키고 보여주기
 	SetVisibility(ESlateVisibility::HitTestInvisible);
 }
 

@@ -18,7 +18,7 @@ void UItemDetailWidget::Open(UItemDataAsset* InData)
 		ItemPriceTextBlock->SetText(FText::AsNumber(InData->ItemPrice));
 		ItemDescriptionTextBlock->SetText(InData->ItemDescription);
 
-		//UpdateLocation();	// 위치 갱신
+		UpdateLocation();	// 위치 갱신
 
 		SetVisibility(ESlateVisibility::HitTestInvisible);
 	}
@@ -46,12 +46,12 @@ void UItemDetailWidget::NativeConstruct()
 void UItemDetailWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
-	CalculateParentOrigin();
 	UpdateLocation();
 }
 
 void UItemDetailWidget::UpdateLocation()
 {
+	CalculateParentOrigin();
 	FVector2D MousePosition;	// 마우스 좌표(해상도 기준)
 	if (UWidgetLayoutLibrary::GetMousePositionScaledByDPI(PlayerController, MousePosition.X, MousePosition.Y))	// 해상도 기준 마우스 위치
 	{
