@@ -5,13 +5,15 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
+#include "Components/Overlay.h"
 #include "Action/Item/ItemData/ItemDataAsset.h"
 #include "Action/Player/ActionPlayerState.h"
 
-void UShopItemWidget::SetItemDataAsset(UItemDataAsset* NewItemDataAsset)
+void UShopItemWidget::SetShopItemData(UItemDataAsset* InNewItemDataAsset, int32 InMaxCount)
 {
 	// 아이뎀 데이터 세팅
-	ItemDataAsset = NewItemDataAsset;
+	ItemDataAsset = InNewItemDataAsset;
+	StockCount = InMaxCount;
 	if (ItemDataAsset)
 	{
 		// UI 위젯들 표시 변경
@@ -19,6 +21,7 @@ void UShopItemWidget::SetItemDataAsset(UItemDataAsset* NewItemDataAsset)
 		ItemName->SetText(ItemDataAsset->ItemName);
 		ItemPrice->SetText(FText::AsNumber(ItemDataAsset->ItemPrice));
 		ItemDescription->SetText(ItemDataAsset->ItemDescription);
+		ItemStockCount->SetText(FText::AsNumber(StockCount));
 	}
 	else
 	{
@@ -27,6 +30,7 @@ void UShopItemWidget::SetItemDataAsset(UItemDataAsset* NewItemDataAsset)
 		ItemName->SetText(FText::FromName(TEXT("")));
 		ItemPrice->SetText(FText::AsNumber(0));
 		ItemDescription->SetText(FText::FromName(TEXT("")));
+		ItemStockCount->SetText(FText::AsNumber(0));
 	}
 
 	// 구매 버튼 활성화 여부 결정
@@ -53,6 +57,8 @@ void UShopItemWidget::NativeConstruct()
 		// 버튼에 함수 바인딩
 		ItemBuy->OnClicked.AddDynamic(this, &UShopItemWidget::OnBuyButtonClicked);
 	}
+
+	SoldOut->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UShopItemWidget::OnItemCountTextChanged(const FText& InText)
@@ -63,11 +69,8 @@ void UShopItemWidget::OnItemCountTextChanged(const FText& InText)
 		if (str.IsNumeric())
 		{
 			// 문자열에 숫자만 입력되었을 때 처리
-			int32 Count = FCString::Atoi(*str);	// 최소 구매 개수 이하로 내려가지 않도록 처리
-			if (Count < MinimumItemCount)
-			{
-				Count = MinimumItemCount;
-			}
+			int32 Count = FCString::Atoi(*str);	// 최소 구매 개수보다 크거나 같고 재고 개수보다는 작거나 같아야한다.
+			Count = FMath::Clamp(Count, MinimumItemCount, StockCount);
 			ItemCount->SetText(FText::AsNumber(Count));
 
 			// 변화된 개수에 따라 구매 버튼 활성화 여부 결정
@@ -82,7 +85,7 @@ void UShopItemWidget::OnItemCountTextCommitted(const FText& InText, ETextCommit:
 	if (!str.IsNumeric())
 	{
 		// 숫자가 아닌 문자열이 입력되었을 때 무조건 최소 구매 개수로 변경
-		ItemCount->SetText(FText::AsNumber(MinimumItemCount));
+		ItemCount->SetText(FText::AsNumber(StockCount));
 	}
 }
 
@@ -110,4 +113,18 @@ void UShopItemWidget::OnBuyButtonClicked()
 	{
 		PlayerState->AddItemToInventory(ItemDataAsset);		// 구매한 수만큼 인벤토리에 아이템 추가
 	}
+
+	StockCount -= Count;	// 재고 개수 감소
+	if (StockCount < 1)
+	{
+		OnSoldOut();			// 재고가 다 떨어졌을 때 실행
+	}
+}
+
+void UShopItemWidget::OnSoldOut()
+{
+	SoldOut->SetVisibility(ESlateVisibility::Visible);
+	ItemBuy->SetIsEnabled(false);
+	ItemCount->SetIsEnabled(false);
+	ItemCount->SetText(FText::FromString(TEXT("-")));
 }

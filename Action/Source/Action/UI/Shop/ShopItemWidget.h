@@ -18,7 +18,7 @@ class ACTION_API UShopItemWidget : public UUserWidget
 public:
 	// 아이템 데이터 세팅
 	UFUNCTION(BlueprintCallable)
-	void SetItemDataAsset(class UItemDataAsset* NewItemDataAsset);
+	void SetShopItemData(class UItemDataAsset* InNewItemDataAsset, int32 InMaxCount);
 
 protected:
 	virtual void NativeConstruct() override;
@@ -35,6 +35,9 @@ private:
 	// 구매 버튼이 클릭되었을 때 실행될 함수
 	UFUNCTION()
 	void OnBuyButtonClicked();
+
+	// 재고가 다 떨어졌을 때 실행될 함수
+	void OnSoldOut();
 
 protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "ShopItem")
@@ -58,10 +61,19 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "ShopItem", meta = (WidgetBind))
 	class UButton* ItemBuy;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "ShopItem", meta = (WidgetBind))
+	class UTextBlock* ItemStockCount;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "ShopItem", meta = (WidgetBind))
+	class UOverlay* SoldOut;
+
 private:
 	// 인벤토리에 접근하기 위한 플레이어 상태
 	class AActionPlayerState* PlayerState = nullptr;
 
 	// 최소 구매 개수
 	const int32 MinimumItemCount = 1;
+
+	// 재고 개수
+	int32 StockCount = 0;
 };

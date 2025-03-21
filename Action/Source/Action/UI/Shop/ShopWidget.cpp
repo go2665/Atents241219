@@ -63,7 +63,8 @@ void UShopWidget::RefreshShopItemWidgets()
 		for (int32 i = 0; i < ShopItemWidgets.Num(); i++)
 		{		
 			// 순서대로 아이템 데이터 세팅
-			ShopItemWidgets[i]->SetItemDataAsset(GameMode->GetItemDataAsset(Rows[i]->ItemType));	
+			ShopItemWidgets[i]->SetShopItemData(
+				GameMode->GetItemDataAsset(Rows[i]->ItemType), Rows[i]->MaxCount);
 		}
 	}
 }

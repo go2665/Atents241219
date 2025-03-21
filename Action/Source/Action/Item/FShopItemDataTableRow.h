@@ -12,4 +12,7 @@ struct FShopItemDataTableRow : public FTableRowBase
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EItemType ItemType = EItemType::Gem;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "1"))
+	int32 MaxCount = 1;
 };
