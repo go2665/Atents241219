@@ -35,7 +35,10 @@ void AActionPlayerController::BeginPlay()
 		}
 	}
 	MainHUD = Cast<AMainHUD>(GetHUD());	// HUD 캐싱해두기
-	MainHUD->OnPostBeginPlay.AddDynamic(this, &AActionPlayerController::OnPostHudBeginPlay);	// HUD의 PostBeginPlay 이벤트 바인딩
+	if (MainHUD)
+	{
+		MainHUD->OnPostBeginPlay.AddDynamic(this, &AActionPlayerController::OnPostHudBeginPlay);	// HUD의 PostBeginPlay 이벤트 바인딩
+	}
 	
 	PlayerCameraManager->ViewPitchMin = CameraPitchMin;
 	PlayerCameraManager->ViewPitchMax = CameraPitchMax;
