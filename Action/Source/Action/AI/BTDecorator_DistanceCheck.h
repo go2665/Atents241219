@@ -25,7 +25,7 @@ protected:
 	virtual bool CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const override;
 
 	UPROPERTY(EditAnywhere, Category = "Distance")
-	float DistanceThreshold = 100.0f;
+	float DistanceThreshold = 150.0f;
 
 private:
 	float SquareDistanceThreshold = 0.0f;

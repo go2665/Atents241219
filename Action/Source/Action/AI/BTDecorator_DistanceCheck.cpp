@@ -21,15 +21,13 @@ bool UBTDecorator_DistanceCheck::CalculateRawConditionValue(UBehaviorTreeCompone
 	UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
 	if (BlackboardComp)
 	{
-		AActor* Target = Cast<AActor>(BlackboardComp->GetValueAsObject("TargetPlayer"));
-		
-		AAIController* EnemyController = Cast<AAIController>(OwnerComp.GetOwner());
-		APawn* Enemy = EnemyController->GetPawn();
+		AActor* TargetPlayer = Cast<AActor>(BlackboardComp->GetValueAsObject("TargetPlayer"));
+		APawn* ThisPawn = OwnerComp.GetAIOwner()->GetPawn();
 
-		if (Target)
+		if (TargetPlayer && ThisPawn)
 		{
 			float Distance = FVector::DistSquaredXY(
-				Target->GetActorLocation(), Enemy->GetActorLocation());
+				TargetPlayer->GetActorLocation(), ThisPawn->GetActorLocation());
 
 			//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, 
 			//	FString::Printf(TEXT("Distance: %.1f, %.1f"), FMath::Sqrt(Distance), SquareDistanceThreshold));

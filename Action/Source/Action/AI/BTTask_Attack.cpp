@@ -3,6 +3,7 @@
 
 #include "BTTask_Attack.h"
 #include "Action/Enemy/NormalEnemy.h"
+#include "AIController.h"
 
 UBTTask_Attack::UBTTask_Attack()
 {
@@ -11,7 +12,7 @@ UBTTask_Attack::UBTTask_Attack()
 
 EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	ANormalEnemy* Enemy = OwnerComp.GetOwner<ANormalEnemy>();
+	ANormalEnemy* Enemy = Cast<ANormalEnemy>(OwnerComp.GetAIOwner()->GetPawn());
 	if (Enemy)
 	{
 		Enemy->Attack();
