@@ -37,6 +37,11 @@ void UShopItemWidget::SetShopItemData(UItemDataAsset* InNewItemDataAsset, int32 
 	ItemBuy->SetIsEnabled(PlayerState->CanBuyItem(ItemDataAsset, MinimumItemCount));
 }
 
+void UShopItemWidget::UpdateBuyButtonState()
+{
+	ItemBuy->SetIsEnabled(PlayerState->CanBuyItem(ItemDataAsset, MinimumItemCount));
+}
+
 void UShopItemWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -115,10 +120,16 @@ void UShopItemWidget::OnBuyButtonClicked()
 	}
 
 	StockCount -= Count;	// 재고 개수 감소
+	ItemStockCount->SetText(FText::AsNumber(StockCount));	// 표시되는 재고 개수 갱신
+	OnItemCountTextChanged(FText::AsNumber(FMath::Min(Count, StockCount)));	// Count가 StockCount를 넘지 않게 하기
 	if (StockCount < 1)
 	{
-		OnSoldOut();			// 재고가 다 떨어졌을 때 실행
+		OnSoldOut();		// 재고가 다 떨어졌을 때 실행
 	}
+
+
+	//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow,
+	//	FString::Printf(TEXT("Item StockCount : %d"), StockCount));
 }
 
 void UShopItemWidget::OnSoldOut()

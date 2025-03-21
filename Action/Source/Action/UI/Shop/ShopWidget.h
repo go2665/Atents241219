@@ -29,7 +29,10 @@ protected:
 
 protected:
 	// 상점 아이템 위젯들에 데이터를 세팅한다.
-	void RefreshShopItemWidgets();
+	void InitializeShopItemWidgets();
+
+	// 구매 버튼 상태 갱신
+	void UpdateBuyButtonsState();
 
 	// ShopItemDataTables에서 랜덤하게 데이터 테이블을 리턴
 	UDataTable* GetRandomShopItemDataTable();

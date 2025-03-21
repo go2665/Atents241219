@@ -19,6 +19,7 @@ public:
 	// 아이템 데이터 세팅
 	UFUNCTION(BlueprintCallable)
 	void SetShopItemData(class UItemDataAsset* InNewItemDataAsset, int32 InMaxCount);
+	void UpdateBuyButtonState();
 
 protected:
 	virtual void NativeConstruct() override;

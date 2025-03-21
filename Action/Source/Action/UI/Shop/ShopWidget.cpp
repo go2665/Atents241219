@@ -11,7 +11,7 @@
 void UShopWidget::Open()
 {
 	CurrentDataTable = GetRandomShopItemDataTable();	// 랜덤으로 데이터테이블 가져오기
-	RefreshShopItemWidgets();							// 열기전에 판매할 아이템 목록	 갱신
+	InitializeShopItemWidgets();							// 열기전에 판매할 아이템 목록	 갱신
 	SetVisibility(ESlateVisibility::Visible);
 }
 
@@ -49,7 +49,7 @@ void UShopWidget::NativeConstruct()
 	}
 }
 
-void UShopWidget::RefreshShopItemWidgets()
+void UShopWidget::InitializeShopItemWidgets()
 {
 	if (IsOpen())	// 열려있을 때만 실행(CurrentDataTable있을 때만 실행)
 	{
@@ -58,13 +58,24 @@ void UShopWidget::RefreshShopItemWidgets()
 
 		// 데이터테이블의 모든 행 가져와서 배열에 저장
 		TArray<FShopItemDataTableRow*> Rows;
-		CurrentDataTable->GetAllRows<FShopItemDataTableRow>(TEXT("RefreshShopItemWidgets"), Rows);	
+		CurrentDataTable->GetAllRows<FShopItemDataTableRow>(TEXT("InitializeShopItemWidgets"), Rows);	
 
 		for (int32 i = 0; i < ShopItemWidgets.Num(); i++)
 		{		
 			// 순서대로 아이템 데이터 세팅
 			ShopItemWidgets[i]->SetShopItemData(
 				GameMode->GetItemDataAsset(Rows[i]->ItemType), Rows[i]->MaxCount);
+		}
+	}
+}
+
+void UShopWidget::UpdateBuyButtonsState()
+{
+	if (IsOpen())
+	{
+		for (UShopItemWidget* ShopItemWidget : ShopItemWidgets)
+		{
+			ShopItemWidget->UpdateBuyButtonState();	// 모든 상점 아이템 위젯의 구매 버튼 상태 갱신
 		}
 	}
 }
@@ -82,5 +93,5 @@ UDataTable* UShopWidget::GetRandomShopItemDataTable()
 
 void UShopWidget::OnMoneyChanged(int32 NewMoney)
 {
-	RefreshShopItemWidgets();	// 골드 변화가 있을 때마다 아이템 목록 갱신해서 버튼 활성화 상태 변경
+	UpdateBuyButtonsState();	// 골드 변화가 있을 때마다 버튼 활성화 상태 변경
 }
