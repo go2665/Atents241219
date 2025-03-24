@@ -5,6 +5,8 @@
 #include "../Framework/ActionGameMode.h"
 #include "../Item/DropItem/DropItemBase.h"
 #include "../Item/FDropItemDataTableRow.h"
+#include "Components/WidgetComponent.h"
+#include "Action/UI/UserWidget_PopupDamage.h"
 
 // Sets default values
 AEnemyBase::AEnemyBase()
@@ -12,12 +14,23 @@ AEnemyBase::AEnemyBase()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
+	// 위젯 컴포넌트 생성
+	PopupDamageWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PopupDamageWidget"));
+	PopupDamageWidget->SetupAttachment(RootComponent);
+	PopupDamageWidget->SetWidgetSpace(EWidgetSpace::Screen);	// 스크린 스페이스로 그리기
 }
 
 // Called when the game starts or when spawned
 void AEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (PopupDamageWidget)
+	{
+		// 데미지를 입었을 때 데미지 팝업을 띄우기 위한 델리게이트 바인딩
+		PopupDamageWidgetInstance = Cast<UUserWidget_PopupDamage>(PopupDamageWidget->GetUserWidgetObject());
+		OnTakeDamage.AddDynamic(PopupDamageWidgetInstance, &UUserWidget_PopupDamage::ActivateWidget);
+	}
 	
 	CurrentHealth = MaxHealth;
 	bIsAlive = true;
@@ -44,6 +57,9 @@ float AEnemyBase::TakeDamage(float Damage, FDamageEvent const& DamageEvent, ACon
 
 				PlayAnimMontage(HitMontage, 1.0f, HitMontage->GetSectionName(Index));
 			}
+
+			// 데미지를 입었을 때 델리게이트 호출(데미지 팝업 띄우기)
+			OnTakeDamage.Broadcast(ActualDamage);
 		}
 	}
 

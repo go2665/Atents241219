@@ -7,6 +7,7 @@
 #include "EnemyBase.generated.h"
 
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTakeDamage, float, Damage);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDie);
 
 UCLASS()
@@ -31,7 +32,13 @@ protected:
 	void DropItems();
 
 public:
+	// 죽었을 때 알리기 위한 델리게이트
+	UPROPERTY(BlueprintAssignable, Category = "Enemy")
 	FOnDie OnDie;
+
+	// 데미지를 입었을 때 데미지 팝업을 띄우기 위한 델리게이트
+	UPROPERTY(BlueprintAssignable, Category = "Enemy")
+	FOnTakeDamage OnTakeDamage;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy")
@@ -52,7 +59,16 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
 	class UAnimMontage* HitMontage = nullptr;
 
+	// 팝업 데미지용 위젯 컴포넌트
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class UWidgetComponent* PopupDamageWidget = nullptr;
+
+	// 팝업 데미지 위젯 인스턴스(델리게이트 바인딩 용)
+	UPROPERTY()
+	class UUserWidget_PopupDamage* PopupDamageWidgetInstance = nullptr;
+
 private:
+	// 생존 여부
 	bool bIsAlive = true;
 
 };

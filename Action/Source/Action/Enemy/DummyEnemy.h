@@ -6,7 +6,6 @@
 #include "EnemyBase.h"
 #include "DummyEnemy.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTakeDamage, float, Damage);
 
 UCLASS()
 class ACTION_API ADummyEnemy : public AEnemyBase
@@ -34,18 +33,12 @@ public:
 
 
 public:
-	// 데미지를 입었을 때 데미지 팝업을 띄우기 위한 델리게이트
-	UPROPERTY(BlueprintAssignable, Category = "DummyEnemy")
-	FOnTakeDamage OnTakeDamage;
+
 
 protected:
-	// 팝업 데미지용 위젯 컴포넌트
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	class UWidgetComponent* PopupDamageWidget = nullptr;
+
 
 private:
-	// 팝업 데미지 위젯 인스턴스(델리게이트 바인딩 용)
-	UPROPERTY()
-	class UUserWidget_PopupDamage* PopupDamageWidgetInstance = nullptr;
+	
 
 };
