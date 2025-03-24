@@ -9,11 +9,7 @@
 void AAIController_Normal::BeginPlay()
 {
 	Super::BeginPlay();
-	if (BehaviorTree)
-	{
-		RunBehaviorTree(BehaviorTree);
-	}
-
+	
 	UBlackboardComponent* BlackboardComp = GetBlackboardComponent();
 	if (BlackboardComp)
 	{
@@ -22,4 +18,10 @@ void AAIController_Normal::BeginPlay()
 		APawn* PlayerPawn = PlayerController->GetPawn();
 		BlackboardComp->SetValueAsObject("TargetPlayer", PlayerPawn);
 	}
+
+	if (BehaviorTree)
+	{
+		RunBehaviorTree(BehaviorTree);
+	}
+
 }

@@ -26,12 +26,12 @@ bool UBTDecorator_DistanceCheck::CalculateRawConditionValue(UBehaviorTreeCompone
 
 		if (TargetPlayer && ThisPawn)
 		{
-			float Distance = FVector::DistSquaredXY(
+			float SquaredDistance = FVector::DistSquaredXY(
 				TargetPlayer->GetActorLocation(), ThisPawn->GetActorLocation());
 
 			//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, 
 			//	FString::Printf(TEXT("Distance: %.1f, %.1f"), FMath::Sqrt(Distance), SquareDistanceThreshold));
-			return Distance < SquareDistanceThreshold;
+			return SquaredDistance < SquareDistanceThreshold;
 		}
 	}
 

@@ -16,6 +16,6 @@ void UAnimNotify_CameraShake::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 
 	if (CameraShakeClass && PlayerController)
 	{
-		PlayerController->PlayerCameraManager->StartCameraShake(CameraShakeClass, 1.0f);
+		PlayerController->PlayerCameraManager->StartCameraShake(CameraShakeClass, ShakeScale);
 	}
 }

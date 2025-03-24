@@ -20,6 +20,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CameraShake")
 	TSubclassOf<UCameraShakeBase> CameraShakeClass = nullptr;
 
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CameraShake")
+	float ShakeScale = 1.0f;
+
 private:
 	UPROPERTY()
 	class APlayerController* PlayerController = nullptr;
