@@ -20,12 +20,17 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void Attack();
 
+	void SetWeaponCollisionActivate(bool bActivate);
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
 	float MaxWalkSpeed = 400.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attack")
 	class UAnimMontage* AttackMontage = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	TSubclassOf<class AEnemyWeaponActor> WeaponClass = nullptr;
 };
 
 // 적의 공격이 플레이어에게 데미지를 입히도록 구현

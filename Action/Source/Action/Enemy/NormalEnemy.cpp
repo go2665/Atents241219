@@ -3,10 +3,16 @@
 
 #include "NormalEnemy.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/ChildActorComponent.h"
+#include "Action/Weapon/EnemyWeaponActor.h"
 
 ANormalEnemy::ANormalEnemy()
 {
 	PrimaryActorTick.bCanEverTick = false;
+
+	UChildActorComponent* ChildActorComponent = CreateDefaultSubobject<UChildActorComponent>(TEXT("Weapon"));
+	ChildActorComponent->SetupAttachment(GetMesh(), TEXT("Weapon_H"));
+	ChildActorComponent->SetChildActorClass(WeaponClass);
 
 	UCharacterMovementComponent* EnemyMovement = GetCharacterMovement();
 	EnemyMovement->MaxWalkSpeed = MaxWalkSpeed;
@@ -21,4 +27,9 @@ void ANormalEnemy::Attack()
 	{
 		PlayAnimMontage(AttackMontage);
 	}
+}
+
+void ANormalEnemy::SetWeaponCollisionActivate(bool bActivate)
+{
+
 }
