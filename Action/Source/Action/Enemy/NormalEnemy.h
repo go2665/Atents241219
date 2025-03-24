@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "EnemyBase.h"
+#include "Action/Weapon/EnemyWeaponActor.h"
 #include "NormalEnemy.generated.h"
 
 /**
@@ -20,7 +21,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void Attack();
 
-	void SetWeaponCollisionActivate(bool bActivate);
+	inline void SetWeaponCollisionActivate(bool bActivate) { if (Weapon) Weapon->SetActivate(bActivate); };
+
+protected:
+	virtual void BeginPlay() override;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
@@ -29,8 +33,16 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attack")
 	class UAnimMontage* AttackMontage = nullptr;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
+	UChildActorComponent* ChildActorComponent = nullptr;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
-	TSubclassOf<class AEnemyWeaponActor> WeaponClass = nullptr;
+	TSubclassOf<AEnemyWeaponActor> WeaponClass = nullptr;
+
+private:
+	UPROPERTY()
+	AEnemyWeaponActor* Weapon = nullptr;
+
 };
 
 // 적의 공격이 플레이어에게 데미지를 입히도록 구현

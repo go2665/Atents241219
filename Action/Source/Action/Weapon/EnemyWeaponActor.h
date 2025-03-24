@@ -21,11 +21,17 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+private:
+	UFUNCTION()
+	void OnWeaponOverlapBegin(AActor* OverlappedActor, AActor* OtherActor);
+	
+
 public:	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 	float Damage = 10.0f;
 
-private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
 	UStaticMeshComponent* WeaponMesh = nullptr;
+private:
 
 };

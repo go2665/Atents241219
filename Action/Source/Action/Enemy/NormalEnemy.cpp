@@ -10,7 +10,7 @@ ANormalEnemy::ANormalEnemy()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	UChildActorComponent* ChildActorComponent = CreateDefaultSubobject<UChildActorComponent>(TEXT("Weapon"));
+	ChildActorComponent = CreateDefaultSubobject<UChildActorComponent>(TEXT("Weapon"));
 	ChildActorComponent->SetupAttachment(GetMesh(), TEXT("Weapon_H"));
 	ChildActorComponent->SetChildActorClass(WeaponClass);
 
@@ -29,7 +29,8 @@ void ANormalEnemy::Attack()
 	}
 }
 
-void ANormalEnemy::SetWeaponCollisionActivate(bool bActivate)
+void ANormalEnemy::BeginPlay()
 {
-
+	Super::BeginPlay();
+	Weapon = Cast<AEnemyWeaponActor>(ChildActorComponent->GetChildActor());
 }

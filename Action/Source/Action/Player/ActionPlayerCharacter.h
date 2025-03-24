@@ -91,6 +91,8 @@ public:
 protected:
 	void PlayHighPriorityMontage(UAnimMontage* Montage, FName StartSectionName = NAME_None);
 
+	
+
 private:
 	void SectionJumpForCombo();
 
@@ -123,7 +125,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;	
-
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 
 protected:

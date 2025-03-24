@@ -2,6 +2,7 @@
 
 
 #include "EnemyWeaponActor.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AEnemyWeaponActor::AEnemyWeaponActor()
@@ -14,6 +15,7 @@ AEnemyWeaponActor::AEnemyWeaponActor()
 
 	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	WeaponMesh->SetupAttachment(RootComponent);	
+	WeaponMesh->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
 }
 
 void AEnemyWeaponActor::SetActivate(bool bActivate)
@@ -33,6 +35,18 @@ void AEnemyWeaponActor::BeginPlay()
 	Super::BeginPlay();
 	WeaponMesh->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
 	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	OnActorBeginOverlap.AddDynamic(this, &AEnemyWeaponActor::OnWeaponOverlapBegin);
+}
+
+void AEnemyWeaponActor::OnWeaponOverlapBegin(AActor* OverlappedActor, AActor* OtherActor)
+{
+	if (OtherActor->ActorHasTag(TEXT("Player")))
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("Player Overlap"));
+
+		UGameplayStatics::ApplyDamage(OtherActor, Damage, nullptr, nullptr, nullptr);
+	}
 }
 
 

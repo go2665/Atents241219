@@ -84,6 +84,7 @@ void AActionPlayerCharacter::SetCurrentWeaponCollisionActivate(bool bActivate)
 {
 	if (CurrentWeapon)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Call SetCurrentWeaponCollisionActivate"));
 		CurrentWeapon->SetCollisionActivate(bActivate);
 	}
 }
@@ -177,6 +178,20 @@ void AActionPlayerCharacter::BeginPlay()
 	ActionPlayerState->EquipItemFromInventory(EInvenSlotType::Slot_0);
 
 	OnHealthChange.AddDynamic(this, &AActionPlayerCharacter::TestPrintHealth);
+}
+
+float AActionPlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	if (ActualDamage > 0.0f)
+	{
+		SetCurrentHealth(CurrentHealth - ActualDamage);	//CurrentHealth -= ActualDamage;
+	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Damage : %.1f"), ActualDamage));
+
+	return ActualDamage;
 }
 
 void AActionPlayerCharacter::PlayHighPriorityMontage(UAnimMontage* Montage, FName StartSectionName)
