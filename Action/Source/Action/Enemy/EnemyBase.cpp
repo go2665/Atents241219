@@ -26,10 +26,25 @@ void AEnemyBase::BeginPlay()
 float AEnemyBase::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	float ActualDamage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
-	CurrentHealth -= ActualDamage;
-	if (bIsAlive && CurrentHealth <= 0)
+	if (ActualDamage > 0)
 	{
-		Die();
+		CurrentHealth -= ActualDamage;
+		if (bIsAlive && CurrentHealth <= 0)
+		{
+			Die();
+		}
+		else
+		{
+			// 피격 애니메이션 재생
+			if (HitMontage)
+			{
+				int32 SectionCount = HitMontage->CompositeSections.Num();
+				int32 Index = FMath::RandRange(0, SectionCount - 1);
+				//UE_LOG(LogTemp, Warning, TEXT("HitMontage Section Index : %d"), Index);
+
+				PlayAnimMontage(HitMontage, 1.0f, HitMontage->GetSectionName(Index));
+			}
+		}
 	}
 
 	return ActualDamage;

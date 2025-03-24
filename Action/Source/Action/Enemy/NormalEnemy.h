@@ -30,14 +30,15 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
 	float MaxWalkSpeed = 400.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attack")
-	class UAnimMontage* AttackMontage = nullptr;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
 	UChildActorComponent* ChildActorComponent = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 	TSubclassOf<AEnemyWeaponActor> WeaponClass = nullptr;
+
+	// 공격 애니메이션 몽타주
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
+	class UAnimMontage* AttackMontage = nullptr;
 
 private:
 	UPROPERTY()
@@ -45,6 +46,11 @@ private:
 
 };
 
-// 적의 공격이 플레이어에게 데미지를 입히도록 구현
-//	1. 데미지량은 적의 무기에 설정
-//  2. AnimNotifyState를 사용하여 무기의 충돌을 활성화/비활성화
+
+// 적이 맞았을 때 애니메이션을 재생한다.
+//  1. 맞았을 때 애니메이션을 재생(Enemy_Hit)
+//  2. 데미지 팝업
+// 플레이어에가 맞아 죽을 수 있다.
+//	1. 죽었을 때 애니메이션을 재생(Death, Death_Small_03, Death_Small_05 중 랜덤 재생)
+//  2. 죽는 애니메이션이 끝났을 때 아이템 드랍
+//	3. 죽는 애니메이션이 끝났을 때 바닥으로 가라 앉다가 사라지기

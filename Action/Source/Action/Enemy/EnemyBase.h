@@ -48,6 +48,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Drop Item")
 	float ItemLaunchPower = 500.0f;
 
+	// 피격 애니메이션 몽타주
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
+	class UAnimMontage* HitMontage = nullptr;
+
 private:
 	bool bIsAlive = true;
 
