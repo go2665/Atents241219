@@ -19,16 +19,16 @@ public:
 	// Sets default values for this character's properties
 	AEnemyBase();
 
-protected:
-	virtual void BeginPlay() override;
-
 public:	
 	//virtual void Tick(float DeltaTime) override;
 	//virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void PostDieAnimation();
 
 protected:
+	virtual void BeginPlay() override;
 	virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	virtual void Die();
+	
 	void DropItems();
 
 public:
@@ -58,6 +58,10 @@ protected:
 	// 피격 애니메이션 몽타주
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
 	class UAnimMontage* HitMontage = nullptr;
+
+	// 사망 애니메이션 몽타주
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
+	class UAnimMontage* DeathMontage = nullptr;
 
 	// 팝업 데미지용 위젯 컴포넌트
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")

@@ -42,6 +42,10 @@ float AEnemyBase::TakeDamage(float Damage, FDamageEvent const& DamageEvent, ACon
 	if (ActualDamage > 0)
 	{
 		CurrentHealth -= ActualDamage;
+		
+		// 데미지를 입었을 때 델리게이트 호출(데미지 팝업 띄우기)
+		OnTakeDamage.Broadcast(ActualDamage);
+
 		if (bIsAlive && CurrentHealth <= 0)
 		{
 			Die();
@@ -57,10 +61,8 @@ float AEnemyBase::TakeDamage(float Damage, FDamageEvent const& DamageEvent, ACon
 
 				PlayAnimMontage(HitMontage, 1.0f, HitMontage->GetSectionName(Index));
 			}
-
-			// 데미지를 입었을 때 델리게이트 호출(데미지 팝업 띄우기)
-			OnTakeDamage.Broadcast(ActualDamage);
 		}
+			
 	}
 
 	return ActualDamage;
@@ -70,9 +72,22 @@ void AEnemyBase::Die()
 {
 	bIsAlive = false;	// 죽었음을 표시
 	OnDie.Broadcast();	// 델리게이트로 죽음을 알림
-
-	DropItems();		// 아이템 드랍
 	
+	GetController()->UnPossess();
+
+	// 사망 애니메이션 재생
+	if (DeathMontage)
+	{
+		int32 SectionCount = DeathMontage->CompositeSections.Num();
+		int32 Index = FMath::RandRange(0, SectionCount - 1);
+		UE_LOG(LogTemp, Warning, TEXT("DeathMontage Section Index : %d"), Index);
+		PlayAnimMontage(DeathMontage, 1.0f, DeathMontage->GetSectionName(Index));
+	}
+}
+
+void AEnemyBase::PostDieAnimation()
+{
+	DropItems();		// 아이템 드랍
 	Destroy();			// 액터 삭제
 }
 

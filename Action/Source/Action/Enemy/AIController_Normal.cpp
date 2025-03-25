@@ -23,5 +23,4 @@ void AAIController_Normal::BeginPlay()
 	{
 		RunBehaviorTree(BehaviorTree);
 	}
-
 }

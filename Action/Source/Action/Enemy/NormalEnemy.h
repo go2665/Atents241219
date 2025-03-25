@@ -45,8 +45,3 @@ private:
 	AEnemyWeaponActor* Weapon = nullptr;
 
 };
-
-// 적이 맞아 죽을 수 있다.
-//	1. 죽었을 때 애니메이션을 재생(Death, Death_Small_03, Death_Small_05 중 랜덤 재생)
-//  2. 죽는 애니메이션이 끝났을 때 아이템 드랍
-//	3. 죽는 애니메이션이 끝났을 때 바닥으로 가라 앉다가 사라지기
