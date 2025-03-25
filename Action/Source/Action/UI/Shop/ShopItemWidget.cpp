@@ -52,7 +52,7 @@ void UShopItemWidget::NativeConstruct()
 
 	if (ItemCount)
 	{
-		ItemCount->HintText = FText::AsNumber(MinimumItemCount);
+		ItemCount->SetHintText(FText::AsNumber(MinimumItemCount));
 		ItemCount->OnTextChanged.AddDynamic(this, &UShopItemWidget::OnItemCountTextChanged);		// 글자가 변경되었을 때
 		ItemCount->OnTextCommitted.AddDynamic(this, &UShopItemWidget::OnItemCountTextCommitted);	// 글자가 확정되었을 때
 	}

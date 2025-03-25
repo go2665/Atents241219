@@ -7,6 +7,8 @@
 #include "EDirectionType.h"
 #include "CellActor.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCellClear);
+
 UCLASS()
 class ACTION_API ACellActor : public AActor
 {
@@ -52,6 +54,8 @@ private:
 	// 적을 스폰하는 함수
 	void SpawnEnemy();
 
+public:
+	FOnCellClear OnCellClear;
 
 protected:
 	// 배경 매시(벽과 바닥)

@@ -108,8 +108,9 @@ void ACellActor::OnEnemyDie()
 	SpawnCount--;	// 적이 죽었을 때 스폰 카운트 감소
 	if (SpawnCount <= 0)	// 적이 모두 죽었으면
 	{
-		bIsClear = true;	// 클리어 상태로 변경
-		OpenGate();			// 모든 문을 열어줌
+		bIsClear = true;			// 클리어 상태로 변경
+		OnCellClear.Broadcast();	// 클리어 이벤트 호출
+		OpenGate();					// 모든 문을 열어줌
 	}
 }
 

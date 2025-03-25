@@ -34,4 +34,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Maze")
 	TSubclassOf<class ACellActor> CellActorClass = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Maze")
+	TSubclassOf<class AMazeExitActor> MazeExitActorClass = nullptr;
 };

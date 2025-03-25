@@ -4,6 +4,7 @@
 #include "MazeActor.h"
 #include "MazeData.h"
 #include "CellActor.h"
+#include "MazeExitActor.h"
 
 // Sets default values
 AMazeActor::AMazeActor()
@@ -22,14 +23,60 @@ void AMazeActor::BeginPlay()
 	MazeData* Maze = new MazeData();
 	Maze->MakeMaze(Width, Height, RandomSeed);	// 미로 데이터 완료
 
+	// 시작 위치 및 월드 좌표 계산용 데이터
+	UWorld* World = GetWorld();
+	float CellHalfSize = 1000.0f;
+	float CellSize = CellHalfSize * 2.0f;
+	FVector StartLocation = FVector(Height * CellHalfSize, -Width * CellHalfSize, 0.0f)
+		+ FVector(-CellHalfSize * (Height % 2), CellHalfSize * (Width % 2), 0);	// 미로의 시작 위치
+
+	// 출구 만들기(위치 확정용)
+	int ExitX = 0;
+	int ExitY = 0;
+	AMazeExitActor* ExitActor = nullptr;
+	if (MazeExitActorClass)
+	{
+		struct FVector2I
+		{
+			int32 X;
+			int32 Y;
+
+			FVector2I(int32 InX, int32 InY)
+				: X(InX), Y(InY)
+			{
+			};
+		};
+
+		TArray<FVector2I> GridList;
+		GridList.Reserve(Width * 2 + Height * 2);
+
+		// 가장자리 부분의 좌표 구하기
+		for (int i = 0; i < Width; i++)
+		{
+			GridList.Add(FVector2I(i, 0));
+			GridList.Add(FVector2I(i, Height - 1));
+		}
+		for (int i = 0; i < Height; i++)
+		{
+			GridList.Add(FVector2I(0, i));
+			GridList.Add(FVector2I(Width - 1, i));
+		}
+
+		int32 Index = FMath::RandRange(0, GridList.Num() - 1);
+		FVector2I GoalGridLocation = GridList[Index];
+		ExitX = GoalGridLocation.X;
+		ExitY = GoalGridLocation.Y;
+
+		FVector Location = StartLocation + FVector(-GoalGridLocation.Y * CellSize, GoalGridLocation.X * CellSize, 0.0f);
+		ExitActor = World->SpawnActor<AMazeExitActor>(	// 출구 엑터 스폰
+			MazeExitActorClass,
+			Location,
+			FRotator::ZeroRotator);
+	}
+
 	// 미로 데이터를 이용하여 셀 생성
 	if (CellActorClass)
-	{
-		float CellHalfSize = 1000.0f;
-		float CellSize = CellHalfSize * 2.0f;
-		FVector StartLocation = FVector(Height * CellHalfSize, -Width * CellHalfSize , 0.0f)
-			 + FVector(-CellHalfSize * (Height % 2), CellHalfSize * (Width % 2), 0);	// 미로의 시작 위치
-		UWorld* World = GetWorld();
+	{			
 		int32 StartX = static_cast<int32>(StartLocation.X) / (CellHalfSize * 2);
 		int32 StartY = static_cast<int32>(-StartLocation.Y) / (CellHalfSize * 2);
 		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Start Location : %d, %d"), StartX, StartY));
@@ -51,6 +98,11 @@ void AMazeActor::BeginPlay()
 					{
 						CellActor->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);	// 미로 액터에 붙임
 						CellActor->Initialize(Cell);	// 셀 데이터 초기화
+
+						if (x == ExitX && y == ExitY && ExitActor)
+						{
+							CellActor->OnCellClear.AddDynamic(ExitActor, &AMazeExitActor::ActivateExit);	// 출구 셀이 클리어되면 출구 엑터의 활성화 함수 호출
+						}
 					}
 
 					if (x == StartX && y == StartY)
@@ -60,8 +112,6 @@ void AMazeActor::BeginPlay()
 				}
 			}
 		}
-
-		
 	}
 
 	// 미로 데이터 정리
