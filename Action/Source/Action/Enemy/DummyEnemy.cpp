@@ -33,6 +33,14 @@ float ADummyEnemy::TakeDamage(float Damage, FDamageEvent const& DamageEvent, ACo
 	return ActualDamage;
 }
 
+void ADummyEnemy::Die()
+{
+	Super::Die();
+
+	DropItems();		// 아이템 드랍
+	Destroy();			// 액터 삭제
+}
+
 // Called every frame
 void ADummyEnemy::Tick(float DeltaTime)
 {

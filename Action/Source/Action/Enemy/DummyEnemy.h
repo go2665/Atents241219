@@ -22,7 +22,9 @@ protected:
 
 	// 데미지 입었을 때 호출
 	virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
-
+	
+	// 사망시 호출
+	virtual void Die() override;
 
 public:	
 	// Called every frame

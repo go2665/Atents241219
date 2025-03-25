@@ -17,6 +17,7 @@ class ACTION_API AMainHUD : public AHUD
 {
 	GENERATED_BODY()
 public:
+	inline void OpenShop() { if (MainWidget) MainWidget->ShowShop(true); };
 	inline void ToggleInventory() { if (MainWidget) MainWidget->ToggleInventory(); };
 	inline FOnInventoryOpen& GetInventoryOpenDelegate() { return MainWidget->GetInventoryOpenDelegate(); };
 	FOnPostBeginPlay OnPostBeginPlay;

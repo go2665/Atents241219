@@ -29,7 +29,10 @@ void AEnemyBase::BeginPlay()
 	{
 		// 데미지를 입었을 때 데미지 팝업을 띄우기 위한 델리게이트 바인딩
 		PopupDamageWidgetInstance = Cast<UUserWidget_PopupDamage>(PopupDamageWidget->GetUserWidgetObject());
-		OnTakeDamage.AddDynamic(PopupDamageWidgetInstance, &UUserWidget_PopupDamage::ActivateWidget);
+		if (PopupDamageWidgetInstance)
+		{
+			OnTakeDamage.AddDynamic(PopupDamageWidgetInstance, &UUserWidget_PopupDamage::ActivateWidget);
+		}
 	}
 	
 	CurrentHealth = MaxHealth;
@@ -73,7 +76,10 @@ void AEnemyBase::Die()
 	bIsAlive = false;	// 죽었음을 표시
 	OnDie.Broadcast();	// 델리게이트로 죽음을 알림
 	
-	GetController()->UnPossess();
+	if (Controller)
+	{
+		Controller->UnPossess();
+	}
 
 	// 사망 애니메이션 재생
 	if (DeathMontage)
