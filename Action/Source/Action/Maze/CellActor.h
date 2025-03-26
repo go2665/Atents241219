@@ -7,7 +7,7 @@
 #include "EDirectionType.h"
 #include "CellActor.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCellClear);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCellClear, ACellActor*, InClearCell);
 
 UCLASS()
 class ACTION_API ACellActor : public AActor

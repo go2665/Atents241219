@@ -19,7 +19,7 @@ public:
 	AMazeExitActor();
 
 	UFUNCTION(BlueprintCallable)
-	void ActivateExit();
+	void ActivateExit(class ACellActor* InClearActor);
 
 protected:
 	// Called when the game starts or when spawned

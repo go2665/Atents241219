@@ -27,7 +27,7 @@ AMazeExitActor::AMazeExitActor()
 	Effect->SetAutoActivate(false);
 }
 
-void AMazeExitActor::ActivateExit()
+void AMazeExitActor::ActivateExit(ACellActor* InClearActor)
 {
 	Box->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	Effect->Activate();

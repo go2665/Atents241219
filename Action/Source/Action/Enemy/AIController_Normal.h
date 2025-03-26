@@ -15,7 +15,7 @@ class ACTION_API AAIController_Normal : public AAIController
 	GENERATED_BODY()
 	
 protected:
-	virtual void BeginPlay() override;
+	virtual void OnPossess(APawn* InPawn) override;
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "AI")

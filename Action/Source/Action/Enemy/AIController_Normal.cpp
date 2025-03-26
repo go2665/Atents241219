@@ -5,22 +5,21 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
-
-void AAIController_Normal::BeginPlay()
+void AAIController_Normal::OnPossess(APawn* InPawn)
 {
-	Super::BeginPlay();
-	
-	UBlackboardComponent* BlackboardComp = GetBlackboardComponent();
-	if (BlackboardComp)
-	{
-		UWorld* World = GetWorld();
-		APlayerController* PlayerController = World->GetFirstPlayerController();
-		APawn* PlayerPawn = PlayerController->GetPawn();
-		BlackboardComp->SetValueAsObject("TargetPlayer", PlayerPawn);
-	}
+	Super::OnPossess(InPawn);	
 
 	if (BehaviorTree)
 	{
 		RunBehaviorTree(BehaviorTree);
+
+		UBlackboardComponent* BlackboardComp = GetBlackboardComponent();
+		if (BlackboardComp)
+		{
+			UWorld* World = GetWorld();
+			APlayerController* PlayerController = World->GetFirstPlayerController();
+			APawn* PlayerPawn = PlayerController->GetPawn();
+			BlackboardComp->SetValueAsObject("TargetPlayer", PlayerPawn);
+		}
 	}
 }

@@ -6,6 +6,7 @@
 #include "CellActor.h"
 #include "MazeExitActor.h"
 #include "Action/Framework/ActionGameMode.h"
+#include "Action/Enemy/ShopEnemy.h"
 
 // Sets default values
 AMazeActor::AMazeActor()
@@ -13,6 +14,18 @@ AMazeActor::AMazeActor()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
+}
+
+void AMazeActor::OnCellClear(ACellActor* InClearActor)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("OnCellClear : Cell Clear"));
+	// 30% 확률로 ShopEnemy 액터 생성
+	if (FMath::FRand() < ShopSpawnRate)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("OnCellClear : Spawn Shop"));
+		GetWorld()->SpawnActor<AShopEnemy>(
+			ShopEnemyClass, InClearActor->GetActorLocation(), FRotator::ZeroRotator);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -107,7 +120,13 @@ void AMazeActor::BeginPlay()
 
 						if (x == ExitX && y == ExitY && ExitActor)
 						{
+							// 출구일때
 							CellActor->OnCellClear.AddDynamic(ExitActor, &AMazeExitActor::ActivateExit);	// 출구 셀이 클리어되면 출구 엑터의 활성화 함수 호출
+						}
+						else
+						{
+							// 출구가 아닐때
+							CellActor->OnCellClear.AddDynamic(this, &AMazeActor::OnCellClear);	// 셀이 클리어되면 이 클래스의 OnCellClear 함수 호출
 						}
 					}
 

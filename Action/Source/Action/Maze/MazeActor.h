@@ -15,6 +15,10 @@ public:
 	// Sets default values for this actor's properties
 	AMazeActor();
 
+private:
+	UFUNCTION()
+	void OnCellClear(class ACellActor* InClearActor);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -37,4 +41,11 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Maze")
 	TSubclassOf<class AMazeExitActor> MazeExitActorClass = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Maze")
+	float ShopSpawnRate = 0.3f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Maze")
+	TSubclassOf<class AShopEnemy> ShopEnemyClass = nullptr;
+
 };
