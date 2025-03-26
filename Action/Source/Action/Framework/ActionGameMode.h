@@ -32,7 +32,11 @@ public:
 		return DropItemFactory ? DropItemFactory->GetItemDataAsset(InItemType) : nullptr;
 	};
 
+	UFUNCTION(BlueprintCallable, Category = "DropItem")
+	void OnGameClear();
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item")
 	UDropItemFactoryComponent* DropItemFactory = nullptr;
+
 };

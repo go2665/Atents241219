@@ -22,6 +22,9 @@ public:
 	inline FOnInventoryOpen& GetInventoryOpenDelegate() { return MainWidget->GetInventoryOpenDelegate(); };
 	FOnPostBeginPlay OnPostBeginPlay;
 
+	UFUNCTION(BlueprintCallable, Category = "GameClear")
+	void GameClear();
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -34,4 +37,7 @@ protected:
 
 	UPROPERTY()
 	UMainWidget* MainWidget = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Clear")
+	TSubclassOf<class UUserWidget> ClearWidgetClass;
 };

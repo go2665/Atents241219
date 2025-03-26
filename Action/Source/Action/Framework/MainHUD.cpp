@@ -5,6 +5,20 @@
 #include "Blueprint/UserWidget.h"
 
 
+void AMainHUD::GameClear()
+{
+	if (ClearWidgetClass)
+	{
+		MainWidget->RemoveFromViewport();
+
+		UUserWidget* ClearWidget = CreateWidget<UUserWidget>(GetWorld(), ClearWidgetClass);
+		if (ClearWidget)
+		{
+			ClearWidget->AddToViewport();
+		}
+	}
+}
+
 void AMainHUD::BeginPlay()
 {
 	Super::BeginPlay();

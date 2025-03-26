@@ -23,13 +23,13 @@ public:
 	//virtual void Tick(float DeltaTime) override;
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Maze", meta = (ClmapMin = "1", ClampMax = "100"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Maze", meta = (ClmapMin = "3", ClampMax = "100"))
 	int32 Width = 2;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Maze", meta = (ClmapMin = "1", ClampMax = "100"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Maze", meta = (ClmapMin = "3", ClampMax = "100"))
 	int32 Height = 2;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Maze")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Maze")
 	int32 RandomSeed = -1;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Maze")

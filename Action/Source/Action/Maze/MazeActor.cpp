@@ -5,6 +5,7 @@
 #include "MazeData.h"
 #include "CellActor.h"
 #include "MazeExitActor.h"
+#include "Action/Framework/ActionGameMode.h"
 
 // Sets default values
 AMazeActor::AMazeActor()
@@ -62,7 +63,9 @@ void AMazeActor::BeginPlay()
 			GridList.Add(FVector2I(Width - 1, i));
 		}
 
-		int32 Index = FMath::RandRange(0, GridList.Num() - 1);
+		FRandomStream RandomStream;
+		RandomStream.Initialize(RandomSeed);
+		int32 Index = RandomStream.RandRange(0, GridList.Num() - 1);
 		FVector2I GoalGridLocation = GridList[Index];
 		ExitX = GoalGridLocation.X;
 		ExitY = GoalGridLocation.Y;
@@ -72,6 +75,9 @@ void AMazeActor::BeginPlay()
 			MazeExitActorClass,
 			Location,
 			FRotator::ZeroRotator);
+		
+		AActionGameMode* GameMode = World->GetAuthGameMode<AActionGameMode>();
+		ExitActor->OnGameClear.AddDynamic(GameMode, &AActionGameMode::OnGameClear);
 	}
 
 	// 미로 데이터를 이용하여 셀 생성
