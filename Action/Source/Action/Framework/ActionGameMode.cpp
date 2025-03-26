@@ -32,7 +32,7 @@ void AActionGameMode::BeginPlay()
 
 void AActionGameMode::InitializeDefaultRankData()
 {
-	int32 Count = 15;
+	int32 Count = 16;
 	RankDataArray.Empty();
 	RankDataArray.Reserve(Count);
 
@@ -42,6 +42,6 @@ void AActionGameMode::InitializeDefaultRankData()
 		RankDataArray.Add(
 			FRankData(
 				FText::FromString(FString::Printf(TEXT("%c%c%c"), BaseChar + i, BaseChar + i, BaseChar + i)), 
-				(Count - i) * 100));		
+				(Count - i - 1) * 100));		
 	}
 }

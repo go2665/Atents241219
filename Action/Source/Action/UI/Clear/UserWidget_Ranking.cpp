@@ -35,7 +35,7 @@ void UUserWidget_Ranking::NativeConstruct()
 
 void UUserWidget_Ranking::InitializeRankList(const TArray<FRankData>& Rank)
 {
-	int32 Count = Rank.Num();
+	int32 Count = RankLines.Num();
 
 	for (int32 i = 0; i < Count; ++i)
 	{
