@@ -7,6 +7,7 @@
 #include "../Item/FDropItemDataTableRow.h"
 #include "Components/WidgetComponent.h"
 #include "Action/UI/UserWidget_PopupDamage.h"
+#include "AIController_Normal.h"
 
 // Sets default values
 AEnemyBase::AEnemyBase()
@@ -56,7 +57,7 @@ float AEnemyBase::TakeDamage(float Damage, FDamageEvent const& DamageEvent, ACon
 		else
 		{
 			// 피격 애니메이션 재생
-			if (HitMontage)
+			if (HitMontage && bIsAlive)
 			{
 				int32 SectionCount = HitMontage->CompositeSections.Num();
 				int32 Index = FMath::RandRange(0, SectionCount - 1);
@@ -76,10 +77,8 @@ void AEnemyBase::Die()
 	bIsAlive = false;	// 죽었음을 표시
 	OnDie.Broadcast();	// 델리게이트로 죽음을 알림
 	
-	if (Controller)
-	{
-		Controller->UnPossess();
-	}
+	AAIController_Normal* AIController = Cast<AAIController_Normal>(GetController());
+	AIController->StopBehaviorTree();
 
 	// 사망 애니메이션 재생
 	if (DeathMontage)
@@ -94,6 +93,12 @@ void AEnemyBase::Die()
 void AEnemyBase::PostDieAnimation()
 {
 	DropItems();		// 아이템 드랍
+	AController* AIController = GetController();	
+	if (AIController)
+	{
+		AIController->UnPossess();
+		AIController->Destroy();
+	}
 	Destroy();			// 액터 삭제
 }
 

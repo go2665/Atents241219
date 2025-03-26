@@ -55,7 +55,7 @@ void UItemDetailWidget::UpdateLocation()
 	FVector2D MousePosition;	// 마우스 좌표(해상도 기준)
 	if (UWidgetLayoutLibrary::GetMousePositionScaledByDPI(PlayerController, MousePosition.X, MousePosition.Y))	// 해상도 기준 마우스 위치
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Diff: %s"), *(MousePosition - ParentOrigin).ToString());
+		//UE_LOG(LogTemp, Warning, TEXT("Diff: %s"), *(MousePosition - ParentOrigin).ToString());
 		CanvasSlot->SetPosition(MousePosition - ParentOrigin);
 	}
 }

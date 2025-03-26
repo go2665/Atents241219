@@ -23,7 +23,7 @@ void ANormalEnemy::Attack()
 	//UE_LOG(LogTemp, Warning, TEXT("Normal Enemy Attack"));
 	//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Normal Enemy Attack"));
 
-	if (AttackMontage)
+	if (AttackMontage && bIsAlive)
 	{
 		PlayAnimMontage(AttackMontage);
 	}

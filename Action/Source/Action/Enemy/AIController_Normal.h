@@ -13,7 +13,9 @@ UCLASS()
 class ACTION_API AAIController_Normal : public AAIController
 {
 	GENERATED_BODY()
-	
+public:
+	void StopBehaviorTree();
+
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
 

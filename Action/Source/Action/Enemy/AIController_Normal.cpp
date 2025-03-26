@@ -5,6 +5,14 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
+void AAIController_Normal::StopBehaviorTree()
+{
+	if (BrainComponent)
+	{
+		BrainComponent->StopLogic(TEXT("BT Stop"));
+	}
+}
+
 void AAIController_Normal::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);	

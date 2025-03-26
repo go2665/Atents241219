@@ -71,7 +71,6 @@ protected:
 	UPROPERTY()
 	class UUserWidget_PopupDamage* PopupDamageWidgetInstance = nullptr;
 
-private:
 	// 생존 여부
 	bool bIsAlive = true;
 
