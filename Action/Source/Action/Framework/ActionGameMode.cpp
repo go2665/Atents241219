@@ -20,3 +20,28 @@ void AActionGameMode::OnGameClear()
 	AMainHUD* MainHUD = PlayerController->GetHUD<AMainHUD>();
 	MainHUD->GameClear();	// 게임 클리어 UI 표시
 }
+
+void AActionGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// 랭킹 데이터 로드
+	// 로드 실패시 초기화 함수로 데이터 세팅
+	InitializeDefaultRankData();
+}
+
+void AActionGameMode::InitializeDefaultRankData()
+{
+	int32 Count = 15;
+	RankDataArray.Empty();
+	RankDataArray.Reserve(Count);
+
+	char BaseChar = 'A';
+	for (int32 i = 0; i < Count; ++i)
+	{
+		RankDataArray.Add(
+			FRankData(
+				FText::FromString(FString::Printf(TEXT("%c%c%c"), BaseChar + i, BaseChar + i, BaseChar + i)), 
+				(Count - i) * 100));		
+	}
+}

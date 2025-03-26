@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Action/Framework/SaveGame_Rank.h"
 #include "UserWidget_Ranking.generated.h"
 
 /**
@@ -18,7 +19,7 @@ protected:
 	virtual void NativeConstruct() override;
 
 private:
-	void InitializeDefaultRankList();
+	void InitializeRankList(const TArray<FRankData>& Rank);
 
 	
 protected:

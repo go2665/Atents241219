@@ -4,6 +4,7 @@
 #include "UserWidget_Ranking.h"
 #include "Components/ScrollBox.h"
 #include "UserWidget_RankLine.h"
+#include "Action/Framework/ActionGameMode.h"
 
 void UUserWidget_Ranking::NativeConstruct()
 {
@@ -25,22 +26,19 @@ void UUserWidget_Ranking::NativeConstruct()
 		}
 	}
 
-	// 랭킹 리스트 초기화
-	InitializeDefaultRankList();
+	// 랭킹 리스트 초기화(게임 모드에서 받아오기)
+	UWorld* World = GetWorld();
+	AActionGameMode* GameMode = World->GetAuthGameMode<AActionGameMode>();
+	const TArray<FRankData>& Rank = GameMode->GetRankDataArray();
+	InitializeRankList(Rank);
 }
 
-void UUserWidget_Ranking::InitializeDefaultRankList()
+void UUserWidget_Ranking::InitializeRankList(const TArray<FRankData>& Rank)
 {
-	int32 Count = RankLines.Num();
+	int32 Count = Rank.Num();
 
-	char BaseChar = 'A';
-
-	FText RankerName;
 	for (int32 i = 0; i < Count; ++i)
 	{
-		RankLines[i]->SetDefault(
-			i+1, 
-			FText::FromString(FString::Printf(TEXT("%c%c%c"), BaseChar + i, BaseChar + i, BaseChar + i)),
-			(Count - i) * 1000000);
+		RankLines[i]->SetDefault(i + 1, Rank[i].RankName, Rank[i].Gold);
 	}
 }

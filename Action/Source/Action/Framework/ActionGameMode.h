@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "../Item/EItemType.h"
 #include "../Item/DropItemFactoryComponent.h"
+#include "SaveGame_Rank.h"
 #include "ActionGameMode.generated.h"
 
 /**
@@ -35,8 +36,21 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Clear")
 	void OnGameClear();
 
+	const inline TArray<FRankData>& GetRankDataArray() const { return RankDataArray; }
+
+protected:
+	virtual void BeginPlay() override;
+
+private:
+	//void LoadRankData();
+	//void SaveRankData();
+	void InitializeDefaultRankData();
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item")
 	UDropItemFactoryComponent* DropItemFactory = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rank")
+	TArray<FRankData> RankDataArray;
 
 };
