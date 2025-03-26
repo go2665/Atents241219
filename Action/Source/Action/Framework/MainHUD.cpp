@@ -9,7 +9,7 @@ void AMainHUD::GameClear()
 {
 	if (ClearWidgetClass)
 	{
-		MainWidget->RemoveFromViewport();
+		MainWidget->RemoveFromParent();
 
 		UUserWidget* ClearWidget = CreateWidget<UUserWidget>(GetWorld(), ClearWidgetClass);
 		if (ClearWidget)
