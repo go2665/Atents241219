@@ -11,7 +11,7 @@ void AMainHUD::GameClear()
 	{
 		MainWidget->RemoveFromParent();
 
-		UUserWidget* ClearWidget = CreateWidget<UUserWidget>(GetWorld(), ClearWidgetClass);
+		ClearWidget = CreateWidget<UUserWidget_ClearPanel>(GetWorld(), ClearWidgetClass);
 		if (ClearWidget)
 		{
 			ClearWidget->AddToViewport();

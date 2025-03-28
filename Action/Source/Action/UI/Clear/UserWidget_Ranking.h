@@ -15,12 +15,11 @@ class ACTION_API UUserWidget_Ranking : public UUserWidget
 {
 	GENERATED_BODY()
 
+public:
+	void RefreshRankList();
+
 protected:
 	virtual void NativeConstruct() override;
-
-private:
-	void InitializeRankList(const TArray<FRankData>& Rank);
-
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rank", meta = (BindWidget))

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
 #include "Action/UI/MainWidget.h"
+#include "Action/UI/Clear/UserWidget_ClearPanel.h"
 #include "MainHUD.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPostBeginPlay);
@@ -16,6 +17,7 @@ UCLASS()
 class ACTION_API AMainHUD : public AHUD
 {
 	GENERATED_BODY()
+
 public:
 	inline void OpenShop() { if (MainWidget) MainWidget->ShowShop(true); };
 	inline void ToggleInventory() { if (MainWidget) MainWidget->ToggleInventory(); };
@@ -24,6 +26,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "GameClear")
 	void GameClear();
+
+	UFUNCTION(BlueprintCallable, Category = "GameClear")
+	inline void RefreshRankList() { if (ClearWidget) ClearWidget->RefreshRankList(); };
+	
 
 protected:
 	virtual void BeginPlay() override;
@@ -39,5 +45,8 @@ protected:
 	UMainWidget* MainWidget = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Clear")
-	TSubclassOf<class UUserWidget> ClearWidgetClass;
+	TSubclassOf<UUserWidget_ClearPanel> ClearWidgetClass;
+
+	UPROPERTY()
+	UUserWidget_ClearPanel* ClearWidget = nullptr;
 };

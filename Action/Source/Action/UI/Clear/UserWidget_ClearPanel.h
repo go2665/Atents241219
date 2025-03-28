@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Action/UI/Clear/UserWidget_Ranking.h"
 #include "UserWidget_ClearPanel.generated.h"
 
 /**
@@ -13,8 +14,11 @@ UCLASS()
 class ACTION_API UUserWidget_ClearPanel : public UUserWidget
 {
 	GENERATED_BODY()
+
+public:
+	inline void RefreshRankList() { if (RankingPanel) RankingPanel->RefreshRankList(); };
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Clear", meta = (BindWidget))
-	class UUserWidget_Ranking* RankingPanel;
+	UUserWidget_Ranking* RankingPanel;
 };

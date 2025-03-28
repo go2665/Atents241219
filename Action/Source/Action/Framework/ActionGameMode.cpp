@@ -17,8 +17,30 @@ void AActionGameMode::OnGameClear()
 	PlayerController->DisableInput(PlayerController);	// 입력 비활성화
 	PlayerController->SetShowMouseCursor(true);
 
-	AMainHUD* MainHUD = PlayerController->GetHUD<AMainHUD>();
+	MainHUD = PlayerController->GetHUD<AMainHUD>();
 	MainHUD->GameClear();	// 게임 클리어 UI 표시
+}
+
+void AActionGameMode::AddRankData(int32 InGold)
+{
+	RankDataArray[RankDataCount].Gold = InGold;
+	RankDataArray[RankDataCount].RankName = FText::FromString(TEXT("New Ranker"));
+	SortRankData();
+
+	if (MainHUD)
+	{
+		MainHUD->RefreshRankList();
+	}
+}
+
+void AActionGameMode::SetRankerName(int32 InRank, FText InName)
+{
+	RankDataArray[InRank].RankName = InName;
+
+	if (MainHUD)
+	{
+		MainHUD->RefreshRankList();
+	}
 }
 
 void AActionGameMode::BeginPlay()
@@ -32,7 +54,7 @@ void AActionGameMode::BeginPlay()
 
 void AActionGameMode::InitializeDefaultRankData()
 {
-	int32 Count = 16;
+	int32 Count = RankDataCount + 1;	// 마지막 자리는 새로 추가되는 데이터를 위한 자리
 	RankDataArray.Empty();
 	RankDataArray.Reserve(Count);
 
@@ -44,4 +66,12 @@ void AActionGameMode::InitializeDefaultRankData()
 				FText::FromString(FString::Printf(TEXT("%c%c%c"), BaseChar + i, BaseChar + i, BaseChar + i)), 
 				(Count - i - 1) * 100));		
 	}
+}
+
+void AActionGameMode::SortRankData()
+{
+	// 골드 기준으로 내림차순 정렬
+	RankDataArray.Sort([](const FRankData& A, const FRankData& B) {
+		return A.Gold > B.Gold;
+		});
 }

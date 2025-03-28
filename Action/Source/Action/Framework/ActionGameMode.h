@@ -33,8 +33,17 @@ public:
 		return DropItemFactory ? DropItemFactory->GetItemDataAsset(InItemType) : nullptr;
 	};
 
+	// 게임이 클리어 되었을 때 호출
 	UFUNCTION(BlueprintCallable, Category = "Clear")
 	void OnGameClear();
+
+	// 랭킹 데이터 추가
+	UFUNCTION(BlueprintCallable, Category = "Rank")
+	void AddRankData(int32 InGold);
+
+	// 랭커 이름 설정(랭킹 데이터 인덱스(0~14), 랭커 이름)
+	UFUNCTION(BlueprintCallable, Category = "Rank")
+	void SetRankerName(int32 InRank, FText InName);
 
 	const inline TArray<FRankData>& GetRankDataArray() const { return RankDataArray; }
 
@@ -45,6 +54,7 @@ private:
 	//void LoadRankData();
 	//void SaveRankData();
 	void InitializeDefaultRankData();
+	void SortRankData();
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item")
@@ -53,4 +63,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rank")
 	TArray<FRankData> RankDataArray;
 
+private:
+	// 유효한 랭킹 데이터 개수
+	static const int32 RankDataCount = 15;
+
+	UPROPERTY()
+	class AMainHUD* MainHUD = nullptr;
 };

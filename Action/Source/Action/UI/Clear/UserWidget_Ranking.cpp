@@ -26,16 +26,17 @@ void UUserWidget_Ranking::NativeConstruct()
 		}
 	}
 
-	// 랭킹 리스트 초기화(게임 모드에서 받아오기)
+	// 랭킹 리스트 리프레시(게임 모드에서 받아오기)	
+	RefreshRankList();
+}
+
+void UUserWidget_Ranking::RefreshRankList()
+{
 	UWorld* World = GetWorld();
 	AActionGameMode* GameMode = World->GetAuthGameMode<AActionGameMode>();
 	const TArray<FRankData>& Rank = GameMode->GetRankDataArray();
-	InitializeRankList(Rank);
-}
 
-void UUserWidget_Ranking::InitializeRankList(const TArray<FRankData>& Rank)
-{
-	int32 Count = RankLines.Num();
+	int32 Count = RankLines.Num();	// RankLines는 15개(Rank에서 마지막은 무시)
 
 	for (int32 i = 0; i < Count; ++i)
 	{
