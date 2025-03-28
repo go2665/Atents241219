@@ -2,7 +2,6 @@
 
 
 #include "UserWidget_Ranking.h"
-#include "Components/ScrollBox.h"
 #include "UserWidget_RankLine.h"
 #include "Action/Framework/ActionGameMode.h"
 
@@ -25,7 +24,7 @@ void UUserWidget_Ranking::NativeConstruct()
 			}
 		}
 	}
-
+	
 	// 랭킹 리스트 리프레시(게임 모드에서 받아오기)	
 	RefreshRankList();
 }

@@ -47,12 +47,18 @@ public:
 
 	const inline TArray<FRankData>& GetRankDataArray() const { return RankDataArray; }
 
+	UFUNCTION(BlueprintCallable, Category = "Test")
+	void TestLoadRankData();
+
+	UFUNCTION(BlueprintCallable, Category = "Test")
+	void TestSaveRankData();
+
 protected:
 	virtual void BeginPlay() override;
 
 private:
-	//void LoadRankData();
-	//void SaveRankData();
+	void LoadRankData();
+	void SaveRankData() const;
 	void InitializeDefaultRankData();
 	void SortRankData();
 
@@ -67,6 +73,10 @@ private:
 	// 유효한 랭킹 데이터 개수
 	static const int32 RankDataCount = 15;
 
+	// 랭킹 데이터 저장 슬롯 인덱스
+	static const int32 SaveSlotindex = 0;
+
+	// 메인 HUD
 	UPROPERTY()
 	class AMainHUD* MainHUD = nullptr;
 };
