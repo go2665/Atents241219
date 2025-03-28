@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Action/Framework/SaveGame_Rank.h"
+#include "Action/UI/Clear/UserWidget_RankLine.h"
 #include "UserWidget_Ranking.generated.h"
 
 /**
@@ -18,6 +19,8 @@ class ACTION_API UUserWidget_Ranking : public UUserWidget
 public:
 	void RefreshRankList();
 
+	inline void OnNewRanker(int32 InRank){ RankLines[InRank]->OnNewRanker(); }
+
 protected:
 	virtual void NativeConstruct() override;
 	
@@ -26,5 +29,5 @@ protected:
 	class UScrollBox* RankList;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rank", meta = (BindWidget))
-	TArray<class UUserWidget_RankLine*> RankLines;
+	TArray<UUserWidget_RankLine*> RankLines;
 };

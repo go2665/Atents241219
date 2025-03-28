@@ -6,6 +6,9 @@
 #include "Blueprint/UserWidget.h"
 #include "UserWidget_RankLine.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnRankerNameCommitted, int32, InRankIndex, const FText&, InText);
+
+
 /**
  * 
  */
@@ -21,8 +24,9 @@ public:
 	// 랭킹 설정하기
 	void SetRank(FString InName, int32 InGold);
 
-	// 입력 가능하게 하고 돈 설정하기
-	void OnNewRanker(int32 InNewGold);
+	// 입력 가능하게 하기
+	void OnNewRanker();
+
 
 protected:
 	virtual void NativeConstruct() override;
@@ -47,5 +51,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rank", meta = (BindWidget))
 	class UTextBlock* Gold;
 
+private:
+	FOnRankerNameCommitted OnRankerNameCommitted;
+	int32 RankIndex = -1;
 	
 };

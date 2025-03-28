@@ -3,6 +3,7 @@
 
 #include "ActionGameMode.h"
 #include "MainHUD.h"
+#include "Action/Player/ActionPlayerState.h"
 
 AActionGameMode::AActionGameMode()
 {
@@ -19,21 +20,43 @@ void AActionGameMode::OnGameClear()
 
 	MainHUD = PlayerController->GetHUD<AMainHUD>();
 	MainHUD->GameClear();	// 게임 클리어 UI 표시
+
+	AActionPlayerState* PlayerState = PlayerController->GetPlayerState<AActionPlayerState>();	
+	if (PlayerState)
+	{
+		AddRankData(PlayerState->GetGold());
+	}
 }
 
 void AActionGameMode::AddRankData(int32 InGold)
 {
+	int32 NewRank = RankDataCount;
+	for (int i = 0; i < RankDataCount; i++)
+	{
+		if (RankDataArray[i].Gold < InGold)
+		{
+			NewRank = i;
+			break;
+		}
+	}
+
 	RankDataArray[RankDataCount].Gold = InGold;
 	RankDataArray[RankDataCount].RankName = FText::FromString(TEXT("New Ranker"));
-	SortRankData();
+	SortRankData();	
 
 	if (MainHUD)
 	{
 		MainHUD->RefreshRankList();
+
+		// 15등 안에 들어갔을 때의 처리 필요
+		if (NewRank < RankDataCount)
+		{
+			MainHUD->OnNewRanker(NewRank);
+		}
 	}
 }
 
-void AActionGameMode::SetRankerName(int32 InRank, FText InName)
+void AActionGameMode::SetRankerName(int32 InRank, const FText& InName)
 {
 	RankDataArray[InRank].RankName = InName;
 

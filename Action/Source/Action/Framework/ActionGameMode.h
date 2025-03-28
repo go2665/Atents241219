@@ -43,7 +43,7 @@ public:
 
 	// 랭커 이름 설정(랭킹 데이터 인덱스(0~14), 랭커 이름)
 	UFUNCTION(BlueprintCallable, Category = "Rank")
-	void SetRankerName(int32 InRank, FText InName);
+	void SetRankerName(int32 InRank, const FText& InName);
 
 	const inline TArray<FRankData>& GetRankDataArray() const { return RankDataArray; }
 

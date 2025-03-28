@@ -17,6 +17,7 @@ class ACTION_API UUserWidget_ClearPanel : public UUserWidget
 
 public:
 	inline void RefreshRankList() { if (RankingPanel) RankingPanel->RefreshRankList(); };
+	inline void OnNewRanker(int32 InRank) { if (RankingPanel) RankingPanel->OnNewRanker(InRank); };
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Clear", meta = (BindWidget))

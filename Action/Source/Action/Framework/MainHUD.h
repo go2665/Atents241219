@@ -29,6 +29,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "GameClear")
 	inline void RefreshRankList() { if (ClearWidget) ClearWidget->RefreshRankList(); };
+
+	UFUNCTION(BlueprintCallable, Category = "GameClear")
+	inline void OnNewRanker(int32 InRank) { if (ClearWidget) ClearWidget->OnNewRanker(InRank); };
 	
 
 protected:
