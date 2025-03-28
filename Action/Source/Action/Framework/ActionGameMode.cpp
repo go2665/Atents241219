@@ -28,6 +28,8 @@ void AActionGameMode::OnGameClear()
 	{
 		AddRankData(PlayerState->GetGold());
 	}
+
+	SaveRankData();	// 랭킹 데이터 저장
 }
 
 void AActionGameMode::AddRankData(int32 InGold)
@@ -108,6 +110,10 @@ void AActionGameMode::LoadRankData()
 	if (LoadedGame)
 	{
 		RankDataArray = LoadedGame->RankDataArray;
+		if (RankDataArray.IsEmpty())
+		{
+			InitializeDefaultRankData();	
+		}
 	}
 	else
 	{
