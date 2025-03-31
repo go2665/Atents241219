@@ -42,6 +42,9 @@
     <ClCompile Include="Common\MathHelper.cpp">
       <Filter>Common</Filter>
     </ClCompile>
+    <ClCompile Include="Chap4App.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\Camera.h">
@@ -70,6 +73,9 @@
     </ClInclude>
     <ClInclude Include="Common\UploadBuffer.h">
       <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Chap4App.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
