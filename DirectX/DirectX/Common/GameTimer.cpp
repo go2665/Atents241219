@@ -11,11 +11,12 @@ GameTimer::GameTimer()
 {
 	__int64 countsPerSec;
 	QueryPerformanceFrequency((LARGE_INTEGER*)&countsPerSec);
-	mSecondsPerCount = 1.0 / (double)countsPerSec;
+	mSecondsPerCount = 1.0 / (double)countsPerSec;	// 카운트당 시간(초)
 }
 
 // Returns the total time elapsed since Reset() was called, NOT counting any
 // time when the clock is stopped.
+// Reset함수가 호출된 이후의 총 경과시간을 반환한다. 단 정지되어 있던 시간은 제외한다.
 float GameTimer::TotalTime()const
 {
 	// If we are stopped, do not count the time that has passed since we stopped.
@@ -27,8 +28,9 @@ float GameTimer::TotalTime()const
 	// ----*---------------*-----------------*------------*------------*------> time
 	//  mBaseTime       mStopTime        startTime     mStopTime    mCurrTime
 
-	if( mStopped )
+	if( mStopped )	// 현재 정지 상태라면
 	{
+		// (정지된클럭카운트-누적된정지카운트-시작클럭카운트) * 카운트당 시간
 		return (float)(((mStopTime - mPausedTime)-mBaseTime)*mSecondsPerCount);
 	}
 
@@ -44,6 +46,7 @@ float GameTimer::TotalTime()const
 	
 	else
 	{
+		// (현재클럭카운트-정지되어있던클럭카운트-시작클럭카운트) * 카운트당 시간
 		return (float)(((mCurrTime-mPausedTime)-mBaseTime)*mSecondsPerCount);
 	}
 }
@@ -56,12 +59,12 @@ float GameTimer::DeltaTime()const
 void GameTimer::Reset()
 {
 	__int64 currTime;
-	QueryPerformanceCounter((LARGE_INTEGER*)&currTime);
+	QueryPerformanceCounter((LARGE_INTEGER*)&currTime);	// 현재 CPU의 클럭 카운트를 가져온다.
 
-	mBaseTime = currTime;
-	mPrevTime = currTime;
-	mStopTime = 0;
-	mStopped  = false;
+	mBaseTime = currTime;	// mBaseTime = Reset되었을 때의 클럭 카운트
+	mPrevTime = currTime;	// mPrevTime = 이전 프레임의 클럭 카운트
+	mStopTime = 0;			// mStopTime = 정지되어 있던 클럭 카운트 초기화
+	mStopped = false;		// 정지하고 있지 않다고 표시
 }
 
 void GameTimer::Start()
@@ -78,23 +81,23 @@ void GameTimer::Start()
 
 	if( mStopped )
 	{
-		mPausedTime += (startTime - mStopTime);	
+		mPausedTime += (startTime - mStopTime);	// 정지되어 있던 시간을 누적한다.
 
-		mPrevTime = startTime;
-		mStopTime = 0;
-		mStopped  = false;
+		mPrevTime = startTime;	// 다시 시작을 위해 mPrevTime를 현재 프레임카운트로 설정
+		mStopTime = 0;			// 정지시간 초기화
+		mStopped = false;		// 정지상태 해제
 	}
 }
 
 void GameTimer::Stop()
 {
-	if( !mStopped )
+	if (!mStopped)	// 정지되어 있지 않다면 정지
 	{
 		__int64 currTime;
 		QueryPerformanceCounter((LARGE_INTEGER*)&currTime);
 
-		mStopTime = currTime;
-		mStopped  = true;
+		mStopTime = currTime;	// Stop한 클럭 카운트 저장
+		mStopped = true;		// 정지 상태로 변경
 	}
 }
 
@@ -102,18 +105,19 @@ void GameTimer::Tick()
 {
 	if( mStopped )
 	{
-		mDeltaTime = 0.0;
+		mDeltaTime = 0.0;	// 일시 정지 상태일때는 시간이 흐르지 않는다.(델타타임도 0)
 		return;
 	}
 
 	__int64 currTime;
 	QueryPerformanceCounter((LARGE_INTEGER*)&currTime);
-	mCurrTime = currTime;
+	mCurrTime = currTime;	// 현재 클럭 카운트 저장
 
 	// Time difference between this frame and the previous.
-	mDeltaTime = (mCurrTime - mPrevTime)*mSecondsPerCount;
+	// 델타타임 = (현재프레임의 클럭카운트 - 이전프레임의 클럭카운트) * 카운트당 시간
+	mDeltaTime = (mCurrTime - mPrevTime)*mSecondsPerCount;	
 
-	// Prepare for next frame.
+	// Prepare for next frame. 계산이 끝났으니 현제 프레임을 이전 프레임으로 설정.
 	mPrevTime = mCurrTime;
 
 	// Force nonnegative.  The DXSDK's CDXUTTimer mentions that if the 
@@ -121,7 +125,7 @@ void GameTimer::Tick()
 	// processor, then mDeltaTime can be negative.
 	if(mDeltaTime < 0.0)
 	{
-		mDeltaTime = 0.0;
+		mDeltaTime = 0.0;	// 델타타임이 음수가 되는 것 방지
 	}
 }
 

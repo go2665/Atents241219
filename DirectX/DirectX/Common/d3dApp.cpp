@@ -78,25 +78,27 @@ int D3DApp::Run()
 	while(msg.message != WM_QUIT)
 	{
 		// If there are Window messages then process them.
-		if(PeekMessage( &msg, 0, 0, 0, PM_REMOVE ))
+		if(PeekMessage( &msg, 0, 0, 0, PM_REMOVE ))	// 메시지큐에서 메시지를 하나 꺼내온다.
 		{
+			// 꺼낸 메시지가 있으면 메시지를 처리한다.
             TranslateMessage( &msg );
             DispatchMessage( &msg );
 		}
 		// Otherwise, do animation/game stuff.
 		else
         {	
-			mTimer.Tick();
+			// 메시지가 없으면 게임 로직 업데이트 및 랜더링
+			mTimer.Tick();	// 타이머 틱 업데이트
 
-			if( !mAppPaused )
+			if (!mAppPaused)	// 일시정지 상태가 아니면 업데이트 및 랜더링
 			{
-				CalculateFrameStats();
-				Update(mTimer);	
-                Draw(mTimer);
+				CalculateFrameStats();	// 프레임 통계 계산
+				Update(mTimer);			// 게임 로직 업데이트
+				Draw(mTimer);			// 랜더링
 			}
 			else
 			{
-				Sleep(100);
+				Sleep(100);				// 일시정지 상태면 100ms 대기
 			}
         }
     }
@@ -244,15 +246,17 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	// We pause the game when the window is deactivated and unpause it 
 	// when it becomes active.  
 	case WM_ACTIVATE:
-		if( LOWORD(wParam) == WA_INACTIVE )
+		if( LOWORD(wParam) == WA_INACTIVE )	
 		{
+			// 윈도우가 비활성화 되었다.
 			mAppPaused = true;
-			mTimer.Stop();
+			mTimer.Stop();	// 윈도우가 비활성화되면 타이머 일시정지
 		}
 		else
 		{
+			// 윈도우가 활성화 되었다.
 			mAppPaused = false;
-			mTimer.Start();
+			mTimer.Start();	// 윈도우가 활성화되면 타이머 재시작
 		}
 		return 0;
 
@@ -313,11 +317,11 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		}
 		return 0;
 
-	// WM_EXITSIZEMOVE is sent when the user grabs the resize bars.
+	// WM_ENTERSIZEMOVE is sent when the user grabs the resize bars.
 	case WM_ENTERSIZEMOVE:
 		mAppPaused = true;
 		mResizing  = true;
-		mTimer.Stop();
+		mTimer.Stop();	// 윈도우 크기 조정시 타이머 일시정지
 		return 0;
 
 	// WM_EXITSIZEMOVE is sent when the user releases the resize bars.
@@ -325,7 +329,7 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_EXITSIZEMOVE:
 		mAppPaused = false;
 		mResizing  = false;
-		mTimer.Start();
+		mTimer.Start();	// 윈도우 크기 조정이 끝나면 타이머 재시작
 		OnResize();
 		return 0;
  
@@ -599,10 +603,10 @@ void D3DApp::CalculateFrameStats()
 	frameCnt++;
 
 	// Compute averages over one second period.
-	if( (mTimer.TotalTime() - timeElapsed) >= 1.0f )
+	if ((mTimer.TotalTime() - timeElapsed) >= 1.0f)	// 1초마다 프레임 수 계산
 	{
-		float fps = (float)frameCnt; // fps = frameCnt / 1
-		float mspf = 1000.0f / fps;
+		float fps = (float)frameCnt;	// fps = frameCnt / 1
+		float mspf = 1000.0f / fps;		// mspf = 1 / fps (1프레임당 몇 ms인가)
 
         wstring fpsStr = to_wstring(fps);
         wstring mspfStr = to_wstring(mspf);
