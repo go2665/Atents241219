@@ -14,6 +14,6 @@ public :
 
 protected:
 	virtual void Update(const GameTimer& gt) override {};	// 프레임 처리(게임 로직 업데이트)
-	virtual void Draw(const GameTimer& gt) override {};		// 랜더링(화면 출력)
+	virtual void Draw(const GameTimer& gt) override;		// 랜더링(화면 출력)
 };
 
