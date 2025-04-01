@@ -45,6 +45,9 @@
     <ClCompile Include="Chap4App.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Chap6App.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\Camera.h">
@@ -75,6 +78,9 @@
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="Chap4App.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Chap6App.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
