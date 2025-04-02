@@ -310,7 +310,7 @@ GeometryGenerator::MeshData GeometryGenerator::CreateGeosphere(float radius, uin
 {
     MeshData meshData;
 
-	// Put a cap on the number of subdivisions. (구라고 하기 위해서는 최소 6번은 나누어져야 한다.)
+	// Put a cap on the number of subdivisions. (최대 6번까지 나눌 수 있다.)
     numSubdivisions = std::min<uint32>(numSubdivisions, 6u);
 
 	// Approximate a sphere by tessellating an icosahedron.

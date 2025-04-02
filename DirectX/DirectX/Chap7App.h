@@ -61,7 +61,7 @@ private:
 	void UpdateMainPassCB(const GameTimer& gt);
 
 	void BuildDescriptorHeaps();		// 디스크립터 힙 생성
-	void VuildConstantBufferViews();	// 상수 버퍼 뷰 생성
+	void BuildConstantBufferViews();	// 상수 버퍼 뷰 생성
 	void BuildRootSignature();			// 루트 시그니처 생성
 	void BuildShadersAndInputLayout();	// 셰이더와 입력 레이아웃 생성
 	void BuildShapeGeometry();			// 정점과 인덱스 생성(박스, 구, 원뿔)
