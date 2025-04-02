@@ -22,6 +22,7 @@ bool Chap6App::Initialize()
 	BuildRootSignature();
 	BuildShadersAndInputLayout();
 	BuildBoxGeometry();
+	BuildPyramidGeometry();
 	BuildPSO();
 
 	ThrowIfFailed(mCommandList->Close());	// 커맨드 리스트 닫기
@@ -59,6 +60,7 @@ void Chap6App::Update(const GameTimer& gt)
 
 	ObjectConstants objConstants;
 	XMStoreFloat4x4(&objConstants.WorldViewProj, XMMatrixTranspose(worldViewProj));
+	objConstants.Time = gt.TotalTime();
 	mObjectCB->CopyData(0, objConstants);
 }
 
@@ -81,15 +83,33 @@ void Chap6App::Draw(const GameTimer& gt)
 	ID3D12DescriptorHeap* descriptorHeaps[] = { mCbvHeap.Get() };
 	mCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 	mCommandList->SetGraphicsRootSignature(mRootSignature.Get());
-	mCommandList->IASetVertexBuffers(0, 1, &mBoxGeo->VertexBufferView());
-	mCommandList->IASetIndexBuffer(&mBoxGeo->IndexBufferView());
+
+	//mCommandList->IASetVertexBuffers(0, 1, &mBoxGeo->VertexBufferView());
+	//mCommandList->IASetIndexBuffer(&mBoxGeo->IndexBufferView());
+	//mCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	//mCommandList->SetGraphicsRootDescriptorTable(0, mCbvHeap->GetGPUDescriptorHandleForHeapStart());
+	////mCommandList->DrawIndexedInstanced(
+	////	mBoxGeo->DrawArgs["box"].IndexCount, 
+	////	1, 
+	////	mBoxGeo->DrawArgs["box"].StartIndexLocation, 
+	////	mBoxGeo->DrawArgs["box"].BaseVertexLocation, 
+	////	0);
+	//mCommandList->DrawIndexedInstanced(
+	//	mBoxGeo->DrawArgs["square"].IndexCount,
+	//	1,
+	//	mBoxGeo->DrawArgs["square"].StartIndexLocation,
+	//	mBoxGeo->DrawArgs["square"].BaseVertexLocation,
+	//	0);
+
+	mCommandList->IASetVertexBuffers(0, 1, &mPyramidGeo->VertexBufferView());
+	mCommandList->IASetIndexBuffer(&mPyramidGeo->IndexBufferView());
 	mCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	mCommandList->SetGraphicsRootDescriptorTable(0, mCbvHeap->GetGPUDescriptorHandleForHeapStart());
 	mCommandList->DrawIndexedInstanced(
-		mBoxGeo->DrawArgs["box"].IndexCount, 
-		1, 
-		mBoxGeo->DrawArgs["box"].StartIndexLocation, 
-		mBoxGeo->DrawArgs["box"].BaseVertexLocation, 
+		mPyramidGeo->DrawArgs["pyramid"].IndexCount,
+		1,
+		mPyramidGeo->DrawArgs["pyramid"].StartIndexLocation,
+		mPyramidGeo->DrawArgs["pyramid"].BaseVertexLocation,
 		0);
 
 	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),
@@ -274,11 +294,73 @@ void Chap6App::BuildBoxGeometry()
 	mBoxGeo->IndexBufferByteSize = ibByteSize;
 
 	SubmeshGeometry submesh;
-	submesh.IndexCount = (UINT)indices.size();
+	//submesh.IndexCount = (UINT)indices.size();
+	submesh.IndexCount = 36;
 	submesh.StartIndexLocation = 0;
 	submesh.BaseVertexLocation = 0;
-
 	mBoxGeo->DrawArgs["box"] = submesh;
+
+	submesh.IndexCount = 6;
+	submesh.StartIndexLocation = 0;
+	submesh.BaseVertexLocation = 0;
+	mBoxGeo->DrawArgs["square"] = submesh;
+}
+
+void Chap6App::BuildPyramidGeometry()
+{
+	std::array<Vertex, 5> verteces =
+	{
+		Vertex({ XMFLOAT3( 0.0f, +1.0f, 0.0f), XMFLOAT4(Colors::White) }),
+		Vertex({ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(Colors::Orange) }),
+		Vertex({ XMFLOAT3(+1.0f, -1.0f, -1.0f), XMFLOAT4(Colors::Red) }),
+		Vertex({ XMFLOAT3(+1.0f, -1.0f, +1.0f), XMFLOAT4(Colors::Green) }),
+		Vertex({ XMFLOAT3(-1.0f, -1.0f, +1.0f), XMFLOAT4(Colors::Yellow) })		
+	};
+
+	std::array<std::uint16_t, 18> indices =
+	{
+		// 앞
+		0, 2, 1,
+		// 뒤
+		0, 4, 3,
+		// 좌
+		0, 1, 4,
+		// 우
+		0, 3, 2,
+		// 하
+		1, 2, 3,
+		1, 3, 4
+	};
+
+	const UINT vbByteSize = (UINT)verteces.size() * sizeof(Vertex);
+	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
+
+	mPyramidGeo = std::make_unique<MeshGeometry>();
+	mPyramidGeo->Name = "PyramidGeo";
+
+	ThrowIfFailed(D3DCreateBlob(vbByteSize, &mPyramidGeo->VertexBufferCPU));
+	CopyMemory(mPyramidGeo->VertexBufferCPU->GetBufferPointer(), verteces.data(), vbByteSize);
+
+	ThrowIfFailed(D3DCreateBlob(ibByteSize, &mPyramidGeo->IndexBufferCPU));
+	CopyMemory(mPyramidGeo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
+
+	mPyramidGeo->VertexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(), mCommandList.Get(),
+		verteces.data(), vbByteSize, mPyramidGeo->VertexBufferUploader);
+
+	mPyramidGeo->IndexBufferGPU = d3dUtil::CreateDefaultBuffer(md3dDevice.Get(), mCommandList.Get(),
+		indices.data(), ibByteSize, mPyramidGeo->IndexBufferUploader);
+
+	mPyramidGeo->VertexByteStride = sizeof(Vertex);
+	mPyramidGeo->VertexBufferByteSize = vbByteSize;
+	mPyramidGeo->IndexFormat = DXGI_FORMAT_R16_UINT;
+	mPyramidGeo->IndexBufferByteSize = ibByteSize;
+
+	SubmeshGeometry submesh;
+	//submesh.IndexCount = (UINT)indices.size();
+	submesh.IndexCount = 18;
+	submesh.StartIndexLocation = 0;
+	submesh.BaseVertexLocation = 0;
+	mPyramidGeo->DrawArgs["pyramid"] = submesh;
 }
 
 void Chap6App::BuildPSO()

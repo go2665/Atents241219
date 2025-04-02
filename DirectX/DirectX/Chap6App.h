@@ -16,6 +16,7 @@ struct Vertex
 struct ObjectConstants
 {
 	XMFLOAT4X4 WorldViewProj = MathHelper::Identity4x4();	// 월드, 뷰, 투영 행렬
+	float Time = 0.0f;
 };
 
 class Chap6App : public D3DApp
@@ -42,7 +43,8 @@ private:
 	void BuildConstantBuffers();		// 상수 버퍼 생성
 	void BuildRootSignature();			// 루트 시그니처 생성
 	void BuildShadersAndInputLayout();	// 셰이더와 입력 레이아웃 생성
-	void BuildBoxGeometry();			// 정점과 인덱스 생성
+	void BuildBoxGeometry();			// 정점과 인덱스 생성(박스)
+	void BuildPyramidGeometry();		// 정점과 인덱스 생성(피라미드)
 	void BuildPSO();					// 파이프라인 상태 객체 생성
 
 private:
@@ -50,6 +52,7 @@ private:
 	ComPtr<ID3D12DescriptorHeap> mCbvHeap = nullptr;		// 디스크립터 힙
 	std::unique_ptr<UploadBuffer<ObjectConstants>> mObjectCB = nullptr;	// 상수 버퍼
 	std::unique_ptr<MeshGeometry> mBoxGeo = nullptr;		// 상자 메쉬
+	std::unique_ptr<MeshGeometry> mPyramidGeo = nullptr;	// 피라미드 메쉬
 	ComPtr<ID3DBlob> mvsByteCode = nullptr;					// 정점 셰이더 바이트 코드
 	ComPtr<ID3DBlob> mpsByteCode = nullptr;					// 픽셀 셰이더 바이트 코드
 	std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayout;		// 입력 레이아웃
