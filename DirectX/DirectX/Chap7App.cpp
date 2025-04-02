@@ -1,5 +1,7 @@
 #include "Chap7App.h"
 
+const int gNumFrameResources = 3;
+
 Chap7App::Chap7App(HINSTANCE hInstance) : D3DApp(hInstance)
 {
 }
@@ -36,43 +38,209 @@ bool Chap7App::Initialize()
 }
 
 void Chap7App::OnResize()
-{
+{	
+	D3DApp::OnResize();
+	XMMATRIX P = XMMatrixPerspectiveFovLH(XM_PIDIV4, AspectRatio(), 1.0f, 1000.0f);
+	XMStoreFloat4x4(&mProj, P);
 }
 
 void Chap7App::Update(const GameTimer& gt)
 {
+	OnKeyboardInput(gt);
+	UpdateCamera(gt);
+
+	// 프레임 리소스 중 현재 프레임 리소스를 가져옴
+	mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) % gNumFrameResources;	// 0, 1, 2, 0, 1, 2, ...
+	mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();
+
+	// GPU가 작업을 완료할때까지 대기
+	if (mCurrFrameResource->Fence != 0 && mFence->GetCompletedValue() < mCurrFrameResource->Fence)
+	{
+		HANDLE eventHandle = CreateEventEx(nullptr, false, false, EVENT_ALL_ACCESS);
+		ThrowIfFailed(mFence->SetEventOnCompletion(mCurrFrameResource->Fence, eventHandle));
+		WaitForSingleObject(eventHandle, INFINITE);
+		CloseHandle(eventHandle);
+	}
+
+	// 상수 버퍼들 업데이트
+	UpdateObjectCBs(gt);	// 오브젝트용
+	UpdateMainPassCB(gt);	// 메인 패스용
 }
 
 void Chap7App::Draw(const GameTimer& gt)
 {
+	auto cmdListAlloc = mCurrFrameResource->CmdListAlloc;
+	ThrowIfFailed(cmdListAlloc->Reset());
+	if (mIsWireframe)
+	{
+		ThrowIfFailed(mCommandList->Reset(cmdListAlloc.Get(), mPSOs["wireframe"].Get()));
+	}
+	else
+	{
+		ThrowIfFailed(mCommandList->Reset(cmdListAlloc.Get(), mPSOs["opaque"].Get()));
+	}
+	mCommandList->RSSetViewports(1, &mScreenViewport);
+	mCommandList->RSSetScissorRects(1, &mScissorRect);
+
+	// 상태 전이
+	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),
+		D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
+
+	// 렌더 타겟과 깊이 스텐실 버퍼 클리어
+	mCommandList->ClearRenderTargetView(CurrentBackBufferView(), Colors::LightSteelBlue, 0, nullptr);
+	mCommandList->ClearDepthStencilView(DepthStencilView(),
+		D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
+
+	// 렌더 타겟 설정
+	mCommandList->OMSetRenderTargets(1, &CurrentBackBufferView(), true, &DepthStencilView());
+
+	// 디스크립터 힙 설정
+	ID3D12DescriptorHeap* descriptorHeaps[] = { mCbvHeap.Get() };
+	mCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
+
+	// 루트 시그니처 설정
+	mCommandList->SetGraphicsRootSignature(mRootSignature.Get());
+
+	// 패스 상수 버퍼 설정
+	int passCbvIndex = mPassCbvOffset + mCurrFrameResourceIndex;
+	auto passCbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(mCbvHeap->GetGPUDescriptorHandleForHeapStart());
+	passCbvHandle.Offset(passCbvIndex, mCbvSrvUavDescriptorSize);
+	mCommandList->SetGraphicsRootDescriptorTable(1, passCbvHandle);
+
+	// 렌더 아이템 그리기
+	DrawRenderItems(mCommandList.Get(), mOpaqueRitems);
+
+	// 상태 전이
+	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),
+		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
+
+	// 커맨드 리스트 닫기
+	ThrowIfFailed(mCommandList->Close());
+
+	// 명령
+	ID3D12CommandList* cmdsLists[] = { mCommandList.Get() };
+	mCommandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
+
+	// 스왑체인 진행
+	ThrowIfFailed(mSwapChain->Present(0, 0));
+	mCurrBackBuffer = (mCurrBackBuffer + 1) % SwapChainBufferCount;
+
+	// 프레임 리소스에 펜스 값 설정
+	mCurrFrameResource->Fence = ++mCurrentFence;
+
+	// 명령 큐에 펜스 값 설정
+	mCommandQueue->Signal(mFence.Get(), mCurrentFence);
 }
 
 void Chap7App::OnMouseDown(WPARAM btnState, int x, int y)
 {
+	mLastMousePos.x = x;
+	mLastMousePos.y = y;
+	SetCapture(mhMainWnd);
 }
 
 void Chap7App::OnMouseUp(WPARAM btnState, int x, int y)
 {
+	ReleaseCapture();
 }
 
 void Chap7App::OnMouseMove(WPARAM btnState, int x, int y)
 {
+	if ((btnState & MK_LBUTTON) != 0)
+	{
+		// 마우스 왼쪽 버튼이 눌려졌다.
+		float dx = XMConvertToRadians(0.25f * static_cast<float>(x - mLastMousePos.x));
+		float dy = XMConvertToRadians(0.25f * static_cast<float>(y - mLastMousePos.y));
+
+		mTheta += dx;
+		mPhi += dy;
+
+		mPhi = MathHelper::Clamp(mPhi, 0.1f, MathHelper::Pi - 0.1f);
+	}
+	else if ((btnState & MK_RBUTTON) != 0)
+	{
+		// 마우스 오른쪽 버튼이 눌려졌다.
+		float dx = 0.005f * static_cast<float>(x - mLastMousePos.x);
+		float dy = 0.005f * static_cast<float>(y - mLastMousePos.y);
+
+		mRadius += dx - dy;
+
+		mRadius = MathHelper::Clamp(mRadius, 3.0f, 15.0f);
+	}
+
+	mLastMousePos.x = x;
+	mLastMousePos.y = y;
 }
 
 void Chap7App::OnKeyboardInput(const GameTimer& gt)
 {
+	if (GetAsyncKeyState('1') & 0x8000) //1번키가 눌려졌는지 확인(true면 눌러짐, false 안눌려짐)
+	{
+		mIsWireframe = true;
+	}
+	else
+	{
+		mIsWireframe = false;
+	}		
 }
 
-void Chap7App::UpdateCamera9(const GameTimer& gt)
+void Chap7App::UpdateCamera(const GameTimer& gt)
 {
+	// 구 좌표계를 이용하여 카메라 위치 계산
+	mEyePos.x = mRadius * sinf(mPhi) * cosf(mTheta);
+	mEyePos.z = mRadius * sinf(mPhi) * sinf(mTheta);
+	mEyePos.y = mRadius * cosf(mPhi);
+
+	// 뷰 행렬 계산
+	XMVECTOR pos = XMVectorSet(mEyePos.x, mEyePos.y, mEyePos.z, 1.0f);
+	XMVECTOR target = XMVectorZero();
+	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	XMMATRIX view = XMMatrixLookAtLH(pos, target, up);	// 왼손좌표계에서 pos위치에서 target을 바라보는 행렬 생성
+	XMStoreFloat4x4(&mView, view);
 }
 
 void Chap7App::UpdateObjectCBs(const GameTimer& gt)
 {
+	auto currObjectCB = mCurrFrameResource->ObjectCB.get();
+	for (auto& e : mAllRitems)
+	{
+		if (e->NumFramesDirty > 0)	// NumFramesDirty가 0보다 크면(변	화가 있으면) 업데이트
+		{
+			XMMATRIX world = XMLoadFloat4x4(&e->World);	
+			ObjectConstants objConstants;	
+			XMStoreFloat4x4(&objConstants.World, XMMatrixTranspose(world));	
+			currObjectCB->CopyData(e->ObjCBIndex, objConstants);	// 상수 버퍼에 월드 행렬 전달
+			e->NumFramesDirty--;	// NumFramesDirty 감소
+		}
+	}
 }
 
 void Chap7App::UpdateMainPassCB(const GameTimer& gt)
 {
+	XMMATRIX view = XMLoadFloat4x4(&mView);
+	XMMATRIX proj = XMLoadFloat4x4(&mProj);
+	XMMATRIX viewProj = XMMatrixMultiply(view, proj);	// 뷰 행렬과 투영 행렬을 곱함
+	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);	// 역행렬 계산
+	XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);	// 역행렬 계산
+	XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);	// 역행렬 계산
+
+	XMStoreFloat4x4(&mMainPassCB.View, XMMatrixTranspose(view));	// 뷰 행렬 전달
+	XMStoreFloat4x4(&mMainPassCB.InvView, XMMatrixTranspose(invView));	// 역행렬 전달
+	XMStoreFloat4x4(&mMainPassCB.Proj, XMMatrixTranspose(proj));	// 투영 행렬 전달
+	XMStoreFloat4x4(&mMainPassCB.InvProj, XMMatrixTranspose(invProj));	// 역행렬 전달
+	XMStoreFloat4x4(&mMainPassCB.ViewProj, XMMatrixTranspose(viewProj));	// 뷰 행렬과 투영 행렬 곱한 행렬 전달
+	XMStoreFloat4x4(&mMainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));	// 역행렬 전달
+
+	mMainPassCB.EyePosW = mEyePos;	// 카메라 위치 전달
+	mMainPassCB.RenderTargetSize = XMFLOAT2((float)mClientWidth, (float)mClientHeight);	// 렌더 타겟 크기 전달
+	mMainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / mClientWidth, 1.0f / mClientHeight);	// 역 렌더 타겟 크기 전달
+	mMainPassCB.NearZ = 1.0f;	// NearZ 전달
+	mMainPassCB.FarZ = 1000.0f;	// FarZ 전달
+	mMainPassCB.TotalTime = gt.TotalTime();	// 총 시간 전달
+	mMainPassCB.DeltaTime = gt.DeltaTime();	// 델타 시간 전달
+
+	auto currPassCB = mCurrFrameResource->PassCB.get();
+	currPassCB->CopyData(0, mMainPassCB);	// 메인 패스 상수 버퍼에 전달
 }
 
 void Chap7App::BuildDescriptorHeaps()
@@ -171,7 +339,7 @@ void Chap7App::BuildRootSignature()
 void Chap7App::BuildShadersAndInputLayout()
 {
 	mShaders["standardVS"] = d3dUtil::CompileShader(L"Shaders\\color_App7.hlsl", nullptr, "VS", "vs_5_1");
-	mShaders["opaquePS"] = d3dUtil::CompileShader(L"Shaders\\color_App7.hlsl", nullptr, "PS", "vs_5_1");
+	mShaders["opaquePS"] = d3dUtil::CompileShader(L"Shaders\\color_App7.hlsl", nullptr, "PS", "ps_5_1");
 
 	mInputLayout =
 	{
@@ -414,4 +582,27 @@ void Chap7App::BuildRenderItems()
 
 void Chap7App::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItemApp7*>& ritems)
 {
+	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
+	auto objectCB = mCurrFrameResource->ObjectCB->Resource();
+
+	for (size_t i = 0; i < ritems.size(); ++i)
+	{
+		auto ri = ritems[i];
+
+		// IA 설정
+		cmdList->IASetVertexBuffers(0, 1, &ri->Geo->VertexBufferView());	// 정점 버퍼 설정
+		cmdList->IASetIndexBuffer(&ri->Geo->IndexBufferView());				// 인덱스 버퍼 설정
+		cmdList->IASetPrimitiveTopology(ri->PrimitiveType);					// 프리미티브 타입 설정
+
+		UINT cbvIndex = mCurrFrameResourceIndex * (UINT)mOpaqueRitems.size() + ri->ObjCBIndex;	// 상수 버퍼 인덱스 계산
+		auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(mCbvHeap->GetGPUDescriptorHandleForHeapStart());
+		cbvHandle.Offset(cbvIndex, mCbvSrvUavDescriptorSize);	// 상수 버퍼 디스크립터 힙 시작 주소에서 offset
+
+		cmdList->SetGraphicsRootDescriptorTable(0, cbvHandle);	// 루트 디스크립터 테이블 설정
+		cmdList->DrawIndexedInstanced(
+			ri->IndexCount, 
+			1, 
+			ri->StartIndexLocation, 
+			ri->BaseVertexLocation, 0);	// 드로우 호출
+	}
 }

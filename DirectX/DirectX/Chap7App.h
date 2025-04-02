@@ -9,8 +9,6 @@ using Microsoft::WRL::ComPtr;
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 
-const int gNumFramResources = 3;
-
 // 쉐이프를 그릴때 필요한 파라메터를 저장하고 있는 경량 구조체(App마다 다를 수 있음)
 struct RenderItemApp7
 {
@@ -19,7 +17,7 @@ struct RenderItemApp7
 	// 월드 행렬
 	XMFLOAT4X4 World = MathHelper::Identity4x4();
 
-	int NumFramesDirty = gNumFramResources;	 // 갱신여부를 나타낼 플래그
+	int NumFramesDirty = gNumFrameResources;	 // 갱신여부를 나타낼 플래그
 
 	// 이 랜더 아이템의 오브젝트 상수버퍼의 인덱스
 	UINT ObjCBIndex = -1;
@@ -56,7 +54,7 @@ protected:
 
 private:
 	void OnKeyboardInput(const GameTimer& gt);
-	void UpdateCamera9(const GameTimer& gt);
+	void UpdateCamera(const GameTimer& gt);
 	void UpdateObjectCBs(const GameTimer& gt);
 	void UpdateMainPassCB(const GameTimer& gt);
 

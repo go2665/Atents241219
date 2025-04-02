@@ -6,9 +6,27 @@
 
 cbuffer cbPerObject : register(b0)
 {
-	float4x4 gWorldViewProj; 
-    float gTime;
+	float4x4 gWorld; 
 };
+
+cbuffer cbPass : register(b1)
+{
+    float4x4    gView;
+    float4x4    gInvView;
+    float4x4    gProj;
+    float4x4    gInvProj;
+    float4x4    gViewProj;
+    float4x4    gInvViewProj;
+    
+    float3      gEyePosW;
+    float       cbPerObjectPad1;
+    float2      gRenderTargetSize;
+    float2      gInvRenderTargetSize;
+    float       gNearZ;
+    float       gFarZ;
+    float       gTotalTime;
+    float       gDeltaTime;
+}
 
 struct VertexIn
 {
@@ -26,10 +44,9 @@ VertexOut VS(VertexIn vin)
 {
 	VertexOut vout;
 	
-	// Transform to homogeneous clip space.
-	vout.PosH = mul(float4(vin.PosL, 1.0f), gWorldViewProj);
+	float4 posW = mul(float4(vin.PosL, 1.0f), gWorld);  // 월드 변환
+    vout.PosH = mul(posW, gViewProj);                   // 뷰-프로젝션 변환
 	
-	// Just pass vertex color into the pixel shader.
     vout.Color = vin.Color;
     
     return vout;
@@ -37,9 +54,7 @@ VertexOut VS(VertexIn vin)
 
 float4 PS(VertexOut pin) : SV_Target
 {
-    float blendFactor = cos(gTime * 2.0f) * 0.5f + 0.5f;
-    float4 color = lerp(float4(0.0f, 0.0f, 0.0f, 1.0f), pin.Color, blendFactor);
-    return color;
+    return pin.Color;
 }
 
 
