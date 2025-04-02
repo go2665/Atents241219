@@ -7,20 +7,22 @@ using Microsoft::WRL::ComPtr;
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 
-struct Vertex
-{
-	XMFLOAT3 Pos;		// 정점의 위치
-	XMFLOAT4 Color;		// 정점의 색상
-};
-
-struct ObjectConstants
-{
-	XMFLOAT4X4 WorldViewProj = MathHelper::Identity4x4();	// 월드, 뷰, 투영 행렬
-	float Time = 0.0f;
-};
 
 class Chap6App : public D3DApp
 {
+public:
+	struct Vertex
+	{
+		XMFLOAT3 Pos;		// 정점의 위치
+		XMFLOAT4 Color;		// 정점의 색상
+	};
+
+	struct ObjectConstants
+	{
+		XMFLOAT4X4 WorldViewProj = MathHelper::Identity4x4();	// 월드, 뷰, 투영 행렬
+		float Time = 0.0f;
+	};
+
 public:
 	Chap6App(HINSTANCE hInstance);
 	virtual ~Chap6App();

@@ -213,6 +213,8 @@ GeometryGenerator::MeshData GeometryGenerator::CreateSphere(float radius, uint32
  
 void GeometryGenerator::Subdivide(MeshData& meshData)
 {
+	// 삼각형 하나를 4개로 분할하는 작업(테셀레이션)
+
 	// Save a copy of the input geometry.
 	MeshData inputCopy = meshData;
 
@@ -308,7 +310,7 @@ GeometryGenerator::MeshData GeometryGenerator::CreateGeosphere(float radius, uin
 {
     MeshData meshData;
 
-	// Put a cap on the number of subdivisions.
+	// Put a cap on the number of subdivisions. (구라고 하기 위해서는 최소 6번은 나누어져야 한다.)
     numSubdivisions = std::min<uint32>(numSubdivisions, 6u);
 
 	// Approximate a sphere by tessellating an icosahedron.
@@ -340,16 +342,18 @@ GeometryGenerator::MeshData GeometryGenerator::CreateGeosphere(float radius, uin
 	for(uint32 i = 0; i < 12; ++i)
 		meshData.Vertices[i].Position = pos[i];
 
-	for(uint32 i = 0; i < numSubdivisions; ++i)
+	for(uint32 i = 0; i < numSubdivisions; ++i)	// numSubdivisions만큼 반복해서 나누기
 		Subdivide(meshData);
 
 	// Project vertices onto sphere and scale.
 	for(uint32 i = 0; i < meshData.Vertices.size(); ++i)
 	{
 		// Project onto unit sphere.
-		XMVECTOR n = XMVector3Normalize(XMLoadFloat3(&meshData.Vertices[i].Position));
+		// 위치를 노멀라이즈해서 노멀벡터로 사용(원점이 (0,0,0)이기 때문에 성립)
+		XMVECTOR n = XMVector3Normalize(XMLoadFloat3(&meshData.Vertices[i].Position));	
 
 		// Project onto sphere.
+		// 노멀벡터에 반지름을 곱해서 구 표면으로 이동시키기
 		XMVECTOR p = radius*n;
 
 		XMStoreFloat3(&meshData.Vertices[i].Position, p);
@@ -364,13 +368,13 @@ GeometryGenerator::MeshData GeometryGenerator::CreateGeosphere(float radius, uin
 
 		float phi = acosf(meshData.Vertices[i].Position.y / radius);
 
-		meshData.Vertices[i].TexC.x = theta/XM_2PI;
-		meshData.Vertices[i].TexC.y = phi/XM_PI;
+		meshData.Vertices[i].TexC.x = theta / XM_2PI;		// UV값 계산
+		meshData.Vertices[i].TexC.y = phi / XM_PI;
 
 		// Partial derivative of P with respect to theta
-		meshData.Vertices[i].TangentU.x = -radius*sinf(phi)*sinf(theta);
+		meshData.Vertices[i].TangentU.x = -radius * sinf(phi) * sinf(theta);	// 탄젠트 계산
 		meshData.Vertices[i].TangentU.y = 0.0f;
-		meshData.Vertices[i].TangentU.z = +radius*sinf(phi)*cosf(theta);
+		meshData.Vertices[i].TangentU.z = +radius * sinf(phi) * cosf(theta);
 
 		XMVECTOR T = XMLoadFloat3(&meshData.Vertices[i].TangentU);
 		XMStoreFloat3(&meshData.Vertices[i].TangentU, XMVector3Normalize(T));
@@ -387,31 +391,33 @@ GeometryGenerator::MeshData GeometryGenerator::CreateCylinder(float bottomRadius
 	// Build Stacks.
 	// 
 
-	float stackHeight = height / stackCount;
+	float stackHeight = height / stackCount;	// 한 층의 높이
 
 	// Amount to increment radius as we move up each stack level from bottom to top.
+	// 각 층별로 반지름이 얼마만큼 변화할지 계산
 	float radiusStep = (topRadius - bottomRadius) / stackCount;
 
-	uint32 ringCount = stackCount+1;
+	uint32 ringCount = stackCount + 1;	// 고리는 층의 개수 + 1
 
 	// Compute vertices for each stack ring starting at the bottom and moving up.
+	// 정점 계산하기(바닥부터 시작해서 위로 올라가면서 각 스택별로 계산)
 	for(uint32 i = 0; i < ringCount; ++i)
 	{
-		float y = -0.5f*height + i*stackHeight;
-		float r = bottomRadius + i*radiusStep;
+		float y = -0.5f * height + i * stackHeight;	// 높이 계산(메시의 피봇을 중심으로 두기 위해 높이의 절반을 빼줌, 스택 높이만큼 층별로 증가)
+		float r = bottomRadius + i * radiusStep;	// 이 층의 반지름 계산(바닥 반지름에 층별로 변화량을 곱해줌)
 
 		// vertices of ring
-		float dTheta = 2.0f*XM_PI/sliceCount;
-		for(uint32 j = 0; j <= sliceCount; ++j)
+		float dTheta = 2.0f * XM_PI / sliceCount;	// 링을 만들기 위한 각도 계산
+		for (uint32 j = 0; j <= sliceCount; ++j)	// j <= sliceCount : 링의 첫 정점과 마지막 정점이 위치는 같지만 UV값이 다르기 때문에 하나 더 생성
 		{
 			Vertex vertex;
 
 			float c = cosf(j*dTheta);
 			float s = sinf(j*dTheta);
 
-			vertex.Position = XMFLOAT3(r*c, y, r*s);
+			vertex.Position = XMFLOAT3(r * c, y, r * s);	// 현재 정점 위치 계산
 
-			vertex.TexC.x = (float)j/sliceCount;
+			vertex.TexC.x = (float)j/sliceCount;			// 현재 UV는 사용되지 않음
 			vertex.TexC.y = 1.0f - (float)i/stackCount;
 
 			// Cylinder can be parameterized as follows, where we introduce v
@@ -434,7 +440,7 @@ GeometryGenerator::MeshData GeometryGenerator::CreateCylinder(float bottomRadius
 			//  dz/dv = (r0-r1)*sin(t)
 
 			// This is unit length.
-			vertex.TangentU = XMFLOAT3(-s, 0.0f, c);
+			vertex.TangentU = XMFLOAT3(-s, 0.0f, c);	// 노멀백터 계산을 위해 필요한 탄젠트 계산
 
 			float dr = bottomRadius-topRadius;
 			XMFLOAT3 bitangent(dr*c, -height, dr*s);
@@ -442,20 +448,22 @@ GeometryGenerator::MeshData GeometryGenerator::CreateCylinder(float bottomRadius
 			XMVECTOR T = XMLoadFloat3(&vertex.TangentU);
 			XMVECTOR B = XMLoadFloat3(&bitangent);
 			XMVECTOR N = XMVector3Normalize(XMVector3Cross(T, B));
-			XMStoreFloat3(&vertex.Normal, N);
+			XMStoreFloat3(&vertex.Normal, N);			// 노멀벡터(법선백터) 계산
 
-			meshData.Vertices.push_back(vertex);
+			meshData.Vertices.push_back(vertex);		// 정점 하나 추가
 		}
 	}
 
 	// Add one because we duplicate the first and last vertex per ring
 	// since the texture coordinates are different.
+	// 링의 첫 정점과 마지막 정점이 위치는 같지만 UV값이 다르기 때문에 하나 더 생성
 	uint32 ringVertexCount = sliceCount+1;
 
 	// Compute indices for each stack.
-	for(uint32 i = 0; i < stackCount; ++i)
+	// 옆면 인덱스 계산하기
+	for (uint32 i = 0; i < stackCount; ++i)			// i는 스택(층)
 	{
-		for(uint32 j = 0; j < sliceCount; ++j)
+		for (uint32 j = 0; j < sliceCount; ++j)		// j는 각 측의 정점 인덱스
 		{
 			meshData.Indices32.push_back(i*ringVertexCount + j);
 			meshData.Indices32.push_back((i+1)*ringVertexCount + j);
@@ -467,8 +475,8 @@ GeometryGenerator::MeshData GeometryGenerator::CreateCylinder(float bottomRadius
 		}
 	}
 
-	BuildCylinderTopCap(bottomRadius, topRadius, height, sliceCount, stackCount, meshData);
-	BuildCylinderBottomCap(bottomRadius, topRadius, height, sliceCount, stackCount, meshData);
+	BuildCylinderTopCap(bottomRadius, topRadius, height, sliceCount, stackCount, meshData);		// 윗면	
+	BuildCylinderBottomCap(bottomRadius, topRadius, height, sliceCount, stackCount, meshData);	// 아랫면
 
     return meshData;
 }
@@ -476,11 +484,12 @@ GeometryGenerator::MeshData GeometryGenerator::CreateCylinder(float bottomRadius
 void GeometryGenerator::BuildCylinderTopCap(float bottomRadius, float topRadius, float height,
 											uint32 sliceCount, uint32 stackCount, MeshData& meshData)
 {
-	uint32 baseIndex = (uint32)meshData.Vertices.size();
+	uint32 baseIndex = (uint32)meshData.Vertices.size();	// 기준 인덱스(옆면 마지막 정점 인덱스+1)
 
 	float y = 0.5f*height;
 	float dTheta = 2.0f*XM_PI/sliceCount;
 
+	// 윗면 링부분의 정점 계산
 	// Duplicate cap ring vertices because the texture coordinates and normals differ.
 	for(uint32 i = 0; i <= sliceCount; ++i)
 	{
@@ -495,12 +504,14 @@ void GeometryGenerator::BuildCylinderTopCap(float bottomRadius, float topRadius,
 		meshData.Vertices.push_back( Vertex(x, y, z, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, u, v) );
 	}
 
+	// 윗면의 중심 정점 추가
 	// Cap center vertex.
 	meshData.Vertices.push_back( Vertex(0.0f, y, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.5f, 0.5f) );
 
-	// Index of center vertex.
-	uint32 centerIndex = (uint32)meshData.Vertices.size()-1;
+	// 센터의 인덱스(마지막에 넣었음)
+	uint32 centerIndex = (uint32)meshData.Vertices.size()-1;	
 
+	// 윗면 인덱스 버퍼에 추가
 	for(uint32 i = 0; i < sliceCount; ++i)
 	{
 		meshData.Indices32.push_back(centerIndex);
@@ -513,7 +524,7 @@ void GeometryGenerator::BuildCylinderBottomCap(float bottomRadius, float topRadi
 											   uint32 sliceCount, uint32 stackCount, MeshData& meshData)
 {
 	// 
-	// Build bottom cap.
+	// Build bottom cap. 윗면과 거의 동일(노멀방향과 인덱스 순서만 다름)
 	//
 
 	uint32 baseIndex = (uint32)meshData.Vertices.size();

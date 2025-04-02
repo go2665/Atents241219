@@ -48,6 +48,12 @@
     <ClCompile Include="Chap6App.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Chap7App.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameResource.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\Camera.h">
@@ -81,6 +87,12 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Chap6App.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Chap7App.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameResource.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
