@@ -57,6 +57,9 @@
     <ClCompile Include="Chap7_2App.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Waves.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\Camera.h">
@@ -99,6 +102,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Chap7_2App.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Waves.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

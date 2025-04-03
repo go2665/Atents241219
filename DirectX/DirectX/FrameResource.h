@@ -52,3 +52,24 @@ public:
 	UINT64 Fence = 0;
 };
 
+struct FrameResourceWaves
+{
+public:
+	FrameResourceWaves(ID3D12Device* device, UINT passCount, UINT objectCount, UINT waveVertCount);
+	FrameResourceWaves(const FrameResourceWaves& rhs) = delete;
+	FrameResourceWaves& operator=(const FrameResourceWaves& rhs) = delete;
+	~FrameResourceWaves();
+
+	// 각 프레임별로 커맨드 리스트 할당자를 가짐(GPU가 커맨드를 완료해야 리셋할 수 있기 때문에 따로 가짐)
+	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> CmdListAlloc = nullptr;
+
+	// 상수 버퍼(상수버퍼를 업데이트 하려면 GPU가 커맨드를 완료해야 하기 때문에 별도로 가짐)
+	std::unique_ptr<UploadBuffer<PassConstants>> PassCB = nullptr;
+	std::unique_ptr<UploadBuffer<ObjectConstants>> ObjectCB = nullptr;
+
+	// 파도 정점 버퍼
+	std::unique_ptr<UploadBuffer<Vertex>> WavesVB = nullptr;
+
+	// 프레임 번호
+	UINT64 Fence = 0;
+};
