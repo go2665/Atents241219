@@ -129,7 +129,8 @@
   <ItemGroup>
     <ClCompile Include="Chap4App.cpp" />
     <ClCompile Include="Chap6App.cpp" />
-    <ClCompile Include="Chap7App.cpp" />
+    <ClCompile Include="Chap7_1App.cpp" />
+    <ClCompile Include="Chap7_2App.cpp" />
     <ClCompile Include="Common\Camera.cpp" />
     <ClCompile Include="Common\d3dApp.cpp" />
     <ClCompile Include="Common\d3dUtil.cpp" />
@@ -143,7 +144,8 @@
   <ItemGroup>
     <ClInclude Include="Chap4App.h" />
     <ClInclude Include="Chap6App.h" />
-    <ClInclude Include="Chap7App.h" />
+    <ClInclude Include="Chap7_1App.h" />
+    <ClInclude Include="Chap7_2App.h" />
     <ClInclude Include="Common\Camera.h" />
     <ClInclude Include="Common\d3dApp.h" />
     <ClInclude Include="Common\d3dUtil.h" />

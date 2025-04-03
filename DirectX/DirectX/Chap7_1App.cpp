@@ -1,18 +1,18 @@
-#include "Chap7App.h"
+#include "Chap7_1App.h"
 
 const int gNumFrameResources = 3;
 
-Chap7App::Chap7App(HINSTANCE hInstance) : D3DApp(hInstance)
+Chap7_1App::Chap7_1App(HINSTANCE hInstance) : D3DApp(hInstance)
 {
 }
 
-Chap7App::~Chap7App()
+Chap7_1App::~Chap7_1App()
 {
 	if (md3dDevice != nullptr)
 		FlushCommandQueue();
 }
 
-bool Chap7App::Initialize()
+bool Chap7_1App::Initialize()
 {
 	if (!D3DApp::Initialize())
 		return false;
@@ -37,14 +37,14 @@ bool Chap7App::Initialize()
 	return true;
 }
 
-void Chap7App::OnResize()
+void Chap7_1App::OnResize()
 {	
 	D3DApp::OnResize();
 	XMMATRIX P = XMMatrixPerspectiveFovLH(XM_PIDIV4, AspectRatio(), 1.0f, 1000.0f);
 	XMStoreFloat4x4(&mProj, P);
 }
 
-void Chap7App::Update(const GameTimer& gt)
+void Chap7_1App::Update(const GameTimer& gt)
 {
 	OnKeyboardInput(gt);
 	UpdateCamera(gt);
@@ -67,7 +67,7 @@ void Chap7App::Update(const GameTimer& gt)
 	UpdateMainPassCB(gt);	// 메인 패스용
 }
 
-void Chap7App::Draw(const GameTimer& gt)
+void Chap7_1App::Draw(const GameTimer& gt)
 {
 	auto cmdListAlloc = mCurrFrameResource->CmdListAlloc;
 	ThrowIfFailed(cmdListAlloc->Reset());
@@ -132,19 +132,19 @@ void Chap7App::Draw(const GameTimer& gt)
 	mCommandQueue->Signal(mFence.Get(), mCurrentFence);
 }
 
-void Chap7App::OnMouseDown(WPARAM btnState, int x, int y)
+void Chap7_1App::OnMouseDown(WPARAM btnState, int x, int y)
 {
 	mLastMousePos.x = x;
 	mLastMousePos.y = y;
 	SetCapture(mhMainWnd);
 }
 
-void Chap7App::OnMouseUp(WPARAM btnState, int x, int y)
+void Chap7_1App::OnMouseUp(WPARAM btnState, int x, int y)
 {
 	ReleaseCapture();
 }
 
-void Chap7App::OnMouseMove(WPARAM btnState, int x, int y)
+void Chap7_1App::OnMouseMove(WPARAM btnState, int x, int y)
 {
 	if ((btnState & MK_LBUTTON) != 0)
 	{
@@ -172,7 +172,7 @@ void Chap7App::OnMouseMove(WPARAM btnState, int x, int y)
 	mLastMousePos.y = y;
 }
 
-void Chap7App::OnKeyboardInput(const GameTimer& gt)
+void Chap7_1App::OnKeyboardInput(const GameTimer& gt)
 {
 	if (GetAsyncKeyState('1') & 0x8000) //1번키가 눌려졌는지 확인(true면 눌러짐, false 안눌려짐)
 	{
@@ -184,7 +184,7 @@ void Chap7App::OnKeyboardInput(const GameTimer& gt)
 	}		
 }
 
-void Chap7App::UpdateCamera(const GameTimer& gt)
+void Chap7_1App::UpdateCamera(const GameTimer& gt)
 {
 	// 구 좌표계를 이용하여 카메라 위치 계산
 	mEyePos.x = mRadius * sinf(mPhi) * cosf(mTheta);
@@ -199,7 +199,7 @@ void Chap7App::UpdateCamera(const GameTimer& gt)
 	XMStoreFloat4x4(&mView, view);
 }
 
-void Chap7App::UpdateObjectCBs(const GameTimer& gt)
+void Chap7_1App::UpdateObjectCBs(const GameTimer& gt)
 {
 	auto currObjectCB = mCurrFrameResource->ObjectCB.get();
 	for (auto& e : mAllRitems)
@@ -215,7 +215,7 @@ void Chap7App::UpdateObjectCBs(const GameTimer& gt)
 	}
 }
 
-void Chap7App::UpdateMainPassCB(const GameTimer& gt)
+void Chap7_1App::UpdateMainPassCB(const GameTimer& gt)
 {
 	XMMATRIX view = XMLoadFloat4x4(&mView);
 	XMMATRIX proj = XMLoadFloat4x4(&mProj);
@@ -243,7 +243,7 @@ void Chap7App::UpdateMainPassCB(const GameTimer& gt)
 	currPassCB->CopyData(0, mMainPassCB);	// 메인 패스 상수 버퍼에 전달
 }
 
-void Chap7App::BuildDescriptorHeaps()
+void Chap7_1App::BuildDescriptorHeaps()
 {
 	UINT objCount = (UINT)mOpaqueRitems.size();
 
@@ -261,7 +261,7 @@ void Chap7App::BuildDescriptorHeaps()
 	ThrowIfFailed(md3dDevice->CreateDescriptorHeap(&cbvHeapDesc, IID_PPV_ARGS(&mCbvHeap)));
 }
 
-void Chap7App::BuildConstantBufferViews()
+void Chap7_1App::BuildConstantBufferViews()
 {
 	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
 	UINT objCount = (UINT)mOpaqueRitems.size();
@@ -305,7 +305,7 @@ void Chap7App::BuildConstantBufferViews()
 	}
 }
 
-void Chap7App::BuildRootSignature()
+void Chap7_1App::BuildRootSignature()
 {
 	// 상수버퍼가 2개라 테이블도 2개 생성
 	CD3DX12_DESCRIPTOR_RANGE cbvTable0;
@@ -336,7 +336,7 @@ void Chap7App::BuildRootSignature()
 		serializedRootSig->GetBufferSize(), IID_PPV_ARGS(mRootSignature.GetAddressOf())));
 }
 
-void Chap7App::BuildShadersAndInputLayout()
+void Chap7_1App::BuildShadersAndInputLayout()
 {
 	mShaders["standardVS"] = d3dUtil::CompileShader(L"Shaders\\color_App7.hlsl", nullptr, "VS", "vs_5_1");
 	mShaders["opaquePS"] = d3dUtil::CompileShader(L"Shaders\\color_App7.hlsl", nullptr, "PS", "ps_5_1");
@@ -348,7 +348,7 @@ void Chap7App::BuildShadersAndInputLayout()
 	};
 }
 
-void Chap7App::BuildShapeGeometry()
+void Chap7_1App::BuildShapeGeometry()
 {
 	// 기본 메시 생성
 	GeometryGenerator geoGen;
@@ -476,7 +476,7 @@ void Chap7App::BuildShapeGeometry()
 	mGeometries[geo->Name] = std::move(geo);	// 맵에 지오메트리 추가
 }
 
-void Chap7App::BuildPSOs()
+void Chap7_1App::BuildPSOs()
 {
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC opaquePsoDesc;
 
@@ -513,7 +513,7 @@ void Chap7App::BuildPSOs()
 	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&wireframePsoDesc, IID_PPV_ARGS(&mPSOs["wireframe"])));
 }
 
-void Chap7App::BuildFrameResources()
+void Chap7_1App::BuildFrameResources()
 {
 	for (int i = 0; i < gNumFrameResources; ++i)
 	{
@@ -522,7 +522,7 @@ void Chap7App::BuildFrameResources()
 	}
 }
 
-void Chap7App::BuildRenderItems()
+void Chap7_1App::BuildRenderItems()
 {
 	auto boxRitem = std::make_unique<RenderItemApp7>();
 	XMStoreFloat4x4(&boxRitem->World, XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixTranslation(0.0f, 0.5f, 0.0f));
@@ -609,7 +609,7 @@ void Chap7App::BuildRenderItems()
 		mOpaqueRitems.push_back(e.get());
 }
 
-void Chap7App::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItemApp7*>& ritems)
+void Chap7_1App::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItemApp7*>& ritems)
 {
 	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
 	auto objectCB = mCurrFrameResource->ObjectCB->Resource();

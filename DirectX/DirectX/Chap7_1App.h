@@ -34,13 +34,13 @@ struct RenderItemApp7
 
 };
 
-class Chap7App : public D3DApp
+class Chap7_1App : public D3DApp
 {
 public:
-	Chap7App(HINSTANCE hInstance);
-	virtual ~Chap7App();
-	Chap7App(const Chap7App& rhs) = delete;
-	Chap7App& operator=(const Chap7App& rhs) = delete;
+	Chap7_1App(HINSTANCE hInstance);
+	virtual ~Chap7_1App();
+	Chap7_1App(const Chap7_1App& rhs) = delete;
+	Chap7_1App& operator=(const Chap7_1App& rhs) = delete;
 	
 	virtual bool Initialize() override;
 

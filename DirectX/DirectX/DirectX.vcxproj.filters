@@ -48,10 +48,13 @@
     <ClCompile Include="Chap6App.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Chap7App.cpp">
+    <ClCompile Include="Chap7_1App.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="FrameResource.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Chap7_2App.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -89,10 +92,13 @@
     <ClInclude Include="Chap6App.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Chap7App.h">
+    <ClInclude Include="Chap7_1App.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="FrameResource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Chap7_2App.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
