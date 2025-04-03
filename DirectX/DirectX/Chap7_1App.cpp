@@ -1,6 +1,5 @@
 #include "Chap7_1App.h"
 
-const int gNumFrameResources = 3;
 
 Chap7_1App::Chap7_1App(HINSTANCE hInstance) : D3DApp(hInstance)
 {

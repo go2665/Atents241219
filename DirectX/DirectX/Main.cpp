@@ -9,6 +9,9 @@
 #include "Chap6App.h"
 #include "Chap7_1App.h"
 #include "Chap7_2App.h"
+#include "Chap8_1App.h"
+
+const int gNumFrameResources = 3;
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	_In_ LPSTR lpCmdLine, _In_ int nCmdShow)

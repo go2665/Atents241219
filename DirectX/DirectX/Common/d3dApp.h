@@ -13,7 +13,7 @@
 #include "GameTimer.h"  // 시간 측정용 클래스
 
 // Link necessary d3d12 libraries.
-#pragma comment(lib,"d3dcompiler.lib")
+#pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "D3D12.lib")
 #pragma comment(lib, "dxgi.lib")
 

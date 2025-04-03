@@ -131,6 +131,7 @@
     <ClCompile Include="Chap6App.cpp" />
     <ClCompile Include="Chap7_1App.cpp" />
     <ClCompile Include="Chap7_2App.cpp" />
+    <ClCompile Include="Chap8_1App.cpp" />
     <ClCompile Include="Common\Camera.cpp" />
     <ClCompile Include="Common\d3dApp.cpp" />
     <ClCompile Include="Common\d3dUtil.cpp" />
@@ -147,6 +148,7 @@
     <ClInclude Include="Chap6App.h" />
     <ClInclude Include="Chap7_1App.h" />
     <ClInclude Include="Chap7_2App.h" />
+    <ClInclude Include="Chap8_1App.h" />
     <ClInclude Include="Common\Camera.h" />
     <ClInclude Include="Common\d3dApp.h" />
     <ClInclude Include="Common\d3dUtil.h" />
@@ -158,6 +160,10 @@
     <ClInclude Include="Common\UploadBuffer.h" />
     <ClInclude Include="FrameResource.h" />
     <ClInclude Include="Waves.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Models\car.txt" />
+    <Text Include="Models\skull.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

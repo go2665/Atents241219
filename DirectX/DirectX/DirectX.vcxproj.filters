@@ -60,6 +60,9 @@
     <ClCompile Include="Waves.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Chap8_1App.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\Camera.h">
@@ -107,5 +110,16 @@
     <ClInclude Include="Waves.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Chap8_1App.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Models\car.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="Models\skull.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
   </ItemGroup>
 </Project>
