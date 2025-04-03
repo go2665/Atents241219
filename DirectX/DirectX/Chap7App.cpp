@@ -356,18 +356,21 @@ void Chap7App::BuildShapeGeometry()
 	GeometryGenerator::MeshData grid = geoGen.CreateGrid(20.0f, 30.0f, 60, 40);
 	GeometryGenerator::MeshData sphere = geoGen.CreateSphere(0.5f, 20, 20);
 	GeometryGenerator::MeshData cylinder = geoGen.CreateCylinder(0.5f, 0.3f, 3.0f, 20, 20);
+	GeometryGenerator::MeshData geoSphere = geoGen.CreateGeosphere(0.5f, 2);
 
 	// 버텍스 버퍼에서 사용할 각 메시의 시작 오프셋을 저장
 	UINT boxVertexOffset = 0;
 	UINT gridVertexOffset = (UINT)box.Vertices.size();
 	UINT sphereVertexOffset = gridVertexOffset + (UINT)grid.Vertices.size();
 	UINT cylinderVertexOffset = sphereVertexOffset + (UINT)sphere.Vertices.size();
+	UINT geoSphereVertexOffset = cylinderVertexOffset + (UINT)cylinder.Vertices.size();
 
 	// 각 인덱스 버퍼에서 사용할 각 메시의 시작 오프셋을 저장
 	UINT boxIndexOffset = 0;
 	UINT gridIndexOffset = (UINT)box.Indices32.size();
 	UINT sphereIndexOffset = gridIndexOffset + (UINT)grid.Indices32.size();
 	UINT cylinderIndexOffset = sphereIndexOffset + (UINT)sphere.Indices32.size();
+	UINT geoSphereIndexOffset = cylinderIndexOffset + (UINT)cylinder.Indices32.size();
 
 	// 서브메시 지오메트리 기록
 	SubmeshGeometry boxSubmesh;
@@ -390,9 +393,18 @@ void Chap7App::BuildShapeGeometry()
 	cylinderSubmesh.StartIndexLocation = cylinderIndexOffset;
 	cylinderSubmesh.BaseVertexLocation = cylinderVertexOffset;
 
+	SubmeshGeometry geoSphereSubmesh;
+	geoSphereSubmesh.IndexCount = (UINT)geoSphere.Indices32.size();
+	geoSphereSubmesh.StartIndexLocation = geoSphereIndexOffset;
+	geoSphereSubmesh.BaseVertexLocation = geoSphereVertexOffset;
+
 	// 정점 버퍼 전체 크기 계산
 	auto totalVertexCount = 
-		box.Vertices.size() + grid.Vertices.size() + sphere.Vertices.size() + cylinder.Vertices.size();
+		box.Vertices.size() 
+		+ grid.Vertices.size() 
+		+ sphere.Vertices.size() 
+		+ cylinder.Vertices.size() 
+		+ geoSphere.Vertices.size();
 	
 	// 정점 버퍼 생성하고 채우기
 	std::vector<Vertex> vertices(totalVertexCount);
@@ -417,6 +429,11 @@ void Chap7App::BuildShapeGeometry()
 		vertices[k].Pos = cylinder.Vertices[i].Position;
 		vertices[k].Color = XMFLOAT4(DirectX::Colors::SteelBlue);
 	}
+	for (size_t i = 0; i < geoSphere.Vertices.size(); ++i, ++k)
+	{
+		vertices[k].Pos = geoSphere.Vertices[i].Position;
+		vertices[k].Color = XMFLOAT4(DirectX::Colors::Yellow);
+	}
 
 	// 인덱스 버퍼 생성하고 채우기
 	std::vector<std::uint16_t> indices;
@@ -424,6 +441,7 @@ void Chap7App::BuildShapeGeometry()
 	indices.insert(indices.end(), std::begin(grid.GetIndices16()), std::end(grid.GetIndices16()));
 	indices.insert(indices.end(), std::begin(sphere.GetIndices16()), std::end(sphere.GetIndices16()));
 	indices.insert(indices.end(), std::begin(cylinder.GetIndices16()), std::end(cylinder.GetIndices16()));
+	indices.insert(indices.end(), std::begin(geoSphere.GetIndices16()), std::end(geoSphere.GetIndices16()));
 
 	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
 	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
@@ -453,6 +471,7 @@ void Chap7App::BuildShapeGeometry()
 	geo->DrawArgs["grid"] = gridSubmesh;
 	geo->DrawArgs["sphere"] = sphereSubmesh;
 	geo->DrawArgs["cylinder"] = cylinderSubmesh;
+	geo->DrawArgs["geoSphere"] = geoSphereSubmesh;
 
 	mGeometries[geo->Name] = std::move(geo);	// 맵에 지오메트리 추가
 }
@@ -575,6 +594,16 @@ void Chap7App::BuildRenderItems()
 		mAllRitems.push_back(std::move(leftSphereRitem));
 		mAllRitems.push_back(std::move(rightSphereRitem));
 	}
+
+	auto geoSphereRitem = std::make_unique<RenderItemApp7>();
+	XMStoreFloat4x4(&geoSphereRitem->World, XMMatrixTranslation(0.0f, 2.0f, 0.0f));
+	geoSphereRitem->ObjCBIndex = objCBIndex;
+	geoSphereRitem->Geo = mGeometries["shapeGeo"].get();
+	geoSphereRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	geoSphereRitem->IndexCount = geoSphereRitem->Geo->DrawArgs["geoSphere"].IndexCount;
+	geoSphereRitem->StartIndexLocation = geoSphereRitem->Geo->DrawArgs["geoSphere"].StartIndexLocation;
+	geoSphereRitem->BaseVertexLocation = geoSphereRitem->Geo->DrawArgs["geoSphere"].BaseVertexLocation;
+	mAllRitems.push_back(std::move(geoSphereRitem));
 
 	for (auto& e : mAllRitems)
 		mOpaqueRitems.push_back(e.get());
