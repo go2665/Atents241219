@@ -9,9 +9,9 @@ using Microsoft::WRL::ComPtr;
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 
-struct RanderItemApp8
+struct RenderItemApp8
 {
-	RanderItemApp8() = default;
+	RenderItemApp8() = default;
 
 	// 월드 행렬
 	XMFLOAT4X4 World = MathHelper::Identity4x4();
@@ -71,7 +71,7 @@ private:
 	void BuildFrameResources();			// 프레임 리소스 생성
 	void BuildMaterials();				// 머티리얼 생성
 	void BuildRenderItems();			// 랜더 아이템 생성
-	void DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RanderItemApp8*>& ritems);	// 랜더 아이템 그리기
+	void DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItemApp8*>& ritems);	// 랜더 아이템 그리기
 
 private:
 	std::vector<std::unique_ptr<FrameResourceMaterial>> mFrameResources;	// 프레임 리소스
@@ -92,9 +92,9 @@ private:
 
 	std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayout;	// 입력 레이아웃
 
-	std::vector<std::unique_ptr<RanderItemApp8>> mAllRitems;	// 모든 랜더 아이템
+	std::vector<std::unique_ptr<RenderItemApp8>> mAllRitems;	// 모든 랜더 아이템
 
-	std::vector<RanderItemApp8*> mOpaqueRitems;		// 불투명 랜더 아이템
+	std::vector<RenderItemApp8*> mOpaqueRitems;		// 불투명 랜더 아이템
 
 	PassConstantsLight mMainPassCB;		// 메인 패스 상수 버퍼
 

@@ -45,9 +45,9 @@ FrameResourceMaterial::FrameResourceMaterial(ID3D12Device* device, UINT passCoun
 		)
 	);
 
-	PassCB = std::make_unique<UploadBuffer<PassConstants>>(device, passCount, true);
+	PassCB = std::make_unique<UploadBuffer<PassConstantsLight>>(device, passCount, true);
 	MaterialCB = std::make_unique<UploadBuffer<MaterialConstants>>(device, materialCount, true);
-	ObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(device, objectCount, true);
+	ObjectCB = std::make_unique<UploadBuffer<ObjectConstantsTex>>(device, objectCount, true);
 }
 
 FrameResourceMaterial::~FrameResourceMaterial()
