@@ -109,7 +109,7 @@ void Chap8_2App::Draw(const GameTimer& gt)
 
 	// 패스별로 상수버퍼 바인딩
 	auto passCB = mCurrFrameResource->PassCB->Resource();
-	mCommandList->SetGraphicsRootConstantBufferView(1, passCB->GetGPUVirtualAddress());	// 패스 상수 버퍼 설정
+	mCommandList->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress());	// 패스 상수 버퍼 설정
 
 	// 렌더 아이템 그리기
 	DrawRenderItems(mCommandList.Get(), mRitemLayer[static_cast<int>(RenderLayer::Opaque)]);
@@ -569,7 +569,7 @@ void Chap8_2App::BuildRenderItems()
 
 void Chap8_2App::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItemApp8*>& ritems)
 {
-	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstantsTex));
+	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
 	UINT matCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(MaterialConstants));
 
 	auto objectCB = mCurrFrameResource->ObjectCB->Resource();
