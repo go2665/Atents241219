@@ -351,8 +351,8 @@ void Chap9_1App::BuildDescriptorHeaps()
 
 void Chap9_1App::BuildShadersAndInputLayout()
 {
-	mShaders["standardVS"] = d3dUtil::CompileShader(L"Shaders\\Default.hlsl", nullptr, "VS", "vs_5_1");
-	mShaders["opaquePS"] = d3dUtil::CompileShader(L"Shaders\\Default.hlsl", nullptr, "PS", "ps_5_1");
+	mShaders["standardVS"] = d3dUtil::CompileShader(L"Shaders\\DefaultTexture.hlsl", nullptr, "VS", "vs_5_1");
+	mShaders["opaquePS"] = d3dUtil::CompileShader(L"Shaders\\DefaultTexture.hlsl", nullptr, "PS", "ps_5_1");
 
 	mInputLayout =
 	{
