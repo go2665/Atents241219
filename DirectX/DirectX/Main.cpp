@@ -10,6 +10,7 @@
 #include "Chap7_1App.h"
 #include "Chap7_2App.h"
 #include "Chap8_1App.h"
+#include "Chap8_2App.h"
 
 const int gNumFrameResources = 3;
 
@@ -26,7 +27,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 		//Chap6App theApp(hInstance);
 		//Chap7_1App theApp(hInstance);
 		//Chap7_2App theApp(hInstance);
-		Chap8_1App theApp(hInstance);
+		//Chap8_1App theApp(hInstance);
+		Chap8_2App theApp(hInstance);
 
 		if (!theApp.Initialize())	// 초기화(윈도우 생성, DirectX 초기화)
 			return 0;

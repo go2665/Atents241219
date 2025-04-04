@@ -332,7 +332,7 @@ void Chap8_2App::UpdateWaves(const GameTimer& gt)
 
 void Chap8_2App::BuildRootSignature()
 {
-	CD3DX12_ROOT_PARAMETER slotRootParamater[2];
+	CD3DX12_ROOT_PARAMETER slotRootParamater[3];
 	slotRootParamater[0].InitAsConstantBufferView(0);
 	slotRootParamater[1].InitAsConstantBufferView(1);
 	slotRootParamater[2].InitAsConstantBufferView(2);
@@ -506,26 +506,115 @@ void Chap8_2App::BuildPSOs()
 
 void Chap8_2App::BuildFrameResources()
 {
+	for (int i = 0; i < gNumFrameResources; ++i)
+	{
+		mFrameResources.push_back(
+			std::make_unique<FrameResourceMaterialWaves>(
+				md3dDevice.Get(), 1, (UINT)mAllRitems.size(), mWaves->VertexCount(), mWaves->VertexCount())
+		);
+	}
 }
 
 void Chap8_2App::BuildMaterials()
 {
+	auto grass = std::make_unique<Material>();
+	grass->Name = "grass";
+	grass->MatCBIndex = 0;
+	grass->DiffuseAlbedo = XMFLOAT4(0.2f, 0.6f, 0.2f, 1.0f);
+	grass->FresnelR0 = XMFLOAT3(0.01f, 0.01f, 0.01f);
+	grass->Roughness = 0.125f;
+
+	auto water = std::make_unique<Material>();
+	water->Name = "water";
+	water->MatCBIndex = 1;
+	water->DiffuseAlbedo = XMFLOAT4(0.0f, 0.2f, 0.6f, 1.0f);
+	water->FresnelR0 = XMFLOAT3(0.1f, 0.1f, 0.1f);
+	water->Roughness = 0.0f;
+
+	mMaterials["grass"] = std::move(grass);
+	mMaterials["water"] = std::move(water);
 }
 
 void Chap8_2App::BuildRenderItems()
 {
+	auto wavesRitem = std::make_unique<RenderItemApp8>();
+	wavesRitem->World = MathHelper::Identity4x4();
+	wavesRitem->ObjCBIndex = 0;
+	wavesRitem->Mat = mMaterials["water"].get();	// 머티리얼 설정
+	wavesRitem->Geo = mGeometries["waveGeo"].get();
+	wavesRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	wavesRitem->IndexCount = wavesRitem->Geo->DrawArgs["grid"].IndexCount;
+	wavesRitem->StartIndexLocation = wavesRitem->Geo->DrawArgs["grid"].StartIndexLocation;
+	wavesRitem->BaseVertexLocation = wavesRitem->Geo->DrawArgs["grid"].BaseVertexLocation;
+
+	mWavesRitem = wavesRitem.get();
+
+	mRitemLayer[static_cast<int>(RenderLayer::Opaque)].push_back(wavesRitem.get());	// 렌더 레이어에 추가
+
+	auto gridRitem = std::make_unique<RenderItemApp8>();
+	gridRitem->World = MathHelper::Identity4x4();
+	gridRitem->ObjCBIndex = 1;
+	gridRitem->Mat = mMaterials["grass"].get();	// 머티리얼 설정
+	gridRitem->Geo = mGeometries["landGeo"].get();
+	gridRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	gridRitem->IndexCount = gridRitem->Geo->DrawArgs["grid"].IndexCount;
+	gridRitem->StartIndexLocation = gridRitem->Geo->DrawArgs["grid"].StartIndexLocation;
+	gridRitem->BaseVertexLocation = gridRitem->Geo->DrawArgs["grid"].BaseVertexLocation;
+
+	mRitemLayer[static_cast<int>(RenderLayer::Opaque)].push_back(gridRitem.get());	// 렌더 레이어에 추가
+
+	mAllRitems.push_back(std::move(wavesRitem));	// 렌더 아이템 추가
+	mAllRitems.push_back(std::move(gridRitem));
 }
 
 void Chap8_2App::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItemApp8*>& ritems)
 {
+	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstantsTex));
+	UINT matCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(MaterialConstants));
+
+	auto objectCB = mCurrFrameResource->ObjectCB->Resource();
+	auto materialCB = mCurrFrameResource->MaterialCB->Resource();
+
+	for (size_t i = 0; i < ritems.size(); ++i)
+	{
+		auto ri = ritems[i];
+
+		// IA 설정
+		cmdList->IASetVertexBuffers(0, 1, &ri->Geo->VertexBufferView());	// 정점 버퍼 설정
+		cmdList->IASetIndexBuffer(&ri->Geo->IndexBufferView());				// 인덱스 버퍼 설정
+		cmdList->IASetPrimitiveTopology(ri->PrimitiveType);					// 프리미티브 타입 설정
+
+		D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress();
+		objCBAddress += ri->ObjCBIndex * objCBByteSize;						// 오브젝트 상수 버퍼 주소 계산
+
+		D3D12_GPU_VIRTUAL_ADDRESS matCBAddress = materialCB->GetGPUVirtualAddress();
+		matCBAddress += ri->Mat->MatCBIndex * matCBByteSize;				// 머티리얼 상수 버퍼 주소 계산
+
+		cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);		// 오브젝트 상수 버퍼 설정
+		cmdList->SetGraphicsRootConstantBufferView(1, matCBAddress);		// 머티리얼 상수 버퍼 설정
+
+		cmdList->DrawIndexedInstanced(
+			ri->IndexCount,
+			1,
+			ri->StartIndexLocation,
+			ri->BaseVertexLocation,
+			0);	// 드로우 호출
+	}
 }
 
 float Chap8_2App::GetHillsHeight(float x, float z) const
 {
-	return 0.0f;
+	return 0.3f * (z * sinf(0.1f * x) + x * cosf(0.1f * z));
 }
 
 XMFLOAT3 Chap8_2App::GetHillsNormal(float x, float z) const
 {
-	return XMFLOAT3();
+	XMFLOAT3 n(
+		-0.03f * z * cosf(0.1f * x) - 0.3f * cosf(0.1f * z),
+		1.0f,
+		-0.3f * sinf(0.1f * x) + 0.03f * x * sinf(0.1f * z)
+	);
+	XMVECTOR unitNormal = XMVector3Normalize(XMLoadFloat3(&n));	// 정규화
+	XMStoreFloat3(&n, unitNormal);	// 정규화된 벡터를 n에 저장
+	return n;
 }

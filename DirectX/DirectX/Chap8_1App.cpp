@@ -743,4 +743,5 @@ void Chap8_1App::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::
 			ri->StartIndexLocation,
 			ri->BaseVertexLocation, 0);	// 드로우 호출
 	}
+
 }
