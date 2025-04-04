@@ -66,6 +66,13 @@ struct VertexLight
 	DirectX::XMFLOAT3 Normal;
 };
 
+struct VertexTex
+{
+	DirectX::XMFLOAT3 Pos;
+	DirectX::XMFLOAT3 Normal;
+	DirectX::XMFLOAT2 TexC;
+};
+
 // CPU가 각 프레임의 커맨드 리스트를 만드는데 필요한 리소스들을 저장하는 구조체
 struct FrameResource
 {

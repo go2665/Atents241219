@@ -133,6 +133,7 @@
     <ClCompile Include="Chap7_2App.cpp" />
     <ClCompile Include="Chap8_1App.cpp" />
     <ClCompile Include="Chap8_2App.cpp" />
+    <ClCompile Include="Chap9_1App.cpp" />
     <ClCompile Include="Common\Camera.cpp" />
     <ClCompile Include="Common\d3dApp.cpp" />
     <ClCompile Include="Common\d3dUtil.cpp" />
@@ -142,6 +143,7 @@
     <ClCompile Include="Common\MathHelper.cpp" />
     <ClCompile Include="FrameResource.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="RenderItem.h" />
     <ClCompile Include="Waves.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -151,6 +153,7 @@
     <ClInclude Include="Chap7_2App.h" />
     <ClInclude Include="Chap8_1App.h" />
     <ClInclude Include="Chap8_2App.h" />
+    <ClInclude Include="Chap9_1App.h" />
     <ClInclude Include="Common\Camera.h" />
     <ClInclude Include="Common\d3dApp.h" />
     <ClInclude Include="Common\d3dUtil.h" />
