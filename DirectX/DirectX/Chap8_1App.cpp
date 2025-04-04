@@ -458,7 +458,7 @@ void Chap8_1App::BuildSkullGeometry()
 
 	fin >> ignore >> vertexCount;		// VertexCount: 31076
 	fin >> ignore >> triangleCount;		// TriangleCount: 60339
-	fin >> ignore >> ignore >> ignore;	// VertexList (pos, normal)	{
+	fin >> ignore >> ignore >> ignore >> ignore;	// VertexList (pos, normal)	{
 
 	std::vector<VertexLight> vertices(vertexCount);
 	for (UINT i = 0; i < vertexCount; ++i)	// 정점 모두 읽기(위치, 노멀)
