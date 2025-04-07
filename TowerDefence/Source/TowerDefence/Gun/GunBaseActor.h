@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "TowerBaseActor.generated.h"
+#include "GunBaseActor.generated.h"
 
 UCLASS()
-class TOWERDEFENCE_API ATowerBaseActor : public AActor
+class TOWERDEFENCE_API AGunBaseActor : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ATowerBaseActor();
+	AGunBaseActor();
 
 protected:
 	// Called when the game starts or when spawned
@@ -23,4 +23,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UStaticMeshComponent* GunMesh = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gun", meta = (ClampMin = "0.1"))
+	float ScaleFactor = 2.0f;
 };
