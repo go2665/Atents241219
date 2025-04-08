@@ -2,6 +2,8 @@
 
 
 #include "GunBaseActor.h"
+#include "Components/SphereComponent.h"
+#include "TowerDefence/Enemy/EnemyBase.h"
 
 // Sets default values
 AGunBaseActor::AGunBaseActor()
@@ -17,6 +19,12 @@ AGunBaseActor::AGunBaseActor()
 	GunMesh->SetRelativeScale3D(FVector(ScaleFactor));
 	GunMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);	
 
+	SightSensor = CreateDefaultSubobject<USphereComponent>(TEXT("SightSensor"));
+	SightSensor->SetupAttachment(Root);
+	SightSensor->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
+	SightSensor->OnComponentBeginOverlap.AddDynamic(this, &AGunBaseActor::OnSightOverlapBegin); // 시야 센서의 겹침 시작 이벤트 바인딩
+	SightSensor->OnComponentEndOverlap.AddDynamic(this, &AGunBaseActor::OnSightOverlapEnd); // 시야 센서의 겹침 종료 이벤트 바인딩
+
 	GunDatas.Reserve(3); // 레벨 1~3까지의 총기 데이터 배열 크기 설정
 }
 
@@ -26,9 +34,11 @@ void AGunBaseActor::BeginPlay()
 	Super::BeginPlay();
 
 	//check(GunDatas[0] != nullptr);		// 조건이 충족하지 않으면 종료
-	ensure(GunDatas[0] != nullptr);			// 조건이 충족하지 않으면 경고 메시지 출력 후 계속 진행
+	//ensure(GunDatas[0] != nullptr);		// 조건이 충족하지 않으면 경고 메시지 출력 후 계속 진행
 	//verify(GunDatas[0] != nullptr);		// 조건이 충족하지 않으면 종료(릴리즈에서는 생략)
-	CurrentGunData = GunDatas[0]; // 기본 총기 데이터 선택
+	SetGunLevel(1);							// 레벨 1의 총기 데이터로 초기화
+
+	
 }
 
 // Called every frame
@@ -43,6 +53,8 @@ void AGunBaseActor::SetGunLevel(int Level)
 	if (Level > 0 && Level <= GunDatas.Num())
 	{
 		CurrentGunData = GunDatas[Level - 1];	// 레벨에 맞는 총기 데이터 선택
+		verify(CurrentGunData != nullptr);		// 선택된 총기 데이터가 유효한지 확인
+		SightSensor->SetSphereRadius(CurrentGunData->Range); // 시야 반경 설정
 	}
 	else
 	{
@@ -50,3 +62,43 @@ void AGunBaseActor::SetGunLevel(int Level)
 	}
 }
 
+void AGunBaseActor::OnSightOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor->ActorHasTag(TEXT("Enemy")))
+	{
+		AEnemyBase* Enemy = Cast<AEnemyBase>(OtherActor); // 적 캐릭터인지 확인
+		if (Enemy)
+		{
+			TargetEnemies.AddUnique(Enemy); // 적 캐릭터를 목록에 추가
+			PrintEnemyList();
+		}
+	}
+}
+
+void AGunBaseActor::OnSightOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (OtherActor->ActorHasTag(TEXT("Enemy")))
+	{
+		AEnemyBase* Enemy = Cast<AEnemyBase>(OtherActor); // 적 캐릭터인지 확인
+		if (Enemy)
+		{
+			TargetEnemies.Remove(Enemy); // 적 캐릭터를 목록에서 제거
+			PrintEnemyList();
+		}
+	}
+}
+
+void AGunBaseActor::PrintEnemyList()
+{
+	FString EnemyList;
+	for (AEnemyBase* Enemy : TargetEnemies)
+	{
+		if (Enemy)
+		{
+			EnemyList += Enemy->GetName() + TEXT(", ");
+		}
+	}
+	EnemyList += TEXT("Total: ") + FString::FromInt(TargetEnemies.Num());
+
+	UE_LOG(LogTemp, Warning, TEXT("Enemies in range: [ %s ]"), *EnemyList);
+}

@@ -24,12 +24,27 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+public:
 	// Gun Level 설정
 	void SetGunLevel(int Level);
+
+private:
+	UFUNCTION()
+	void OnSightOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnSightOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	void PrintEnemyList();
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* GunMesh = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class USphereComponent* SightSensor = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gun", meta = (ClampMin = "0.1"))
 	float ScaleFactor = 2.0f;	
@@ -40,5 +55,6 @@ protected:
 	UGunDataAsset* CurrentGunData = nullptr;
 
 	// 적의 목록 : TArray
+	TArray<class AEnemyBase*> TargetEnemies;
 	
 };
