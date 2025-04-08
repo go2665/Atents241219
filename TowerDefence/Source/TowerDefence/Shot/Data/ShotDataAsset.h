@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "GunEnums.h"
+#include "ShotEnums.h"
 #include "ShotDataAsset.generated.h"
 
 /**

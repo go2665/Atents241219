@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "ShotDataAsset.h"
+#include "TowerDefence/Shot/Data/ShotDataAsset.h"
 #include "GunDataAsset.generated.h"
 
 /**

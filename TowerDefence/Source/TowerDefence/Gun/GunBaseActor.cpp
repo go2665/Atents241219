@@ -42,6 +42,7 @@ void AGunBaseActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	// 총이 첫번째 타	겟을 바라보도록 회전
+	LookFirstTarget(DeltaTime);
 }
 
 void AGunBaseActor::PostInitializeComponents()
@@ -151,4 +152,23 @@ void AGunBaseActor::Shoot()
 	// 발사 로직 구현
 	FString TimeString = FDateTime::FromUnixTimestamp(World->TimeSeconds).ToString(TEXT("%H:%M:%S"));
 	UE_LOG(LogTemp, Warning, TEXT("[%s] Shooting!"), *TimeString);
+}
+
+void AGunBaseActor::LookFirstTarget(float DeltaTime)
+{
+	if (!TargetEnemies.IsEmpty())
+	{
+		AEnemyBase* FirstTarget = TargetEnemies[0]; // 첫 번째 적 캐릭터
+		if (FirstTarget)
+		{
+			FVector Direction = FirstTarget->GetActorLocation() - GetActorLocation(); // 총기 위치에서 적 캐릭터 위치로의 방향 벡터
+			Direction.Z = 0.0f;		// Yaw 회전만 고려하기 위해 높이(Z) 제거
+			Direction.Normalize();	// 방향 벡터 정규화
+
+			FRotator NewRotation = Direction.Rotation(); // 방향 벡터를 회전으로 변환
+
+			NewRotation = FMath::RInterpConstantTo(GetActorRotation(), NewRotation, DeltaTime, 360.0f);
+			SetActorRotation(NewRotation); // 총기 회전 설정
+		}
+	}
 }

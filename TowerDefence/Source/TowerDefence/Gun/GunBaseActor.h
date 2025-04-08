@@ -44,6 +44,8 @@ private:
 	void ShootStop();
 	void Shoot();
 
+	void LookFirstTarget(float DeltaTime);
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* GunMesh = nullptr;
@@ -59,6 +61,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gun")
 	float FireFirstDelay = 0.5f;	// 첫 발사 지연 시간
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gun")
+	float LookSpeed = 360.0f;		// 적을 바라보는 속도(FireFirstDelay초 안에 180도 이상 회전 할 수 있는 속도이어야 한다.)
 		
 	UGunDataAsset* CurrentGunData = nullptr;
 
