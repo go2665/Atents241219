@@ -20,10 +20,7 @@ AGunBaseActor::AGunBaseActor()
 	GunMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);	
 
 	SightSensor = CreateDefaultSubobject<USphereComponent>(TEXT("SightSensor"));
-	SightSensor->SetupAttachment(Root);
-	SightSensor->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
-	SightSensor->OnComponentBeginOverlap.AddDynamic(this, &AGunBaseActor::OnSightOverlapBegin); // 시야 센서의 겹침 시작 이벤트 바인딩
-	SightSensor->OnComponentEndOverlap.AddDynamic(this, &AGunBaseActor::OnSightOverlapEnd); // 시야 센서의 겹침 종료 이벤트 바인딩
+	SightSensor->SetupAttachment(Root);	
 
 	GunDatas.Reserve(3); // 레벨 1~3까지의 총기 데이터 배열 크기 설정
 }
@@ -37,8 +34,6 @@ void AGunBaseActor::BeginPlay()
 	//ensure(GunDatas[0] != nullptr);		// 조건이 충족하지 않으면 경고 메시지 출력 후 계속 진행
 	//verify(GunDatas[0] != nullptr);		// 조건이 충족하지 않으면 종료(릴리즈에서는 생략)
 	SetGunLevel(1);							// 레벨 1의 총기 데이터로 초기화
-
-	
 }
 
 // Called every frame
@@ -46,6 +41,16 @@ void AGunBaseActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// 총이 첫번째 타	겟을 바라보도록 회전
+}
+
+void AGunBaseActor::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	SightSensor->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
+	SightSensor->OnComponentBeginOverlap.AddUniqueDynamic(this, &AGunBaseActor::OnSightOverlapBegin); // 시야 센서의 겹침 시작 이벤트 바인딩
+	SightSensor->OnComponentEndOverlap.AddUniqueDynamic(this, &AGunBaseActor::OnSightOverlapEnd); // 시야 센서의 겹침 종료 이벤트 바인딩
 }
 
 void AGunBaseActor::SetGunLevel(int Level)
@@ -55,6 +60,12 @@ void AGunBaseActor::SetGunLevel(int Level)
 		CurrentGunData = GunDatas[Level - 1];	// 레벨에 맞는 총기 데이터 선택
 		verify(CurrentGunData != nullptr);		// 선택된 총기 데이터가 유효한지 확인
 		SightSensor->SetSphereRadius(CurrentGunData->Range); // 시야 반경 설정
+
+		if (!TargetEnemies.IsEmpty())	// 적이 있다 == Shoot타이머 실행중
+		{
+			ShootStop();	// 기존 타이머 정지
+			ShootStart();	// 새로운 총기 데이터에 맞게 발사 시작
+		}
 	}
 	else
 	{
@@ -69,6 +80,11 @@ void AGunBaseActor::OnSightOverlapBegin(UPrimitiveComponent* OverlappedComponent
 		AEnemyBase* Enemy = Cast<AEnemyBase>(OtherActor); // 적 캐릭터인지 확인
 		if (Enemy)
 		{
+			if (TargetEnemies.IsEmpty())
+			{
+				ShootStart(); // 적 캐릭터가 처음 감지되면 발사 시작
+			}
+
 			TargetEnemies.AddUnique(Enemy); // 적 캐릭터를 목록에 추가
 			PrintEnemyList();
 		}
@@ -84,6 +100,11 @@ void AGunBaseActor::OnSightOverlapEnd(UPrimitiveComponent* OverlappedComponent, 
 		{
 			TargetEnemies.Remove(Enemy); // 적 캐릭터를 목록에서 제거
 			PrintEnemyList();
+
+			if (TargetEnemies.IsEmpty())
+			{
+				ShootStop(); // 적 캐릭터가 모두 사라지면 발사 중지
+			}
 		}
 	}
 }
@@ -101,4 +122,33 @@ void AGunBaseActor::PrintEnemyList()
 	EnemyList += TEXT("Total: ") + FString::FromInt(TargetEnemies.Num());
 
 	UE_LOG(LogTemp, Warning, TEXT("Enemies in range: [ %s ]"), *EnemyList);
+}
+
+void AGunBaseActor::ShootStart()
+{
+	// 발사 시작
+	FTimerManager& TimerManager = GetWorldTimerManager();
+	TimerManager.SetTimer(
+		ShootTimerHandle, 
+		this, &AGunBaseActor::Shoot, 
+		1 / CurrentGunData->FireRate, true, FireFirstDelay); // 발사 주기 설정
+}
+
+void AGunBaseActor::ShootStop()
+{
+	// 발사 중지
+	FTimerManager& TimerManager = GetWorldTimerManager();
+	if (TimerManager.IsTimerActive(ShootTimerHandle))
+	{
+		TimerManager.ClearTimer(ShootTimerHandle); // 발사 타이머 정지
+	}
+}
+
+void AGunBaseActor::Shoot()
+{
+	UWorld* World = GetWorld();
+	
+	// 발사 로직 구현
+	FString TimeString = FDateTime::FromUnixTimestamp(World->TimeSeconds).ToString(TEXT("%H:%M:%S"));
+	UE_LOG(LogTemp, Warning, TEXT("[%s] Shooting!"), *TimeString);
 }

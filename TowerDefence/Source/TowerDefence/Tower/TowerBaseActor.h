@@ -21,6 +21,7 @@ protected:
 
 public:	
 	//virtual void Tick(float DeltaTime) override;
+	UFUNCTION(BlueprintCallable, Category = "Tower")
 	void LevelUp(); // 총기 레벨업 함수
 
 

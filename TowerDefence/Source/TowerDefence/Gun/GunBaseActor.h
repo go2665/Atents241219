@@ -23,6 +23,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	virtual void PostInitializeComponents() override;
 
 public:
 	// Gun Level 설정
@@ -39,6 +40,10 @@ private:
 
 	void PrintEnemyList();
 
+	void ShootStart();
+	void ShootStop();
+	void Shoot();
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* GunMesh = nullptr;
@@ -51,10 +56,16 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gun")
 	TArray<UGunDataAsset*> GunDatas;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gun")
+	float FireFirstDelay = 0.5f;	// 첫 발사 지연 시간
 		
 	UGunDataAsset* CurrentGunData = nullptr;
 
 	// 적의 목록 : TArray
 	TArray<class AEnemyBase*> TargetEnemies;
+
+private:
+	FTimerHandle ShootTimerHandle;	// 발사 타이머 핸들
 	
 };
