@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "TowerDefence/Gun/Data/GunDataAsset.h"
 #include "GunBaseActor.generated.h"
 
 UCLASS()
@@ -23,10 +24,21 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	// Gun Level 설정
+	void SetGunLevel(int Level);
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* GunMesh = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gun", meta = (ClampMin = "0.1"))
-	float ScaleFactor = 2.0f;
+	float ScaleFactor = 2.0f;	
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gun")
+	TArray<UGunDataAsset*> GunDatas;
+		
+	UGunDataAsset* CurrentGunData = nullptr;
+
+	// 적의 목록 : TArray
+	
 };

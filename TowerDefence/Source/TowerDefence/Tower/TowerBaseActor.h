@@ -21,6 +21,7 @@ protected:
 
 public:	
 	//virtual void Tick(float DeltaTime) override;
+	void LevelUp(); // 총기 레벨업 함수
 
 
 protected:
@@ -34,4 +35,13 @@ protected:
 	// 일반 변수들
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower")
 	TSubclassOf<class AGunBaseActor> GunClass = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower", meta = (ClampMin = "1", ClampMax = "3"))
+	int32 GunLevel = 1; // 총기 레벨(1~3)
+
+private:
+	const static int8 MaxGunLevel = 3;	// 총기 레벨의 최대값
+
+	UPROPERTY()
+	AGunBaseActor* Gun = nullptr;		// 총기 클래스의 인스턴스
 };

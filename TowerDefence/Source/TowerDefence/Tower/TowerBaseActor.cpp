@@ -3,7 +3,7 @@
 
 #include "TowerBaseActor.h"
 #include "Components/ChildActorComponent.h"
-#include "GunBaseActor.h"
+#include "TowerDefence/Gun/GunBaseActor.h"
 
 // Sets default values
 ATowerBaseActor::ATowerBaseActor()
@@ -29,6 +29,20 @@ void ATowerBaseActor::BeginPlay()
 	if (GunClass)
 	{
 		GunActor->SetChildActorClass(GunClass);
+		Gun = Cast<AGunBaseActor>(GunActor->GetChildActor());
+	}
+}
+
+void ATowerBaseActor::LevelUp()
+{
+	if (GunLevel < MaxGunLevel)
+	{
+		GunLevel++;
+
+		if (Gun)
+		{
+			Gun->SetGunLevel(GunLevel); // 총기 레벨 설정
+		}
 	}
 }
 
