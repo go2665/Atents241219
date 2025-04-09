@@ -25,6 +25,7 @@ AGunBaseActor::AGunBaseActor()
 
 	SightSensor = CreateDefaultSubobject<USphereComponent>(TEXT("SightSensor"));
 	SightSensor->SetupAttachment(Root);	
+	SightSensor->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
 
 	GunDatas.Reserve(3); // 레벨 1~3까지의 총기 데이터 배열 크기 설정
 }
@@ -53,7 +54,6 @@ void AGunBaseActor::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	SightSensor->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
 	SightSensor->OnComponentBeginOverlap.AddUniqueDynamic(this, &AGunBaseActor::OnSightOverlapBegin); // 시야 센서의 겹침 시작 이벤트 바인딩
 	SightSensor->OnComponentEndOverlap.AddUniqueDynamic(this, &AGunBaseActor::OnSightOverlapEnd); // 시야 센서의 겹침 종료 이벤트 바인딩
 }

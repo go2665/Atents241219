@@ -16,4 +16,9 @@ class TOWERDEFENCE_API AHitScanGunBaseActor : public AGunBaseActor
 	
 protected:
 	virtual void Shoot() override;
+
+protected:
+	// MuzzleLocation에서 Target까지 라인트레이스하는 함수
+	bool LineTraceToTarget(FVector Target);
+	bool LineTraceToTarget(AActor* Target);
 };
