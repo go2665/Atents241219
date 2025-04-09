@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "TowerDefence/Shot/Data/ShotEnums.h"
+#include "TowerDefence/Shot/Attribute/TowerDamageType.h"
 #include "EnemyBase.generated.h"
 
 UCLASS()
@@ -16,16 +18,24 @@ public:
 	AEnemyBase();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void PostInitializeComponents() override;
 
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override; // 데미지 처리 함수
+
+private:
+	void SetCurrentHealth(float NewHealth);
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	class UMeshComponent* EnemyMesh = nullptr; // 적의 메쉬 컴포넌트
+	class UMeshComponent* EnemyMesh = nullptr;			// 적의 메쉬 컴포넌트
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy")
+	TSubclassOf<UTowerDamageType> WeakType = nullptr;	// 적의 약점 속성
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy")
+	float CurrentHealth = 20.0f;						// 적의 현재 체력
 
 };

@@ -2,6 +2,12 @@
 
 
 #include "EnemyBase.h"
+#include "Engine/DamageEvents.h"
+//#include "TowerDefence/Shot/Attribute/TowerDamageType.h"
+#include "TowerDefence/Shot/Attribute/FireDamageType.h"
+#include "TowerDefence/Shot/Attribute/IceDamageType.h"
+#include "TowerDefence/Shot/Attribute/LightningDamageType.h"
+#include "TowerDefence/Shot/Attribute/PoisonDamageType.h"
 
 // Sets default values
 AEnemyBase::AEnemyBase()
@@ -41,5 +47,37 @@ void AEnemyBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+
+float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+		
+	if (DamageEvent.DamageTypeClass == WeakType)
+	{
+		ActualDamage *= 2.0f; // 약점 속성에 대한 데미지 배가
+	}
+
+	SetCurrentHealth(CurrentHealth - ActualDamage); // 체력 설정
+
+	return ActualDamage;
+}
+
+void AEnemyBase::SetCurrentHealth(float NewHealth)
+{
+	CurrentHealth = NewHealth;
+	if (CurrentHealth <= 0.0f)
+	{
+		// 적 캐릭터가 죽었을 때의 처리
+		//Destroy(); // 적 캐릭터 삭제
+
+		UE_LOG(LogTemp, Warning, TEXT("[%s] is dead!"), *this->GetActorLabel());
+	}
+	else
+	{
+		// 적 캐릭터가 살아있을 때의 처리
+		UE_LOG(LogTemp, Warning, TEXT("[%s] Current Health: %.1f"), *this->GetActorLabel(), CurrentHealth);
+	}
 }
 

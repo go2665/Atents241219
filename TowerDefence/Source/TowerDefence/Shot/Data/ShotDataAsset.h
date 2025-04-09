@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "ShotEnums.h"
+#include "TowerDefence/Shot/Attribute/TowerDamageType.h"
 #include "ShotDataAsset.generated.h"
 
 /**
@@ -26,5 +27,7 @@ public:
 	bool bIsAreaAttack = false;					// 단일/범위 공격 여부
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shot Data")
-	EAttributeType AttributeType = EAttributeType::None; // 속성 타입
+	//EAttributeType AttributeType = EAttributeType::None; // 속성 타입
+    TSubclassOf<UTowerDamageType> AttributeType = UTowerDamageType::StaticClass(); // 속성 타입(데미지 타입)
+
 };
