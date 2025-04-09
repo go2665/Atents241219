@@ -3,6 +3,7 @@
 
 #include "HitScanGunBaseActor.h"
 #include "TowerDefence/Enemy/EnemyBase.h"
+#include "Kismet/GameplayStatics.h"
 
 void AHitScanGunBaseActor::Shoot()
 {
@@ -62,4 +63,27 @@ bool AHitScanGunBaseActor::LineTraceToTarget(FVector Target)
 bool AHitScanGunBaseActor::LineTraceToTarget(AActor* Target)
 {
 	return LineTraceToTarget(Target->GetActorLocation());
+}
+
+void AHitScanGunBaseActor::HitProcess()
+{
+	int32 Count = FMath::Min(CurrentGunData->TargetCount, TargetEnemies.Num()); // 공격할 적의 수
+	for (int32 i = 0; i < Count; i++)
+	{
+		bool bHit = LineTraceToTarget(TargetEnemies[i]);
+		if (bHit)
+		{
+			// 데미지 처리
+			UGameplayStatics::ApplyDamage(
+				TargetEnemies[i],	// 적 캐릭터
+				CurrentGunData->ShotData->Damage,	// 총알의 데미지
+				nullptr,	// 행위자
+				nullptr,	// 공격자
+				CurrentGunData->ShotData->AttributeType // 총알의 속성 타입
+			);
+
+			// 디버프 처리
+			// CurrentGunData->ShotData->DebuffType;
+		}
+	}
 }

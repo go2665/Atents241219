@@ -21,16 +21,26 @@ ATowerBaseActor::ATowerBaseActor()
 	GunActor->SetupAttachment(TowerBodyMesh, TEXT("TowerRoof"));
 }
 
+void ATowerBaseActor::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+	if (GunActor && GunActor->GetChildActor() == nullptr)
+	{
+		GunActor->SetChildActorClass(GunClass);
+		Gun = Cast<AGunBaseActor>(GunActor->GetChildActor());
+	}
+}
+
 // Called when the game starts or when spawned
 void ATowerBaseActor::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	if (GunClass)
-	{
-		GunActor->SetChildActorClass(GunClass);
-		Gun = Cast<AGunBaseActor>(GunActor->GetChildActor());
-	}
+	//if (GunClass)
+	//{
+	//	GunActor->SetChildActorClass(GunClass);
+	//	Gun = Cast<AGunBaseActor>(GunActor->GetChildActor());
+	//}
 }
 
 void ATowerBaseActor::LevelUp()
