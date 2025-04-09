@@ -29,6 +29,9 @@ public:
 	// Gun Level 설정
 	void SetGunLevel(int Level);
 
+protected:
+	virtual void Shoot();
+
 private:
 	UFUNCTION()
 	void OnSightOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -42,7 +45,6 @@ private:
 
 	void ShootStart();
 	void ShootStop();
-	void Shoot();
 
 	void LookFirstTarget(float DeltaTime);
 
@@ -52,6 +54,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class USphereComponent* SightSensor = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class USceneComponent* MuzzleLocation = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Gun", meta = (ClampMin = "0.1"))
 	float ScaleFactor = 2.0f;	

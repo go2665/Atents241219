@@ -19,6 +19,10 @@ AGunBaseActor::AGunBaseActor()
 	GunMesh->SetRelativeScale3D(FVector(ScaleFactor));
 	GunMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);	
 
+	MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
+	MuzzleLocation->SetupAttachment(Root);
+	MuzzleLocation->SetRelativeLocation(FVector::ForwardVector * 100.0f); // 총구 위치 설정(에디터에서 상세조정필요)
+
 	SightSensor = CreateDefaultSubobject<USphereComponent>(TEXT("SightSensor"));
 	SightSensor->SetupAttachment(Root);	
 
@@ -151,7 +155,7 @@ void AGunBaseActor::Shoot()
 	
 	// 발사 로직 구현
 	FString TimeString = FDateTime::FromUnixTimestamp(World->TimeSeconds).ToString(TEXT("%H:%M:%S"));
-	UE_LOG(LogTemp, Warning, TEXT("[%s] Shooting!"), *TimeString);
+	UE_LOG(LogTemp, Warning, TEXT("[%s] [%s] Shooting!"), *TimeString, *this->GetActorLabel());
 }
 
 void AGunBaseActor::LookFirstTarget(float DeltaTime)
