@@ -6,6 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "ShotEnums.h"
 #include "TowerDefence/Shot/Attribute/TowerDamageType.h"
+#include "TowerDefence/Shot/Debuff/DebuffEnums.h"
 #include "ShotDataAsset.generated.h"
 
 /**

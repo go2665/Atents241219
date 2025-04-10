@@ -2,11 +2,29 @@
 
 
 #include "DebuffBase.h"
+#include "TowerDefence/Enemy/EnemyBase.h"
 
-void UDebuffBase::OnAdd()
+UDebuffBase::UDebuffBase()
 {
+	DebuffName = FName("Base");
 }
 
-void UDebuffBase::OnApply()
+void UDebuffBase::OnInitialize(AEnemyBase* Target)
 {
+	TargetEnemy = Target;
+	CurrentDuration = DefaultDuration;
+
+	// 이 디버프가 처음 적용된 적의 상태를 변경하는 로직을 여기에 추가합니다.
+}
+
+void UDebuffBase::OnTick(float DeltaTime)
+{
+	CurrentDuration -= DeltaTime;
+}
+
+void UDebuffBase::OnEnd()
+{
+	// 이 디버프가 끝났을 때 적의 상태를 원래대로 되돌리는 로직을 여기에 추가합니다.
+	TargetEnemy = nullptr;
+	CurrentDuration = 0.0f;
 }
