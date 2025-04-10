@@ -14,11 +14,11 @@ UDebuff_Slow::UDebuff_Slow()
 void UDebuff_Slow::OnInitialize(AEnemyBase* Target)
 {
 	Super::OnInitialize(Target);	
-	TargetEnemy->SetSpeedModifier(SlowRate);
+	TargetEnemy->UpdateSpeedModifier();
 }
 
 void UDebuff_Slow::OnEnd()
 {
-	TargetEnemy->SetSpeedModifier(1.0f); // 원래 속도로 되돌리기
+	TargetEnemy->UpdateSpeedModifier(EDebuffType::Slow); // 원래 속도로 되돌리기
 	Super::OnEnd();
 }

@@ -35,7 +35,7 @@ public:
 	float GetMaxiumModifierValue(EDebuffType IgnoreType, EDebuffModifier ModifierType);	// 최대 수정 값 반환
 
 private:
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, Category = "Debuff")
 	TArray<UDebuffBase*> ActiveDebuffs;
 
 	UDebuffBase* CreateDebuff(EDebuffType Type); // 디버프 생성

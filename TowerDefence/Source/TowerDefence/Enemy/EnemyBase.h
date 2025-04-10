@@ -28,12 +28,9 @@ public:
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override; // 데미지 처리 함수
 
 public:
-	void RestorSpeedeModifier(EDebuffType RemoveType);
-	void RestorDamageModifier(EDebuffType RemoveType);
-
-	inline void SetSpeedModifier(float NewSpeedModifier) { SpeedModifier = NewSpeedModifier; };	// 이동 속도 수정 값 설정
-	inline void SetDamageModifier(float NewDamageModifier) { DamageModifier = NewDamageModifier; };	// 데미지 배율 설정
-
+	void UpdateSpeedModifier(EDebuffType IgnoreType = EDebuffType::None);		// 이동 속도 수정 값 업데이트(디버프 컴포넌트 내부 배열 기준으로 업데이트)
+	void UpdateDamageModifier(EDebuffType IgnoreType = EDebuffType::None);		// 데미지 배율 업데이트(디버프 컴포넌트 내부 배열 기준으로 업데이트)
+	
 private:
 	void SetCurrentHealth(float NewHealth);
 

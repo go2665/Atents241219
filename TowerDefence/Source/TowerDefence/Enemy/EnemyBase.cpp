@@ -71,18 +71,14 @@ float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent
 	return ActualDamage;
 }
 
-void AEnemyBase::RestorSpeedeModifier(EDebuffType RemoveType)
+void AEnemyBase::UpdateSpeedModifier(EDebuffType IgnoreType)
 {
-	// 모든 디버프를 순회해서 SpeedModifier를 변경하는 디버프가 있으면 최대값을 적용
-	SpeedModifier = DebuffComponent->GetMaxiumModifierValue(RemoveType, EDebuffModifier::Speed);
+	SpeedModifier = DebuffComponent->GetMaxiumModifierValue(IgnoreType, EDebuffModifier::Speed);
 }
 
-void AEnemyBase::RestorDamageModifier(EDebuffType RemoveType)
+void AEnemyBase::UpdateDamageModifier(EDebuffType IgnoreType)
 {
-	// 모든 디버프를 순회해서 DamageModifier를 변경하는 디버프가 있으면 최대값을 적용
-	DamageModifier = DebuffComponent->GetMaxiumModifierValue(RemoveType, EDebuffModifier::Damage);
-
-	// 모디파이어 설정 할 때도 문제가 될 수 있다.
+	DamageModifier = DebuffComponent->GetMaxiumModifierValue(IgnoreType, EDebuffModifier::Damage);
 }
 
 void AEnemyBase::SetCurrentHealth(float NewHealth)

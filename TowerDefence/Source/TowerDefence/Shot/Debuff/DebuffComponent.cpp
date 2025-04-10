@@ -46,8 +46,8 @@ void UDebuffComponent::AddDebuff(EDebuffType Type)
 	UDebuffBase* NewDebuff = CreateDebuff(Type);
 	if (NewDebuff)
 	{
+		ActiveDebuffs.Add(NewDebuff);	// 디버프 추가(OnInitialize 전에 추가되어야 한다.)
 		NewDebuff->OnInitialize(Cast<AEnemyBase>(GetOwner()));
-		ActiveDebuffs.Add(NewDebuff);
 	}
 	else
 	{
