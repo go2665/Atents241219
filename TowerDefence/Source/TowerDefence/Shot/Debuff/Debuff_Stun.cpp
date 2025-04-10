@@ -2,6 +2,7 @@
 
 
 #include "Debuff_Stun.h"
+#include "TowerDefence/Enemy/EnemyBase.h"
 
 UDebuff_Stun::UDebuff_Stun()
 {

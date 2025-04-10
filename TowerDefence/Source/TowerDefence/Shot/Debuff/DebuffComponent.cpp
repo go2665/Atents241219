@@ -37,21 +37,49 @@ void UDebuffComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 	for (int32 i = RemoveIndices.Num() - 1; i >= 0 ; i--)
 	{
+		FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
+		UE_LOG(LogTemp, Warning, TEXT("[%s] Success RemoveDebuff : [%s]"),
+			*TimeString, *UEnum::GetValueAsString(ActiveDebuffs[RemoveIndices[i]]->GetDebuffType()))
+		
 		ActiveDebuffs.RemoveAt(RemoveIndices[i]);
 	}
 }
 
 void UDebuffComponent::AddDebuff(EDebuffType Type)
 {
-	UDebuffBase* NewDebuff = CreateDebuff(Type);
-	if (NewDebuff)
+	bool bIsExist = false;
+	// 이미 존재하는 디버프는 기간만 연장한다.
+	for (auto& Debuff : ActiveDebuffs)
 	{
-		ActiveDebuffs.Add(NewDebuff);	// 디버프 추가(OnInitialize 전에 추가되어야 한다.)
-		NewDebuff->OnInitialize(Cast<AEnemyBase>(GetOwner()));
+		if (Debuff->GetDebuffType() == Type)
+		{
+			Debuff->ExtendDuration();
+			FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
+			UE_LOG(LogTemp, Warning, TEXT("[%s] Extend Debuff : [%s] (%.1f)"),
+				*TimeString, *UEnum::GetValueAsString(Type), Debuff->GetCurrentDuration());
+			bIsExist = true;
+			break;
+		}
 	}
-	else
+
+	// 디버프가 존재하지 않는 경우 새로 생성한다.
+	if (!bIsExist)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed to create debuff of type: %s"), *UEnum::GetValueAsString(Type));
+		UDebuffBase* NewDebuff = CreateDebuff(Type);
+		if (NewDebuff)
+		{
+			ActiveDebuffs.Add(NewDebuff);	// 디버프 추가(OnInitialize 전에 추가되어야 한다.)
+			NewDebuff->OnInitialize(Cast<AEnemyBase>(GetOwner()));
+
+			FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
+			UE_LOG(LogTemp, Warning, TEXT("[%s] Success AddDebuff : [%s] (%.1f)"),
+				*TimeString, *UEnum::GetValueAsString(Type), NewDebuff->GetCurrentDuration());
+		}
+		else
+		{
+		
+			UE_LOG(LogTemp, Warning, TEXT("Failed to create debuff of type: %s"), *UEnum::GetValueAsString(Type));
+		}
 	}
 }
 
@@ -63,6 +91,9 @@ void UDebuffComponent::RemoveDebuff(EDebuffType Type)
 		{
 			ActiveDebuffs[i]->OnEnd();
 			ActiveDebuffs.RemoveAt(i);
+
+			FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
+			UE_LOG(LogTemp, Warning, TEXT("[%s] Success RemoveDebuff : [%s]"), *TimeString, *UEnum::GetValueAsString(Type))
 			break;
 		}
 	}

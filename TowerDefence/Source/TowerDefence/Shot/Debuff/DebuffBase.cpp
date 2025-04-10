@@ -2,6 +2,7 @@
 
 
 #include "DebuffBase.h"
+#include "TowerDefence/Enemy/EnemyBase.h"
 
 UDebuffBase::UDebuffBase()
 {

@@ -30,6 +30,9 @@ public:
 public:
 	void UpdateSpeedModifier(EDebuffType IgnoreType = EDebuffType::None);		// 이동 속도 수정 값 업데이트(디버프 컴포넌트 내부 배열 기준으로 업데이트)
 	void UpdateDamageModifier(EDebuffType IgnoreType = EDebuffType::None);		// 데미지 배율 업데이트(디버프 컴포넌트 내부 배열 기준으로 업데이트)
+
+	UFUNCTION(BlueprintCallable, Category = "Enemy")
+	inline class UDebuffComponent* GetDebuffComponent() const { return DebuffComponent; }	// 디버프 컴포넌트 반환
 	
 private:
 	void SetCurrentHealth(float NewHealth);
@@ -39,7 +42,7 @@ protected:
 	class UMeshComponent* EnemyMesh = nullptr;			// 적의 메쉬 컴포넌트
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	class UDebuffComponent* DebuffComponent = nullptr;		// 적의 디버프 관리 컴포넌트
+	class UDebuffComponent* DebuffComponent = nullptr;	// 적의 디버프 관리 컴포넌트
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy")
 	TSubclassOf<UTowerDamageType> WeakType = nullptr;	// 적의 약점 속성

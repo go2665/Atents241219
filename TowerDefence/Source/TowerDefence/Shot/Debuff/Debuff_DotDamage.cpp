@@ -2,6 +2,7 @@
 
 
 #include "Debuff_DotDamage.h"
+#include "TowerDefence/Enemy/EnemyBase.h"
 #include "Kismet/GameplayStatics.h"
 
 UDebuff_DotDamage::UDebuff_DotDamage()

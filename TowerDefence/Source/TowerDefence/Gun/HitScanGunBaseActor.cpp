@@ -2,8 +2,9 @@
 
 
 #include "HitScanGunBaseActor.h"
-#include "TowerDefence/Enemy/EnemyBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "TowerDefence/Enemy/EnemyBase.h"
+#include "TowerDefence/Shot/Debuff/DebuffComponent.h"
 
 void AHitScanGunBaseActor::Shoot()
 {
@@ -12,10 +13,10 @@ void AHitScanGunBaseActor::Shoot()
 	// Line : 선. 시작점과 끝점으로 정의(위치 2개)
 	// Ray : 선. 시작점과 방향으로 정의(위치 + 벡터)
 
-	FVector Start = MuzzleLocation->GetComponentLocation();	// 총구 위치
-	FVector End = Start + MuzzleLocation->GetForwardVector() * CurrentGunData->Range; // 총구에서 앞쪽으로 사정거리만큼 나간 위치
+	//FVector Start = MuzzleLocation->GetComponentLocation();	// 총구 위치
+	//FVector End = Start + MuzzleLocation->GetForwardVector() * CurrentGunData->Range; // 총구에서 앞쪽으로 사정거리만큼 나간 위치
 
-	LineTraceToTarget(End);	// 데미지 처리는 없음
+	HitProcess();
 }
 
 bool AHitScanGunBaseActor::LineTraceToTarget(FVector Target)
@@ -83,7 +84,7 @@ void AHitScanGunBaseActor::HitProcess()
 			);
 
 			// 디버프 처리
-			// CurrentGunData->ShotData->DebuffType;
+			TargetEnemies[i]->GetDebuffComponent()->AddDebuff(CurrentGunData->ShotData->DebuffType); // 디버프 추가
 		}
 	}
 }

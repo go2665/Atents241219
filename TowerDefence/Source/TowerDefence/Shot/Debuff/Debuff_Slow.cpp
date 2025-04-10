@@ -2,6 +2,7 @@
 
 
 #include "Debuff_Slow.h"
+#include "TowerDefence/Enemy/EnemyBase.h"
 
 UDebuff_Slow::UDebuff_Slow()
 {

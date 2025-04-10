@@ -7,7 +7,7 @@
 #include "HitScanGunBaseActor.generated.h"
 
 /**
- * 
+ * 히트 스캔 총기 기본 클래스(들어온 순서대로 우선 공격)
  */
 UCLASS()
 class TOWERDEFENCE_API AHitScanGunBaseActor : public AGunBaseActor
