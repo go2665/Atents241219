@@ -32,6 +32,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Debuff")
 	void RemoveDebuff(EDebuffType Type);	// 디버프 제거
 
+	float GetMaxiumModifierValue(EDebuffType IgnoreType, EDebuffModifier ModifierType);	// 최대 수정 값 반환
+
 private:
 	UPROPERTY()
 	TArray<UDebuffBase*> ActiveDebuffs;

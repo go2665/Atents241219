@@ -13,3 +13,10 @@ enum class EDebuffType : uint8
 	COUNT
 	// Add more debuff types as needed
 };
+
+UENUM(BlueprintType)
+enum class EDebuffModifier : uint8
+{
+	Speed		UMETA(DisplayName = "Speed"),
+	Damage		UMETA(DisplayName = "Damage"),
+};

@@ -8,6 +8,7 @@
 #include "TowerDefence/Shot/Attribute/IceDamageType.h"
 #include "TowerDefence/Shot/Attribute/LightningDamageType.h"
 #include "TowerDefence/Shot/Attribute/PoisonDamageType.h"
+#include "TowerDefence/Shot/Debuff/DebuffComponent.h"
 
 // Sets default values
 AEnemyBase::AEnemyBase()
@@ -23,6 +24,9 @@ AEnemyBase::AEnemyBase()
 	EnemyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EnemyMesh"));
 	EnemyMesh->SetupAttachment(Root);
 	EnemyMesh->SetCollisionProfileName(TEXT("Enemy")); // 적 캐릭터의 충돌 프로파일 설정
+
+	// 디버프 컴포넌트 생성 및 설정
+	DebuffComponent = CreateDefaultSubobject<UDebuffComponent>(TEXT("DebuffComponent"));
 
 	// 태그 설정
 	Tags.Add(FName("Enemy")); // 태그 추가
@@ -47,6 +51,8 @@ void AEnemyBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	//DeltaTime * Speed * (1 - SpeedModifier) * GetActorForwardVector();
+
 }
 
 
@@ -54,14 +60,29 @@ float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent
 {
 	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 		
+	ActualDamage *= DamageModifier;	// 데미지 배율 적용
 	if (DamageEvent.DamageTypeClass == WeakType)
 	{
-		ActualDamage *= 2.0f; // 약점 속성에 대한 데미지 배가
+		ActualDamage *= 2.0f;			// 약점 속성에 대한 데미지 배가
 	}
 
 	SetCurrentHealth(CurrentHealth - ActualDamage); // 체력 설정
 
 	return ActualDamage;
+}
+
+void AEnemyBase::RestorSpeedeModifier(EDebuffType RemoveType)
+{
+	// 모든 디버프를 순회해서 SpeedModifier를 변경하는 디버프가 있으면 최대값을 적용
+	SpeedModifier = DebuffComponent->GetMaxiumModifierValue(RemoveType, EDebuffModifier::Speed);
+}
+
+void AEnemyBase::RestorDamageModifier(EDebuffType RemoveType)
+{
+	// 모든 디버프를 순회해서 DamageModifier를 변경하는 디버프가 있으면 최대값을 적용
+	DamageModifier = DebuffComponent->GetMaxiumModifierValue(RemoveType, EDebuffModifier::Damage);
+
+	// 모디파이어 설정 할 때도 문제가 될 수 있다.
 }
 
 void AEnemyBase::SetCurrentHealth(float NewHealth)

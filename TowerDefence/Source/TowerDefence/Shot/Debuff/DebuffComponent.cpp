@@ -2,6 +2,9 @@
 
 
 #include "DebuffComponent.h"
+#include "Debuff_Slow.h"
+#include "Debuff_Stun.h"
+#include "Debuff_DotDamage.h"
 #include "TowerDefence/Enemy/EnemyBase.h"
 
 UDebuffComponent::UDebuffComponent()
@@ -32,7 +35,7 @@ void UDebuffComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 		}
 	}
 
-	for (int32 i = 0; i < RemoveIndices.Num(); i++)
+	for (int32 i = RemoveIndices.Num() - 1; i >= 0 ; i--)
 	{
 		ActiveDebuffs.RemoveAt(RemoveIndices[i]);
 	}
@@ -65,19 +68,45 @@ void UDebuffComponent::RemoveDebuff(EDebuffType Type)
 	}
 }
 
+float UDebuffComponent::GetMaxiumModifierValue(EDebuffType IgnoreType, EDebuffModifier ModifierType)
+{
+	// 모든 모디파이어는 숫자가 클수록 효과가 크다.
+	// IgnoreType를 제외하고 가장 효과가 큰 모디파이어를 찾는다.
+	float MaxModifier = 0.0f;
+
+	for (auto& Debuff : ActiveDebuffs)
+	{
+		if (Debuff->GetDebuffType() == IgnoreType)
+			continue;
+		switch (ModifierType)
+		{
+		case EDebuffModifier::Speed:
+			MaxModifier = FMath::Max(MaxModifier, Debuff->GetSpeedModifier());
+			break;
+		case EDebuffModifier::Damage:
+			MaxModifier = FMath::Max(MaxModifier, Debuff->GetDamageModifier());
+			break;
+		default:
+			break;
+		}
+	}
+
+	return MaxModifier;
+}
+
 UDebuffBase* UDebuffComponent::CreateDebuff(EDebuffType Type)
 {
 	UDebuffBase* NewDebuff = nullptr;
 	switch (Type)
 	{
 	case EDebuffType::Slow:
-		NewDebuff = NewObject<UDebuffBase>(this, UDebuffBase::StaticClass(), TEXT("SlowDebuff"));
+		NewDebuff = NewObject<UDebuff_Slow>(this, UDebuff_Slow::StaticClass(), TEXT("SlowDebuff"));
 		break;
 	case EDebuffType::Stun:
-		NewDebuff = NewObject<UDebuffBase>(this, UDebuffBase::StaticClass(), TEXT("StunDebuff"));
+		NewDebuff = NewObject<UDebuff_Stun>(this, UDebuff_Stun::StaticClass(), TEXT("StunDebuff"));
 		break;
 	case EDebuffType::DotDamage:
-		NewDebuff = NewObject<UDebuffBase>(this, UDebuffBase::StaticClass(), TEXT("DotDamageDebuff"));
+		NewDebuff = NewObject<UDebuff_DotDamage>(this, UDebuff_DotDamage::StaticClass(), TEXT("DotDamageDebuff"));
 		break;
 		// Add more cases for other debuff types as needed
 	default:
