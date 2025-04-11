@@ -4,7 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "TowerDefence/Shot/Data/ShotDataAsset.h"
+#include "GameFramework/ProjectileMovementComponent.h"
+#include "TowerDefence/Shot/Data/ProjectileShotDataAsset.h"
 #include "ShotProjectileBase.generated.h"
 
 UCLASS()
@@ -13,20 +14,33 @@ class TOWERDEFENCE_API AShotProjectileBase : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	AShotProjectileBase();
+	virtual void Tick(float DeltaTime) override;	// 매 프레임 호출되는 함수
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-	virtual void OnHitEnemy(class AEnemyBase* HitEnemy) {};	// 적과 충돌 시 호출되는 함수
+	virtual void BeginPlay() override;	// 액터가 스폰될 때 호출되는 함수
 
 public:	
+	// 발사체 데이터 초기화(스폰 직후에 반드시 호출 되어야 함)
+	void InitializeShotData(AActor* Target, UProjectileShotDataAsset* NewShotData);	
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Shot")
+	UFUNCTION()
+	void OnOverlapEnemy(AActor* OverlappedActor, AActor* OtherActor);	// 적과 충돌 시 호출되는 함수
+
+	virtual void OnHitEnemy(class AEnemyBase* HitEnemy);	// 적과 충돌 시 호출되는 함수
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UProjectileMovementComponent* ProjectileMovement = nullptr;	// 발사체 이동 컴포넌트
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* Mesh = nullptr;	// 발사체 메쉬
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shot")
-	UShotDataAsset* ShotData = nullptr;	// 발사체 데이터
+	UProjectileShotDataAsset* ShotData = nullptr;	// 발사체 데이터
+
+private:
+	AActor* TargetActor = nullptr;					// 발사체가 날아갈 타겟 액터(적)
+	FVector TargetLocation = FVector::ZeroVector;	// 발사체가 날아갈 목표 위치
 };
