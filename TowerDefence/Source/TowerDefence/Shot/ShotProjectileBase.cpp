@@ -60,6 +60,7 @@ void AShotProjectileBase::Tick(float DeltaTime)
 		// 목표 액터를 계속 따라가다가 부딪히면 OnHitEnemy 호출
 		FVector Direction = TargetActor->GetActorLocation() - GetActorLocation();
 		Direction.Normalize();
+		SetActorRotation(Direction.Rotation()); // 발사체가 날아가는 방향으로 회전
 		ProjectileMovement->Velocity = Direction * ShotData->MoveSpeed;
 	}
 }
