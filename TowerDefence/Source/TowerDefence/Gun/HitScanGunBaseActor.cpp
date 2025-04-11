@@ -21,6 +21,11 @@ void AHitScanGunBaseActor::Shoot()
 
 bool AHitScanGunBaseActor::LineTraceToTarget(FVector Target)
 {
+	// 히트 스캔 총기의 경우 
+	// bIsAreaAttack가 true면 라인트레이스를 Multi로 사용한다.
+	// bIsAreaAttack가 false면 라인트레이스를 Single로 사용한다.
+	//CurrentGunData->ShotData->bIsAreaAttack;
+
 	bool bHit = false;
 	FVector Start = MuzzleLocation->GetComponentLocation();	// 총구 위치
 	FVector End = Target;									// 적 위치

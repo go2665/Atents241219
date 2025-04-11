@@ -26,6 +26,15 @@ AShotProjectileBase::AShotProjectileBase()
 	ProjectileMovement->ProjectileGravityScale = 0.0f;
 }
 
+void AShotProjectileBase::OnConstruction(const FTransform& Transform)
+{
+	if (ShotData)
+	{
+		Mesh->SetStaticMesh(ShotData->ProjectileMesh);
+		ProjectileMovement->InitialSpeed = ShotData->MoveSpeed;
+	}
+}
+
 void AShotProjectileBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -34,7 +43,9 @@ void AShotProjectileBase::Tick(float DeltaTime)
 	{
 		// 목표 위치로 날아가다가 목표 위치에 도착하면 OnHitEnemy 호출
 		FVector Direction = TargetLocation - GetActorLocation();
-		if (Direction.SquaredLength() < 100)	// 목표 위치와 10cm 안인지 확인
+		float DistSquared = Direction.SizeSquared();
+		//UE_LOG(LogTemp, Warning, TEXT("DistSquared: %.2f"), DistSquared);
+		if (DistSquared < 100)	// 목표 위치와 10cm 안인지 확인
 		{
 			OnHitEnemy(nullptr);	// 바닥에 충돌
 		}
@@ -58,7 +69,6 @@ void AShotProjectileBase::BeginPlay()
 	Super::BeginPlay();
 
 	check(ShotData != nullptr);		// 발사체 데이터가 반드시 설정되어 있어야 함
-	check(TargetActor != nullptr);	// 발사체가 날아갈 타겟 액터가 반드시 설정되어 있어야 함
 	
 	// 오버랩 이벤트 바인딩
 	OnActorBeginOverlap.AddDynamic(this, &AShotProjectileBase::OnOverlapEnemy);
@@ -68,6 +78,10 @@ void AShotProjectileBase::InitializeShotData(AActor* Target, UProjectileShotData
 {
 	TargetActor = Target;
 	TargetLocation = TargetActor->GetActorLocation();
+
+	FVector Direction = TargetActor->GetActorLocation() - GetActorLocation();
+	Direction.Normalize();
+	ProjectileMovement->Velocity = Direction * ShotData->MoveSpeed;
 
 	ShotData = NewShotData;
 	Mesh->SetStaticMesh(ShotData->ProjectileMesh);
@@ -82,13 +96,14 @@ void AShotProjectileBase::OnOverlapEnemy(AActor* OverlappedActor, AActor* OtherA
 		if (HitEnemy)
 		{
 			OnHitEnemy(HitEnemy);
-			Destroy();
 		}
 	}
 }
 
 void AShotProjectileBase::OnHitEnemy(AEnemyBase* HitEnemy)
 {
+	UE_LOG(LogTemp, Warning, TEXT("OnHitEnemy : %s"), *GetNameSafe(HitEnemy));
+
 	if (HitEnemy)
 	{
 		// 적과 충돌했을 때의 처리(적과 충돌했다는 것은 무조건 범위 공격이 아니다)
@@ -101,37 +116,32 @@ void AShotProjectileBase::OnHitEnemy(AEnemyBase* HitEnemy)
 
 		HitEnemy->GetDebuffComponent()->AddDebuff(ShotData->DebuffType); // 디버프 추가		
 	}
-	else
+
+	if (ShotData->bIsAreaAttack)
 	{
 		// 적과 충돌하지 않았다(= 바닥에 충돌했다 = 범위 공격)
-		TArray<AActor*> HitEnemies;
-		TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-		ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_GameTraceChannel1)); // Pawn 충돌 채널을 대상으로 설정
 
-		UKismetSystemLibrary::SphereOverlapActors(
+		HitEnemies.Empty(); // HitEnemies 배열 초기화(직접 충돌한 적은 제외)
+
+		TArray<AActor*> Ignores;
+		if (HitEnemy)
+			Ignores.Add(HitEnemy); // HitEnemy는 무시한다. (자기 자신은 이미 데미지를 주었으니까 무시해야 함)
+
+		UGameplayStatics::ApplyRadialDamageWithFalloff(
 			GetWorld(),
+			ShotData->Damage,
+			0.0f,
 			GetActorLocation(),
+			ShotData->AreaRadius * 0.5f,
 			ShotData->AreaRadius,
-			ObjectTypes,
-			AEnemyBase::StaticClass(),
-			TArray<AActor*>(),
-			HitEnemies
+			ShotData->AreaFalloff,
+			ShotData->AttributeType,
+			Ignores,
+			this // 이 발사체를 맞은 대상을 기록하기 위해 사용
 		);
 
 		for (AActor* Target : HitEnemies)
 		{
-			UGameplayStatics::ApplyRadialDamageWithFalloff(
-				GetWorld(),
-				ShotData->Damage,
-				0.0f,
-				GetActorLocation(),
-				ShotData->AreaRadius * 0.5f,
-				ShotData->AreaRadius,
-				ShotData->AreaFalloff,
-				ShotData->AttributeType,
-				TArray<AActor*>()				
-			);
-
 			if (ShotData->DebuffType != EDebuffType::None)
 			{
 				AEnemyBase* Enemy = Cast<AEnemyBase>(Target);
@@ -142,4 +152,6 @@ void AShotProjectileBase::OnHitEnemy(AEnemyBase* HitEnemy)
 			}
 		}
 	}
+
+	Destroy(); // 발사체 삭제
 }

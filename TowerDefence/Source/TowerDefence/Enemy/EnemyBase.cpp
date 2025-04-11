@@ -9,6 +9,7 @@
 #include "TowerDefence/Shot/Attribute/LightningDamageType.h"
 #include "TowerDefence/Shot/Attribute/PoisonDamageType.h"
 #include "TowerDefence/Shot/Debuff/DebuffComponent.h"
+#include "TowerDefence/Shot/ShotProjectileBase.h"
 
 // Sets default values
 AEnemyBase::AEnemyBase()
@@ -68,6 +69,15 @@ float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent
 
 	SetCurrentHealth(CurrentHealth - ActualDamage); // 체력 설정
 
+	if (DamageCauser)
+	{
+		// 적 캐릭터가 맞은 발사체에 디버프가 있다면 디버프 추가
+		AShotProjectileBase* Shot = Cast<AShotProjectileBase>(DamageCauser);
+		if (Shot)
+		{
+			Shot->AddHitEnemy(this); // 발사체에 적 추가
+		}
+	}
 	return ActualDamage;
 }
 
