@@ -19,8 +19,8 @@ protected:
 
 protected:
 	// MuzzleLocation에서 Target까지 라인트레이스하는 함수
-	bool LineTraceToTarget(FVector Target);
-	bool LineTraceToTarget(AActor* Target);
+	bool LineTraceToTarget(FVector InTarget, TArray<AEnemyBase*>& OutHitTargets);
+	bool LineTraceToTarget(AActor* InTarget, TArray<AEnemyBase*>& OutHitTargets);
 
 	// 명중 처리(데미지와 디버프 처리)
 	void HitProcess();

@@ -19,28 +19,47 @@ void AHitScanGunBaseActor::Shoot()
 	HitProcess();
 }
 
-bool AHitScanGunBaseActor::LineTraceToTarget(FVector Target)
+bool AHitScanGunBaseActor::LineTraceToTarget(FVector InTarget, TArray<AEnemyBase*>& OutHitTargets)
 {
-	// 히트 스캔 총기의 경우 
-	// bIsAreaAttack가 true면 라인트레이스를 Multi로 사용한다.
-	// bIsAreaAttack가 false면 라인트레이스를 Single로 사용한다.
-	//CurrentGunData->ShotData->bIsAreaAttack;
+	OutHitTargets.Empty(); // Out파라메터는 초기화하고 사용하기
 
 	bool bHit = false;
 	FVector Start = MuzzleLocation->GetComponentLocation();	// 총구 위치
-	FVector End = Target;									// 적 위치
+	FVector End = InTarget;									// 적 위치
 
-	float DistanceSquared = FVector::DistSquaredXY(Start, End); // 총구와 적 캐릭터 간 거리의 제곱(높이는 제거)
+	UWorld* World = GetWorld();
+		
+	FCollisionQueryParams CollisionParams; // 충돌 쿼리 파라미터
+	CollisionParams.AddIgnoredActor(this); // 쿼리에서 무시할 액터 추가
 
-	if (DistanceSquared < CurrentGunData->Range * CurrentGunData->Range)
+	if (CurrentGunData->ShotData->bIsAreaAttack)
 	{
-		// Start와 End의 거리가 Range보다 작다
+		TArray<FHitResult> HitResults;
+		bHit = World->LineTraceMultiByObjectType(
+			HitResults,			// 충돌 결과
+			Start,				// 시작 위치
+			End,				// 끝 위치
+			FCollisionObjectQueryParams(ECC_GameTraceChannel1), // 충돌 오브젝트 채널
+			CollisionParams
+		);
 
-		UWorld* World = GetWorld();
+		if (bHit)	// 맞았으면 맞은 시간과 대상 출력(단순 확인용)
+		{
+			for (const FHitResult& HitResult : HitResults)
+			{
+				AEnemyBase* HitEnemy = Cast<AEnemyBase>(HitResult.GetActor()); // 충돌한 액터가 적 캐릭터인지 확인
+				if (HitEnemy)
+				{
+					FString TimeString = FDateTime::FromUnixTimestamp(World->TimeSeconds).ToString(TEXT("%H:%M:%S"));
+					UE_LOG(LogTemp, Warning, TEXT("[%s] [%s] Hit!"), *TimeString, *HitEnemy->GetActorLabel());
+					OutHitTargets.Add(HitEnemy); // 맞은 적 캐릭터를 배열에 추가
+				}
+			}				
+		}
+	}
+	else
+	{
 		FHitResult HitResult; // 충돌 결과를 저장할 변수
-		FCollisionQueryParams CollisionParams; // 충돌 쿼리 파라미터
-		CollisionParams.AddIgnoredActor(this); // 쿼리에서 무시할 액터 추가
-
 		bHit = World->LineTraceSingleByObjectType(
 			HitResult,			// 충돌 결과
 			Start,				// 시작 위치
@@ -49,26 +68,31 @@ bool AHitScanGunBaseActor::LineTraceToTarget(FVector Target)
 			CollisionParams
 		);
 
-		FColor LineColor = bHit ? FColor::Red : FColor::Green; // 충돌 여부에 따라 선 색상 설정
-		DrawDebugLine(World, Start, End, LineColor, false, 1.0f, 0, 1.0f); // 선 그리기
-
-		if (bHit)
+		if (bHit)	// 맞았으면 맞은 시간과 대상 출력(단순 확인용)
 		{
 			AEnemyBase* HitEnemy = Cast<AEnemyBase>(HitResult.GetActor()); // 충돌한 액터가 적 캐릭터인지 확인
 			if (HitEnemy)
 			{
 				FString TimeString = FDateTime::FromUnixTimestamp(World->TimeSeconds).ToString(TEXT("%H:%M:%S"));
 				UE_LOG(LogTemp, Warning, TEXT("[%s] [%s] Hit!"), *TimeString, *HitEnemy->GetActorLabel());
+				OutHitTargets.Add(HitEnemy); // 맞은 적 캐릭터를 배열에 추가
 			}
 		}
-	}
+	}		
+
+	FColor LineColor = bHit ? FColor::Red : FColor::Green; // 충돌 여부에 따라 선 색상 설정
+	DrawDebugLine(World, Start, End, LineColor, false, 1.0f, 0, 1.0f); // 선 그리기
 
 	return bHit;
 }
 
-bool AHitScanGunBaseActor::LineTraceToTarget(AActor* Target)
+bool AHitScanGunBaseActor::LineTraceToTarget(AActor* InTarget, TArray<AEnemyBase*>& OutHitTargets)
 {
-	return LineTraceToTarget(Target->GetActorLocation());
+	FVector Direction = InTarget->GetActorLocation() - MuzzleLocation->GetComponentLocation(); // 총구에서 적 캐릭터까지의 방향 벡터
+	Direction.Z = 0.0f;			// Z축 방향 제거(2D 평면에서의 거리 계산을 위해)
+	Direction.Normalize();		// 방향 벡터 정규화
+	FVector TargetLocation = MuzzleLocation->GetComponentLocation() + Direction * CurrentGunData->Range; // 총구에서 적 캐릭터까지의 거리만큼 나간 위치
+	return LineTraceToTarget(TargetLocation, OutHitTargets);
 }
 
 void AHitScanGunBaseActor::HitProcess()
@@ -76,20 +100,26 @@ void AHitScanGunBaseActor::HitProcess()
 	int32 Count = FMath::Min(CurrentGunData->TargetCount, TargetEnemies.Num()); // 공격할 적의 수
 	for (int32 i = 0; i < Count; i++)
 	{
-		bool bHit = LineTraceToTarget(TargetEnemies[i]);
+		TArray<AEnemyBase*> HitEnemies; // 맞은 적 캐릭터 배열
+		bool bHit = LineTraceToTarget(TargetEnemies[i], HitEnemies);
 		if (bHit)
 		{
-			// 데미지 처리
-			UGameplayStatics::ApplyDamage(
-				TargetEnemies[i],	// 적 캐릭터
-				CurrentGunData->ShotData->Damage,	// 총알의 데미지
-				nullptr,	// 행위자
-				nullptr,	// 공격자
-				CurrentGunData->ShotData->AttributeType // 총알의 속성 타입
-			);
+			for (auto HitEnemy : HitEnemies)
+			{
+				// 맞은 적 캐릭터에 대한 처리
+				
+				// 데미지 처리
+				UGameplayStatics::ApplyDamage(
+					HitEnemy,	// 적 캐릭터
+					CurrentGunData->ShotData->Damage,	// 총알의 데미지
+					nullptr,	// 행위자
+					nullptr,	// 공격자
+					CurrentGunData->ShotData->AttributeType // 총알의 속성 타입
+				);
 
-			// 디버프 처리
-			TargetEnemies[i]->GetDebuffComponent()->AddDebuff(CurrentGunData->ShotData->DebuffType); // 디버프 추가
+				// 디버프 처리
+				HitEnemy->GetDebuffComponent()->AddDebuff(CurrentGunData->ShotData->DebuffType); // 디버프 추가
+			}			
 		}
 	}
 }
