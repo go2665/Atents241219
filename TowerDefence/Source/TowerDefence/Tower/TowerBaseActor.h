@@ -51,7 +51,7 @@ protected:
 	int32 GunLevel = 1; // 총기 레벨(1~3)
 
 private:
-	const static int8 MaxGunLevel = 5;	// 총기 레벨의 최대값
+	const static int8 MaxGunLevel = 3;	// 총기 레벨의 최대값
 
 	UPROPERTY()
 	AGunBaseActor* Gun = nullptr;		// 총기 클래스의 인스턴스
