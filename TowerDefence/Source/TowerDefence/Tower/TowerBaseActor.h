@@ -25,6 +25,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Tower")
 	void LevelUp(); // 총기 레벨업 함수
 
+private:
+	UFUNCTION()
+	void OnTowerClicked(AActor* TouchedActor, FKey ButtonPressed);
+
+	UFUNCTION()
+	void OnCancelClicked(AActor* InClickedTower);
 
 protected:
 	// Components
@@ -33,6 +39,9 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* TowerBodyMesh = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class UWidgetComponent* UpgradeWidget = nullptr;
 
 	// 일반 변수들
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower")
@@ -46,4 +55,7 @@ private:
 
 	UPROPERTY()
 	AGunBaseActor* Gun = nullptr;		// 총기 클래스의 인스턴스
+
+	UPROPERTY()
+	class UTowerUpgradeWidget* UpgradeWidgetInstance = nullptr;	// 업그레이드 위젯 인스턴스
 };
