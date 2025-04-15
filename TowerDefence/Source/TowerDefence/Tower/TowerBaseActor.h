@@ -26,8 +26,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Tower")
 	void LevelUp(); // 총기 레벨업 함수
 
+	void Sell(); // 타워 판매 함수
+
 	// 현재 업그레이드 비용 반환
-	inline int GetCurrentUpgradeCost() const { return Gun->GetCurrentUpgradeCost(); }; 
+	inline int32 GetCurrentUpgradeCost() const { return Gun->GetCurrentUpgradeCost(); }; 
 
 private:
 	UFUNCTION()
@@ -54,6 +56,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower", meta = (ClampMin = "1", ClampMax = "3"))
 	int32 GunLevel = 1; // 총기 레벨(1~3)
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower")
+	int32 TowerCost = 100; // 타워 설치 비용
+
 private:
 	const static int8 MaxGunLevel = 3;	// 총기 레벨의 최대값
 
@@ -62,4 +67,6 @@ private:
 
 	UPROPERTY()
 	class UTowerUpgradeWidget* UpgradeWidgetInstance = nullptr;	// 업그레이드 위젯 인스턴스
+
+	int32 SellCost = 0;	// 타워 판매 비용
 };

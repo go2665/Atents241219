@@ -28,6 +28,9 @@ public:
 
 	void Test_PrintTower();
 
+	UFUNCTION()
+	void SellTower();
+
 protected:
 	UFUNCTION()
 	void UpgradeTower();

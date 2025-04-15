@@ -15,12 +15,12 @@ class TOWERDEFENCE_API ATowerDefenceGameMode : public AGameModeBase
 	GENERATED_BODY()
 	
 public:
-	inline int GetGold() const { return Gold; }
-	inline void SetGold(int NewGold) { Gold = NewGold; }
-	inline void AddGold(int AddedGold) { Gold += AddedGold; }
-	inline void UseGold(int UsedGold) { Gold -= UsedGold; }
+	inline int32 GetGold() const { return Gold; }
+	inline void SetGold(int32 NewGold) { Gold = NewGold; }
+	inline void AddGold(int32 AddedGold) { Gold += AddedGold; }
+	inline void UseGold(int32 UsedGold) { Gold -= UsedGold; }
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "StageData")
-	int Gold = 0;
+	int32 Gold = 0;
 };

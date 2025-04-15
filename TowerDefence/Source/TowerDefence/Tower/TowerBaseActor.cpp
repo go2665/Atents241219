@@ -66,6 +66,8 @@ void ATowerBaseActor::BeginPlay()
 	{
 		PlayerController->OnMouseClickInput.AddDynamic(this, &ATowerBaseActor::OnCancelClicked);
 	}
+
+	SellCost = TowerCost * 0.5f;	// 판매 비용은 (설치 비용 + 업그레이드 비용)의 절반
 }
 
 void ATowerBaseActor::LevelUp()
@@ -76,11 +78,21 @@ void ATowerBaseActor::LevelUp()
 		ATowerDefenceGameMode* GameMode = Cast<ATowerDefenceGameMode>(GetWorld()->GetAuthGameMode());
 		GameMode->UseGold(GetCurrentUpgradeCost()); // 업그레이드 비용 차감
 
+		SellCost += Gun->GetCurrentUpgradeCost() * 0.5f; // 판매 비용 증가
+
 		if (Gun)
 		{
 			Gun->SetGunLevel(GunLevel); // 총기 레벨 설정
 		}
 	}
+}
+
+void ATowerBaseActor::Sell()
+{
+	ATowerDefenceGameMode* GameMode = Cast<ATowerDefenceGameMode>(GetWorld()->GetAuthGameMode());
+	GameMode->AddGold(SellCost); // 판매 비용 추가
+
+	Destroy();
 }
 
 void ATowerBaseActor::OnTowerClicked(AActor* TouchedActor, FKey ButtonPressed)

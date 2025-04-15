@@ -13,7 +13,7 @@ void UTowerUpgradeWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	UpgradeButton->OnClicked.AddDynamic(this, &UTowerUpgradeWidget::UpgradeTower);
-	CloseButton->OnClicked.AddDynamic(this, &UTowerUpgradeWidget::CloseUpgradeWidget);
+	CloseButton->OnClicked.AddDynamic(this, &UTowerUpgradeWidget::SellTower);
 
 	SetRenderScale(FVector2D(0.0f, 0.0f));		// Close 테스트 때문에 무조건 0으로 시작
 	SetVisibility(ESlateVisibility::Hidden);	
@@ -50,6 +50,14 @@ void UTowerUpgradeWidget::Test_PrintTower()
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Owner Tower is null"));
+	}
+}
+
+void UTowerUpgradeWidget::SellTower()
+{
+	if (OwnerTower)
+	{
+		OwnerTower->Sell();		// 타워 판매 시도
 	}
 }
 
