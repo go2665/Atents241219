@@ -18,6 +18,7 @@ public:
 	inline int GetGold() const { return Gold; }
 	inline void SetGold(int NewGold) { Gold = NewGold; }
 	inline void AddGold(int AddedGold) { Gold += AddedGold; }
+	inline void UseGold(int UsedGold) { Gold -= UsedGold; }
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "StageData")

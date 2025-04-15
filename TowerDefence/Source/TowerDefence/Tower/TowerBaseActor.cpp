@@ -7,6 +7,7 @@
 #include "TowerDefence/Gun/GunBaseActor.h"
 #include "TowerDefence/Tower/UI/TowerUpgradeWidget.h"
 #include "TowerDefence/Framework/TowerDefencePlayerController.h"
+#include "TowerDefence/Framework/TowerDefenceGameMode.h"
 
 // Sets default values
 ATowerBaseActor::ATowerBaseActor()
@@ -27,7 +28,7 @@ ATowerBaseActor::ATowerBaseActor()
 	UpgradeWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("UpgradeWidget"));
 	UpgradeWidget->SetupAttachment(Root);
 	UpgradeWidget->SetWidgetSpace(EWidgetSpace::Screen);		
-	UpgradeWidget->SetWidgetClass(UTowerUpgradeWidget::StaticClass());	// 위젯 클래스 설정
+	UpgradeWidget->SetWidgetClass(UTowerUpgradeWidget::StaticClass());	// 위젯 클래스 설정(블루프린트로 만든 것을 새로 넣어주어야 함)
 }
 
 void ATowerBaseActor::OnConstruction(const FTransform& Transform)
@@ -72,6 +73,8 @@ void ATowerBaseActor::LevelUp()
 	if (GunLevel < MaxGunLevel)
 	{
 		GunLevel++;
+		ATowerDefenceGameMode* GameMode = Cast<ATowerDefenceGameMode>(GetWorld()->GetAuthGameMode());
+		GameMode->UseGold(GetCurrentUpgradeCost()); // 업그레이드 비용 차감
 
 		if (Gun)
 		{

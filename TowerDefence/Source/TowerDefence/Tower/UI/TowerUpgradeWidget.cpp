@@ -3,6 +3,7 @@
 
 #include "TowerUpgradeWidget.h"
 #include "Components/Button.h"
+#include "Components/TextBlock.h"
 #include "Animation/WidgetAnimation.h"
 #include "TowerDefence/Tower/TowerBaseActor.h"
 #include "TowerDefence/Framework/TowerDefenceGameMode.h"
@@ -58,23 +59,24 @@ void UTowerUpgradeWidget::UpgradeTower()
 	{
 		OwnerTower->LevelUp();	// 타워 레벨업 시도
 	}
-	UpdateButtonState();
+	CloseUpgradeWidget();		// 업그레이드 위젯 닫기
 }
 
 void UTowerUpgradeWidget::UpdateButtonState()
 {
 	// GameMode에 있는 돈을 확인해서 UpgradeButton 활성 및 비활성화
-
 	bool IsEnabled = GameMode->GetGold() >= OwnerTower->GetCurrentUpgradeCost() ? true : false;
 	UpgradeButton->SetIsEnabled(IsEnabled);	
 
+	// 텍스트 설정(금액, 색상)
+	UpgradeCostText->SetText(FText::AsNumber(OwnerTower->GetCurrentUpgradeCost()));
 	if (IsEnabled)
 	{
-
+		UpgradeCostText->SetColorAndOpacity(UpgradeEnableColor);
 	}
 	else
 	{
-
+		UpgradeCostText->SetColorAndOpacity(UpgradeDisableColor);
 	}
 }
 

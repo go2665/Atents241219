@@ -45,6 +45,9 @@ protected:
 	class UButton* UpgradeButton = nullptr;
 
 	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* UpgradeCostText = nullptr;
+
+	UPROPERTY(meta = (BindWidget))
 	class UButton* CloseButton = nullptr;
 
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
@@ -58,5 +61,11 @@ protected:
 
 	UPROPERTY()
 	class ATowerDefenceGameMode* GameMode = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower")
+	FLinearColor UpgradeEnableColor = FLinearColor(1.0f, 1.0f, 1.0f, 1.0f);		// 업그레이드 가능 색상
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower")
+	FLinearColor UpgradeDisableColor = FLinearColor(1.0f, 0.0f, 0.0f, 1.0f);	// 업그레이드 불가능 색상
 
 };
