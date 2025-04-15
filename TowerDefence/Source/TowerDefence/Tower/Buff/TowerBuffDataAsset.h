@@ -23,6 +23,9 @@ public:
 	ETowerBuffType BuffType = ETowerBuffType::None;	// 버프 타입
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower Buff Data")
+	float Duration = 1.0f; // 디버프 기본 지속 시간
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower Buff Data")
 	float Modifier1 = 0.0f;	// 버프 수치 1
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower Buff Data")
