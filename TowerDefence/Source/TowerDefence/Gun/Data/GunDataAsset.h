@@ -29,5 +29,8 @@ public:
 	int32 TargetCount = 1;		// 공격 시 타겟 수
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gun Data")
+	int32 UpgradeCost = 50;		// 업그레이드 비용
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gun Data")
 	UShotDataAsset* ShotData;	// 발사체 데이터
 };

@@ -29,6 +29,9 @@ public:
 	// Gun Level 설정
 	void SetGunLevel(int Level);
 
+	// 현재 업그레이드 비용 반환
+	inline int GetCurrentUpgradeCost() const { return CurrentGunData->UpgradeCost; }
+
 protected:
 	virtual void Shoot();
 

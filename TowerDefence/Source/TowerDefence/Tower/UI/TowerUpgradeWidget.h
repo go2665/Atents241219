@@ -56,4 +56,7 @@ protected:
 	UPROPERTY()
 	class ATowerBaseActor* OwnerTower = nullptr;
 
+	UPROPERTY()
+	class ATowerDefenceGameMode* GameMode = nullptr;
+
 };

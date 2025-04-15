@@ -27,6 +27,7 @@ ATowerBaseActor::ATowerBaseActor()
 	UpgradeWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("UpgradeWidget"));
 	UpgradeWidget->SetupAttachment(Root);
 	UpgradeWidget->SetWidgetSpace(EWidgetSpace::Screen);		
+	UpgradeWidget->SetWidgetClass(UTowerUpgradeWidget::StaticClass());	// 위젯 클래스 설정
 }
 
 void ATowerBaseActor::OnConstruction(const FTransform& Transform)
@@ -35,7 +36,6 @@ void ATowerBaseActor::OnConstruction(const FTransform& Transform)
 	if (GunActor && GunActor->GetChildActor() == nullptr)
 	{
 		GunActor->SetChildActorClass(GunClass);
-		Gun = Cast<AGunBaseActor>(GunActor->GetChildActor());
 	}
 }
 
@@ -44,11 +44,10 @@ void ATowerBaseActor::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	//if (GunClass)
-	//{
-	//	GunActor->SetChildActorClass(GunClass);
-	//	Gun = Cast<AGunBaseActor>(GunActor->GetChildActor());
-	//}
+	if (GunClass && !Gun)
+	{
+		Gun = Cast<AGunBaseActor>(GunActor->GetChildActor());
+	}
 
 	UpgradeWidgetInstance = Cast<UTowerUpgradeWidget>(UpgradeWidget->GetUserWidgetObject());
 	if (UpgradeWidgetInstance)

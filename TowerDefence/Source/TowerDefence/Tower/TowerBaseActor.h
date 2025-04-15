@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "TowerDefence/Gun/GunBaseActor.h"
 #include "TowerBaseActor.generated.h"
 
 UCLASS()
@@ -25,6 +26,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Tower")
 	void LevelUp(); // 총기 레벨업 함수
 
+	// 현재 업그레이드 비용 반환
+	inline int GetCurrentUpgradeCost() const { return Gun->GetCurrentUpgradeCost(); }; 
+
 private:
 	UFUNCTION()
 	void OnTowerClicked(AActor* TouchedActor, FKey ButtonPressed);
@@ -45,7 +49,7 @@ protected:
 
 	// 일반 변수들
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower")
-	TSubclassOf<class AGunBaseActor> GunClass = nullptr;
+	TSubclassOf<AGunBaseActor> GunClass = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower", meta = (ClampMin = "1", ClampMax = "3"))
 	int32 GunLevel = 1; // 총기 레벨(1~3)

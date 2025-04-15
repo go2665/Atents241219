@@ -5,6 +5,7 @@
 #include "Components/Button.h"
 #include "Animation/WidgetAnimation.h"
 #include "TowerDefence/Tower/TowerBaseActor.h"
+#include "TowerDefence/Framework/TowerDefenceGameMode.h"
 
 void UTowerUpgradeWidget::NativeConstruct()
 {
@@ -18,16 +19,14 @@ void UTowerUpgradeWidget::NativeConstruct()
 		
 	FWidgetAnimationDynamicEvent CloseEvent;
 	CloseEvent.BindUFunction(this, FName("OnCloseAnimationFinished"));
-	BindToAnimationFinished(Close, CloseEvent);
-
-	UpdateButtonState();	// 돈 확인해서 버튼 활성화/비활성화
+	BindToAnimationFinished(Close, CloseEvent);	
 }
 
 void UTowerUpgradeWidget::UpgradeWidgetInitialize(ATowerBaseActor* Tower)
 {
 	ensure(Tower);
 	OwnerTower = Tower;	
-	UpdateButtonState();
+	GameMode = Cast<ATowerDefenceGameMode>(GetWorld()->GetAuthGameMode());
 }
 
 void UTowerUpgradeWidget::OpenUpgradeWidget()
@@ -35,9 +34,10 @@ void UTowerUpgradeWidget::OpenUpgradeWidget()
 	// Open 애니메이션 재생
 	//UE_LOG(LogTemp, Warning, TEXT("[%s] : Open Upgrade Widget"), *OwnerTower->GetActorNameOrLabel());
 
+	UpdateButtonState();	// 현재 돈 상태 확인해서 버튼 활성화/비활성화
 	SetRenderScale(FVector2D(0.0f, 0.0f));
 	SetVisibility(ESlateVisibility::Visible);
-	PlayAnimation(Open);
+	PlayAnimation(Open);	// 확대 애니메이션 재생
 }
 
 void UTowerUpgradeWidget::Test_PrintTower()
@@ -64,8 +64,18 @@ void UTowerUpgradeWidget::UpgradeTower()
 void UTowerUpgradeWidget::UpdateButtonState()
 {
 	// GameMode에 있는 돈을 확인해서 UpgradeButton 활성 및 비활성화
-	// UpgradeButton->SetIsEnabled
-	UpgradeButton->SetIsEnabled(true);	// 임시로 활성화
+
+	bool IsEnabled = GameMode->GetGold() >= OwnerTower->GetCurrentUpgradeCost() ? true : false;
+	UpgradeButton->SetIsEnabled(IsEnabled);	
+
+	if (IsEnabled)
+	{
+
+	}
+	else
+	{
+
+	}
 }
 
 void UTowerUpgradeWidget::OnCloseAnimationFinished()
