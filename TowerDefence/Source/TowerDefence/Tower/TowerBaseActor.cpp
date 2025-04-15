@@ -6,6 +6,7 @@
 #include "Components/WidgetComponent.h"
 #include "TowerDefence/Gun/GunBaseActor.h"
 #include "TowerDefence/Tower/UI/TowerUpgradeWidget.h"
+#include "TowerDefence/Tower/Buff/TowerBuffComponent.h"
 #include "TowerDefence/Framework/TowerDefencePlayerController.h"
 #include "TowerDefence/Framework/TowerDefenceGameMode.h"
 
@@ -29,6 +30,8 @@ ATowerBaseActor::ATowerBaseActor()
 	UpgradeWidget->SetupAttachment(Root);
 	UpgradeWidget->SetWidgetSpace(EWidgetSpace::Screen);		
 	UpgradeWidget->SetWidgetClass(UTowerUpgradeWidget::StaticClass());	// 위젯 클래스 설정(블루프린트로 만든 것을 새로 넣어주어야 함)
+
+	BuffComponent = CreateDefaultSubobject<UTowerBuffComponent>(TEXT("BuffComponent"));
 }
 
 void ATowerBaseActor::OnConstruction(const FTransform& Transform)

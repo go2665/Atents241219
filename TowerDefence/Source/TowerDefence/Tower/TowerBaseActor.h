@@ -49,6 +49,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UWidgetComponent* UpgradeWidget = nullptr;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class UTowerBuffComponent* BuffComponent = nullptr;
+
 	// 일반 변수들
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower")
 	TSubclassOf<AGunBaseActor> GunClass = nullptr;
