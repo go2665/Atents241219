@@ -8,6 +8,8 @@
 #include "TowerDefence/Tower/Buff/TowerBuffEnums.h"
 #include "TowerBaseActor.generated.h"
 
+class UTowerBuffDataAsset;
+
 UCLASS()
 class TOWERDEFENCE_API ATowerBaseActor : public AActor
 {
@@ -29,7 +31,7 @@ public:
 
 	void Sell(); // 타워 판매 함수
 
-	void AddBuff(ETowerBuffType Type); // 버프 추가 함수
+	void AddBuff(UTowerBuffDataAsset* BuffData); // 버프 추가 함수
 
 	// 현재 업그레이드 비용 반환
 	inline int32 GetCurrentUpgradeCost() const { return Gun->GetCurrentUpgradeCost(); }; 

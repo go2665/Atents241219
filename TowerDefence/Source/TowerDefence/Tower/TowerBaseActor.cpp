@@ -98,11 +98,11 @@ void ATowerBaseActor::Sell()
 	Destroy();
 }
 
-void ATowerBaseActor::AddBuff(ETowerBuffType Type)
+void ATowerBaseActor::AddBuff(UTowerBuffDataAsset* BuffData)
 {
 	if (BuffComponent)
 	{
-		BuffComponent->OnAddedBuff(Type);
+		BuffComponent->OnAddedBuff(BuffData);
 	}
 	else
 	{

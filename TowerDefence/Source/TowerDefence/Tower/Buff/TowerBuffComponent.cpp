@@ -19,12 +19,12 @@ UTowerBuffComponent::UTowerBuffComponent()
 	// ...
 }
 
-void UTowerBuffComponent::OnAddedBuff(ETowerBuffType Type)
+void UTowerBuffComponent::OnAddedBuff(UTowerBuffDataAsset* Data)
 {
 	// 이미 존재하는 버프는 기간만 리셋한다.
 	for (auto& Buff : BuffList)
 	{
-		if (Buff->GetBuffType() == Type)
+		if (Buff->GetBuffType() == Data->BuffType)
 		{
 			Buff->ResetDuration();
 			return;
@@ -32,10 +32,10 @@ void UTowerBuffComponent::OnAddedBuff(ETowerBuffType Type)
 	}
 
 	// 이전에 없던 버프는 새롭게 생성하고 리스트에 추가한다.
-	UTowerBuffBase* NewBuff = CreateBuff(Type);
+	UTowerBuffBase* NewBuff = CreateBuff(Data->BuffType);
 	if (NewBuff)
 	{
-		NewBuff->OnInitialize(BuffDataAsset);
+		NewBuff->OnInitialize(Data);
 		NewBuff->OnBuffBegin();
 		BuffList.AddUnique(NewBuff);
 	}
@@ -139,7 +139,7 @@ void UTowerBuffComponent::AddBuffToAround()
 	{
 		if (TowerBuilder && TowerBuilder->GetTower())
 		{
-			TowerBuilder->GetTower()->AddBuff(BuffDataAsset->BuffType);
+			TowerBuilder->GetTower()->AddBuff(BuffDataAsset);
 		}
 	}
 }

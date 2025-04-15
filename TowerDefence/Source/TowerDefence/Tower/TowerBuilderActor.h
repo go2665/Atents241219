@@ -31,6 +31,6 @@ protected:
 	TArray<TSubclassOf<ATowerBaseActor>> TowerClasses;
 
 private:
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Tower", meta = (AllowPrivateAccess = "true"))
 	ATowerBaseActor* Tower = nullptr;
 };

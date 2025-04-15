@@ -23,7 +23,7 @@ public:
 	UTowerBuffComponent();
 
 	UFUNCTION(BlueprintCallable, Category = "Buff")
-	void OnAddedBuff(ETowerBuffType Type);	// 버프 추가 되었을 때 실행할 일
+	void OnAddedBuff(UTowerBuffDataAsset* Data);	// 버프 추가 되었을 때 실행할 일
 
 	UFUNCTION(BlueprintCallable, Category = "Buff")
 	void OnRemoveBuff(ETowerBuffType Type);	// 버프가 제거 되었을 때 실행할 일
@@ -62,3 +62,7 @@ private:
 
 	FTimerHandle BuffTimerHandle; // 버프 타이머 핸들
 };
+
+
+// 버프 추가는 된다. 그런데 나중에 타워가 들어오면 버프를 못먹는다.
+// void OnAddedBuff(UTowerBuffDataAsset* Data);에서 파라메터를 수정 못하게 해야 한다.
