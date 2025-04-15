@@ -98,6 +98,18 @@ void ATowerBaseActor::Sell()
 	Destroy();
 }
 
+void ATowerBaseActor::AddBuff(ETowerBuffType Type)
+{
+	if (BuffComponent)
+	{
+		BuffComponent->OnAddedBuff(Type);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[%s] : BuffComponent is nullptr!"), *this->GetActorNameOrLabel());
+	}
+}
+
 void ATowerBaseActor::OnTowerClicked(AActor* TouchedActor, FKey ButtonPressed)
 {
 	if (ButtonPressed == EKeys::LeftMouseButton)

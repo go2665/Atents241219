@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "TowerDefence/Gun/GunBaseActor.h"
+#include "TowerDefence/Tower/Buff/TowerBuffEnums.h"
 #include "TowerBaseActor.generated.h"
 
 UCLASS()
@@ -27,6 +28,8 @@ public:
 	void LevelUp(); // 총기 레벨업 함수
 
 	void Sell(); // 타워 판매 함수
+
+	void AddBuff(ETowerBuffType Type); // 버프 추가 함수
 
 	// 현재 업그레이드 비용 반환
 	inline int32 GetCurrentUpgradeCost() const { return Gun->GetCurrentUpgradeCost(); }; 
