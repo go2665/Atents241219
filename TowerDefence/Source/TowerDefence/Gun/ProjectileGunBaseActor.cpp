@@ -10,21 +10,27 @@ void AProjectileGunBaseActor::Shoot()
 	Super::Shoot();
 
 	UWorld* World = GetWorld();
-	
-	// ProjectileClass를 MuzzleLocation에 스폰
-	if (World && ProjectileClass)
+
+	UProjectileShotDataAsset* ShotData = Cast<UProjectileShotDataAsset>(CurrentGunData->ShotData);
+	if (ShotData)
 	{
-		int32 Count = FMath::Min(CurrentGunData->TargetCount, TargetEnemies.Num()); // 공격할 적의 수
-		for (int32 i = 0; i < Count; i++)
+		TSubclassOf<AShotProjectileBase> ProjectileClass = ShotData->ProjectileClass;
+
+		// ProjectileClass를 MuzzleLocation에 스폰
+		if (World && ProjectileClass)
 		{
-			AShotProjectileBase* Projectile = World->SpawnActor<AShotProjectileBase>(
-				ProjectileClass, MuzzleLocation->GetComponentTransform());
-			if (Projectile)
+			int32 Count = FMath::Min(CurrentGunData->TargetCount, TargetEnemies.Num()); // 공격할 적의 수
+			for (int32 i = 0; i < Count; i++)
 			{
-				// 발사체 데이터 초기화
-				Projectile->InitializeShotData(
-					TargetEnemies[i], Cast<UProjectileShotDataAsset>(CurrentGunData->ShotData));
-				Projectile->SetOwner(this); // 발사체의 소유자를 현재 총으로 설정
+				AShotProjectileBase* Projectile = World->SpawnActor<AShotProjectileBase>(
+					ProjectileClass, MuzzleLocation->GetComponentTransform());
+				if (Projectile)
+				{
+					// 발사체 데이터 초기화
+					Projectile->InitializeShotData(
+						TargetEnemies[i], Cast<UProjectileShotDataAsset>(CurrentGunData->ShotData));
+					Projectile->SetOwner(this); // 발사체의 소유자를 현재 총으로 설정
+				}
 			}
 		}
 	}

@@ -18,6 +18,5 @@ protected:
 	virtual void Shoot() override;
 		
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectile")
-	TSubclassOf<class AShotProjectileBase> ProjectileClass;	// 발사체 클래스
+
 };

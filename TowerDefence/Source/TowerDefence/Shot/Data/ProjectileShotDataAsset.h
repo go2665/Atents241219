@@ -20,4 +20,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shot Data")
 	float MoveSpeed = 300.0f; // 발사체 속도(초기 속도)
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Shot Data")
+	TSubclassOf<class AShotProjectileBase> ProjectileClass;	// 발사체 클래스
 };
