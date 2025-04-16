@@ -7,6 +7,8 @@
 #include "TowerDefence/Gun/Data/GunDataAsset.h"
 #include "GunBaseActor.generated.h"
 
+class ATowerBaseActor;
+
 UCLASS()
 class TOWERDEFENCE_API AGunBaseActor : public AActor
 {
@@ -31,6 +33,9 @@ public:
 
 	// 현재 업그레이드 비용 반환
 	inline int GetCurrentUpgradeCost() const { return CurrentGunData->UpgradeCost; }
+
+	// 부모 타워 설정
+	inline void SetOwnerTower(ATowerBaseActor* InOwnerTower) { OwnerTower = InOwnerTower; }
 
 protected:
 	virtual void Shoot();
@@ -77,6 +82,10 @@ protected:
 
 	// 적의 목록 : TArray
 	TArray<class AEnemyBase*> TargetEnemies;
+
+	// 이 Gun이 배치된 타워
+	UPROPERTY()
+	ATowerBaseActor* OwnerTower = nullptr;	
 
 private:
 	FTimerHandle ShootTimerHandle;	// 발사 타이머 핸들

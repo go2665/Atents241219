@@ -20,4 +20,5 @@ enum class ETowerBuffModifier : uint8
 	FireRate	UMETA(DisplayName = "FireRate"),
 	Range		UMETA(DisplayName = "Range"),
 	Damage		UMETA(DisplayName = "Damage"),
+	COUNT		UMETA(Hidden),	// 버프 타입 개수
 };

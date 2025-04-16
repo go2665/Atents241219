@@ -5,6 +5,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "TowerDefence/Tower/TowerBuilderActor.h"
 #include "TowerDefence/Tower/TowerBaseActor.h"
+#include "TowerDefence/Tower/Buff/TowerBuffBase.h"
 #include "TowerDefence/Tower/Buff/TowerBuff_RapidFire.h"
 #include "TowerDefence/Tower/Buff/TowerBuff_LongRange.h"
 #include "TowerDefence/Tower/Buff/TowerBuff_PowerUp.h"
@@ -27,9 +28,9 @@ void UTowerBuffComponent::OnAddedBuff(const UTowerBuffDataAsset* Data)
 		{
 			Buff->ResetDuration();
 
-			FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
-			UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Already Exist Buff => [%s]"), 
-				*TimeString, *GetOwner()->GetActorNameOrLabel(), *UEnum::GetValueAsString(Buff->GetBuffType()));
+			//FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
+			//UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Already Exist Buff => [%s]"), 
+			//	*TimeString, *GetOwner()->GetActorNameOrLabel(), *UEnum::GetValueAsString(Buff->GetBuffType()));
 			return;
 		}
 	}
@@ -38,19 +39,21 @@ void UTowerBuffComponent::OnAddedBuff(const UTowerBuffDataAsset* Data)
 	UTowerBuffBase* NewBuff = CreateBuff(Data->BuffType);
 	if (NewBuff)
 	{
-		NewBuff->OnInitialize(Data);
-		NewBuff->OnBuffBegin();
-		BuffList.AddUnique(NewBuff);
+		NewBuff->OnInitialize(Data);	// 버프 데이터 에셋 설정하면서 초기화
+		NewBuff->OnBuffBegin();			// 버프 시작
+		BuffList.AddUnique(NewBuff);	// 버프 리스트에 추가
 
-		FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
-		UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Create New Buff => [%s]"),
-			*TimeString, *GetOwner()->GetActorNameOrLabel(), *UEnum::GetValueAsString(NewBuff->GetBuffType()));
+		CalculateTotalBuffModifiers();	// 버프 모디파이어 재계산
+
+		//FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
+		//UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Create New Buff => [%s]"),
+		//	*TimeString, *GetOwner()->GetActorNameOrLabel(), *UEnum::GetValueAsString(NewBuff->GetBuffType()));
 	}
 }
 
 void UTowerBuffComponent::OnRemoveBuff(ETowerBuffType Type)
 {
-	// 버프 하나를 제거한다.
+	// 특정 버프 하나를 제거한다.
 	for (int32 i = 0; i < BuffList.Num(); i++)
 	{
 		if (BuffList[i]->GetBuffType() == Type)
@@ -58,9 +61,11 @@ void UTowerBuffComponent::OnRemoveBuff(ETowerBuffType Type)
 			BuffList[i]->OnBuffEnd();
 			BuffList.RemoveAt(i);
 
-			FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
-			UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Remove Buff => [%s]"),
-				*TimeString, *GetOwner()->GetActorNameOrLabel(), *UEnum::GetValueAsString(Type));
+			CalculateTotalBuffModifiers();	// 버프 모디파이어 재계산
+
+			//FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
+			//UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Remove Buff => [%s]"),
+			//	*TimeString, *GetOwner()->GetActorNameOrLabel(), *UEnum::GetValueAsString(Type));
 			break;
 		}
 	}
@@ -102,7 +107,7 @@ void UTowerBuffComponent::BeginPlay()
 	FTimerManager& TimerManager = GetWorld()->GetTimerManager();
 	if (BuffDataAsset)
 	{
-		// 주기적으로 버프를 걸기 위해 타이머를 설정한다.
+		// BuffDataAsset가 있으면 주기적으로 버프를 걸기 위해 타이머를 설정한다.
 		TimerManager.SetTimer(
 			BuffTimerHandle,
 			this,
@@ -114,6 +119,7 @@ void UTowerBuffComponent::BeginPlay()
 	}
 	else
 	{
+		// BuffDataAsset가 없으면 타이머를 제거한다.
 		TimerManager.ClearTimer(BuffTimerHandle);
 	}
 }
@@ -122,26 +128,30 @@ void UTowerBuffComponent::BeginPlay()
 void UTowerBuffComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// 시간이 다된 버프를 제거한다.
+		
 	RemoveIndices.Empty();
 	for (int32 i = 0; i < BuffList.Num(); i++)
 	{
-		BuffList[i]->OnBuffTick(DeltaTime);
+		BuffList[i]->OnBuffTick(DeltaTime);	// 버프 틱 진행
 		if (BuffList[i]->GetCurrentDuration() <= 0.0f)
 		{
+			// 시간이 다 된 버프를 종료하고 기록한다.
 			BuffList[i]->OnBuffEnd();
 			RemoveIndices.Add(i);
 		}
 	}
+
+	// 버프 리스트에서 제거할 버프를 제거한다.
 	for (int32 i = RemoveIndices.Num() - 1; i >= 0; i--)
 	{
-		FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
-		UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Buff Timeout => [%s]"),
-			*TimeString, *GetOwner()->GetActorNameOrLabel(), *UEnum::GetValueAsString(BuffList[RemoveIndices[i]]->GetBuffType()));
+		//FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
+		//UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Buff Timeout => [%s]"),
+		//	*TimeString, *GetOwner()->GetActorNameOrLabel(), *UEnum::GetValueAsString(BuffList[RemoveIndices[i]]->GetBuffType()));
 
 		BuffList.RemoveAt(RemoveIndices[i]);
 	}
+
+	CalculateTotalBuffModifiers();	// 버프 모디파이어 재계산
 }
 
 void UTowerBuffComponent::AddBuffToAround()
@@ -149,11 +159,12 @@ void UTowerBuffComponent::AddBuffToAround()
 	// 주변에 있는 타워 배치 가능한 액터(ATowerBuilderActor)를 순회하면서 버프를 건다.
 	for (ATowerBuilderActor* TowerBuilder : TowerBuilderList)
 	{
-		if (TowerBuilder && TowerBuilder->GetTower())
+		if (TowerBuilder && TowerBuilder->GetTower()) 
 		{
-			FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
-			UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] is add buff to [%s]"),
-				*TimeString, *GetOwner()->GetActorNameOrLabel(), *TowerBuilder->GetTower()->GetActorNameOrLabel());
+			// 주변에 있는 TowerBuilder에 타워가 있을 때
+			//FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
+			//UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] is add buff to [%s]"),
+			//	*TimeString, *GetOwner()->GetActorNameOrLabel(), *TowerBuilder->GetTower()->GetActorNameOrLabel());
 
 			TowerBuilder->GetTower()->AddBuff(BuffDataAsset);
 		}
@@ -162,6 +173,7 @@ void UTowerBuffComponent::AddBuffToAround()
 
 UTowerBuffBase* UTowerBuffComponent::CreateBuff(ETowerBuffType Type)
 {
+	// 버프 타입에 따라 적절한 버프 클래스를 생성한다.(버프가 걸린쪽에서 생성)
 	UTowerBuffBase* NewBuff = nullptr;
 	switch (Type)
 	{
@@ -180,5 +192,29 @@ UTowerBuffBase* UTowerBuffComponent::CreateBuff(ETowerBuffType Type)
 	}
 
 	return NewBuff;
+}
+
+void UTowerBuffComponent::CalculateTotalBuffModifiers()
+{
+	// 현재 적용된 버프의 모디파이어를 합산하는 함수
+	TotalBuffModifiers.Empty();
+	int32 BuffCount = static_cast<int32>(ETowerBuffModifier::COUNT);	// 모든 버프 모디파이어의 개수
+	for (auto& Buff : BuffList)
+	{
+		// BuffList에 있는 모든 버프를 순회하면서 모디파이어를 곱연산으로 합산한다.
+		for (int32 i = 0; i < BuffCount; i++)
+		{
+			ETowerBuffModifier ModifierType = static_cast<ETowerBuffModifier>(i);
+			float ModifierValue = Buff->GetModifierValue(ModifierType);
+			if (TotalBuffModifiers.Contains(ModifierType))
+			{
+				TotalBuffModifiers[ModifierType] *= ModifierValue;	// 모든 모디파이어는 곱연산으로 적용.
+			}
+			else
+			{
+				TotalBuffModifiers.Add(ModifierType, ModifierValue);
+			}
+		}
+	}
 }
 

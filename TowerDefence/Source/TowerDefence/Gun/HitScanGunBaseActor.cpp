@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "TowerDefence/Enemy/EnemyBase.h"
 #include "TowerDefence/Shot/Debuff/DebuffComponent.h"
+#include "TowerDefence/Tower/TowerBaseActor.h"
 
 void AHitScanGunBaseActor::Shoot()
 {
@@ -109,11 +110,12 @@ void AHitScanGunBaseActor::HitProcess()
 				// 맞은 적 캐릭터에 대한 처리
 				
 				// 데미지 처리
+				float FinalDamage = CurrentGunData->ShotData->Damage * OwnerTower->GetBuffModifierValue(ETowerBuffModifier::Damage);
 				UGameplayStatics::ApplyDamage(
-					HitEnemy,	// 적 캐릭터
-					CurrentGunData->ShotData->Damage,	// 총알의 데미지
-					nullptr,	// 행위자
-					nullptr,	// 공격자
+					HitEnemy,		// 적 캐릭터
+					FinalDamage,	// 데미지
+					nullptr,		// 행위자
+					nullptr,		// 공격자
 					CurrentGunData->ShotData->AttributeType // 총알의 속성 타입
 				);
 

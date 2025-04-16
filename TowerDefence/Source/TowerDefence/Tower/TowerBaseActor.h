@@ -31,7 +31,11 @@ public:
 
 	void Sell(); // 타워 판매 함수
 
-	void AddBuff(UTowerBuffDataAsset* BuffData); // 버프 추가 함수
+	// 버프 추가 함수
+	void AddBuff(UTowerBuffDataAsset* BuffData); 
+
+	// 버프 모디파이어 값 가져오기
+	float GetBuffModifierValue(ETowerBuffModifier Type); 
 
 	// 현재 업그레이드 비용 반환
 	inline int32 GetCurrentUpgradeCost() const { return Gun->GetCurrentUpgradeCost(); }; 

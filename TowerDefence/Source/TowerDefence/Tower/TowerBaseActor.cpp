@@ -51,6 +51,7 @@ void ATowerBaseActor::BeginPlay()
 	if (GunClass && !Gun)
 	{
 		Gun = Cast<AGunBaseActor>(GunActor->GetChildActor());
+		Gun->SetOwnerTower(this);	// 총기 소유자 설정
 	}
 
 	UpgradeWidgetInstance = Cast<UTowerUpgradeWidget>(UpgradeWidget->GetUserWidgetObject());
@@ -108,6 +109,15 @@ void ATowerBaseActor::AddBuff(UTowerBuffDataAsset* BuffData)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[%s] : BuffComponent is nullptr!"), *this->GetActorNameOrLabel());
 	}
+}
+
+float ATowerBaseActor::GetBuffModifierValue(ETowerBuffModifier Type)
+{
+	if (BuffComponent)
+	{
+		return BuffComponent->GetBuffModifierValue(Type);
+	}
+	return 1.0f;
 }
 
 void ATowerBaseActor::OnTowerClicked(AActor* TouchedActor, FKey ButtonPressed)
