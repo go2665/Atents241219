@@ -4,6 +4,7 @@
 #include "GunBaseActor.h"
 #include "Components/SphereComponent.h"
 #include "TowerDefence/Enemy/EnemyBase.h"
+#include "TowerDefence/Tower/TowerBaseActor.h"
 
 // Sets default values
 AGunBaseActor::AGunBaseActor()
@@ -183,4 +184,21 @@ void AGunBaseActor::LookFirstTarget(float DeltaTime)
 		NewRotation = FMath::RInterpConstantTo(GetActorRotation(), NewRotation, DeltaTime, 360.0f);
 		SetActorRotation(NewRotation); // 총기 회전 설정
 	}
+}
+
+float AGunBaseActor::GetModifierForDebuff(EDebuffType InType)
+{
+	float DebuffModifier = 1.0f;
+	switch (CurrentGunData->ShotData->DebuffType)
+	{
+	case EDebuffType::DotDamage:
+		DebuffModifier = OwnerTower->GetBuffModifierValue(ETowerBuffModifier::Damage);
+		break;
+	case EDebuffType::Slow:
+	case EDebuffType::Stun:
+	default:
+		break;
+	}
+
+	return DebuffModifier;
 }

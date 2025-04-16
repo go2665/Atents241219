@@ -29,6 +29,12 @@ public:
 	UFUNCTION()
 	inline void AddHitEnemy(AActor* HitEnemy) { HitEnemies.Add(HitEnemy); };
 
+	// 데미지 배율 설정
+	inline void SetModifiers(float InDamageModifier, float InDebuffModifier) { 
+		DamageModifier = InDamageModifier; 
+		DebuffModifier = InDebuffModifier;
+	}	
+
 protected:
 	UFUNCTION()
 	void OnOverlapEnemy(AActor* OverlappedActor, AActor* OtherActor);	// 적과 충돌 시 호출되는 함수
@@ -49,4 +55,7 @@ private:
 	AActor* TargetActor = nullptr;					// 발사체가 날아갈 타겟 액터(적)
 	FVector TargetLocation = FVector::ZeroVector;	// 발사체가 날아갈 목표 위치
 	TArray<AActor*> HitEnemies;						// 이 발사체를 맞은 적들
+
+	float DamageModifier = 1.0f;					// 발사체가 적에게 줄 데미지 배율
+	float DebuffModifier = 1.0f;					// 발사체가 적에게 줄 디버프 배율
 };

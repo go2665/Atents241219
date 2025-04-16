@@ -120,18 +120,7 @@ void AHitScanGunBaseActor::HitProcess()
 				);
 
 				// 디버프 처리
-				float DebuffModifier = 1.0f;
-				switch (CurrentGunData->ShotData->DebuffType)
-				{
-				case EDebuffType::DotDamage:
-					DebuffModifier = OwnerTower->GetBuffModifierValue(ETowerBuffModifier::Damage);
-					break;
-				case EDebuffType::Slow:
-				case EDebuffType::Stun:
-				default:
-					break;
-				}
-
+				float DebuffModifier = GetModifierForDebuff(CurrentGunData->ShotData->DebuffType);
 				HitEnemy->GetDebuffComponent()->AddDebuff(CurrentGunData->ShotData->DebuffType, DebuffModifier); // 디버프 추가
 			}			
 		}

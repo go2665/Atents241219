@@ -40,6 +40,9 @@ public:
 protected:
 	virtual void Shoot();
 
+	// 디버프에 적용할 모디파이어 값 반환받는 함수
+	float GetModifierForDebuff(EDebuffType InType);
+
 private:
 	UFUNCTION()
 	void OnSightOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

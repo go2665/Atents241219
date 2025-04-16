@@ -111,11 +111,11 @@ void AShotProjectileBase::OnHitEnemy(AEnemyBase* HitEnemy)
 		// 적 한명에게 데미지 적용
 		UGameplayStatics::ApplyDamage(
 			HitEnemy, 
-			ShotData->Damage, 
+			ShotData->Damage * DamageModifier,
 			nullptr, nullptr, 
 			ShotData->AttributeType);
 
-		HitEnemy->GetDebuffComponent()->AddDebuff(ShotData->DebuffType); // 디버프 추가		
+		HitEnemy->GetDebuffComponent()->AddDebuff(ShotData->DebuffType, DebuffModifier); // 디버프 추가		
 	}
 
 	if (ShotData->bIsAreaAttack)
@@ -130,7 +130,7 @@ void AShotProjectileBase::OnHitEnemy(AEnemyBase* HitEnemy)
 
 		UGameplayStatics::ApplyRadialDamageWithFalloff(
 			GetWorld(),
-			ShotData->Damage,
+			ShotData->Damage * DamageModifier,
 			0.0f,
 			GetActorLocation(),
 			ShotData->AreaRadius * 0.5f,
@@ -148,7 +148,7 @@ void AShotProjectileBase::OnHitEnemy(AEnemyBase* HitEnemy)
 				AEnemyBase* Enemy = Cast<AEnemyBase>(Target);
 				if (Enemy)
 				{
-					Enemy->GetDebuffComponent()->AddDebuff(ShotData->DebuffType); // 디버프 추가
+					Enemy->GetDebuffComponent()->AddDebuff(ShotData->DebuffType, DebuffModifier); // 디버프 추가
 				}
 			}
 		}

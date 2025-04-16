@@ -4,6 +4,7 @@
 #include "ProjectileGunBaseActor.h"
 #include "TowerDefence/Shot/ShotProjectileBase.h"
 #include "TowerDefence/Enemy/EnemyBase.h"
+#include "TowerDefence/Tower/TowerBaseActor.h"
 
 void AProjectileGunBaseActor::Shoot()
 {
@@ -29,6 +30,10 @@ void AProjectileGunBaseActor::Shoot()
 					// 발사체 데이터 초기화
 					Projectile->InitializeShotData(
 						TargetEnemies[i], Cast<UProjectileShotDataAsset>(CurrentGunData->ShotData));
+					Projectile->SetModifiers(
+						OwnerTower->GetBuffModifierValue(ETowerBuffModifier::Damage),	// 데미지 모디파이어 설정
+						GetModifierForDebuff(CurrentGunData->ShotData->DebuffType));	// 디버프 모디파이어 설정
+
 					Projectile->SetOwner(this); // 발사체의 소유자를 현재 총으로 설정
 				}
 			}
