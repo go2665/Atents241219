@@ -28,9 +28,9 @@ void UTowerBuffComponent::OnAddedBuff(const UTowerBuffDataAsset* Data)
 		{
 			Buff->ResetDuration();
 
-			//FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
-			//UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Already Exist Buff => [%s]"), 
-			//	*TimeString, *GetOwner()->GetActorNameOrLabel(), *UEnum::GetValueAsString(Buff->GetBuffType()));
+			FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
+			UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Already Exist Buff => [%s]"), 
+				*TimeString, *GetOwner()->GetActorNameOrLabel(), *UEnum::GetValueAsString(Buff->GetBuffType()));
 			return;
 		}
 	}
@@ -45,9 +45,9 @@ void UTowerBuffComponent::OnAddedBuff(const UTowerBuffDataAsset* Data)
 
 		CalculateTotalBuffModifiers();	// 버프 모디파이어 재계산
 
-		//FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
-		//UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Create New Buff => [%s]"),
-		//	*TimeString, *GetOwner()->GetActorNameOrLabel(), *UEnum::GetValueAsString(NewBuff->GetBuffType()));
+		FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
+		UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Create New Buff => [%s]"),
+			*TimeString, *GetOwner()->GetActorNameOrLabel(), *UEnum::GetValueAsString(NewBuff->GetBuffType()));
 	}
 }
 
@@ -162,9 +162,9 @@ void UTowerBuffComponent::AddBuffToAround()
 		if (TowerBuilder && TowerBuilder->GetTower()) 
 		{
 			// 주변에 있는 TowerBuilder에 타워가 있을 때
-			//FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
-			//UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] is add buff to [%s]"),
-			//	*TimeString, *GetOwner()->GetActorNameOrLabel(), *TowerBuilder->GetTower()->GetActorNameOrLabel());
+			FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
+			UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] is add buff to [%s]"),
+				*TimeString, *GetOwner()->GetActorNameOrLabel(), *TowerBuilder->GetTower()->GetActorNameOrLabel());
 
 			TowerBuilder->GetTower()->AddBuff(BuffDataAsset);
 		}

@@ -5,5 +5,6 @@
 
 void UTowerBuff_LongRange::OnInitialize(const UTowerBuffDataAsset* Data)
 {
+	Super::OnInitialize(Data);
 	BuffModifiers.Add(ETowerBuffModifier::Range, 1 + BuffDataAsset->Modifier1);	// 사거리 증가
 }
