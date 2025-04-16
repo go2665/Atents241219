@@ -38,7 +38,7 @@ public:
 	float GetBuffModifierValue(ETowerBuffModifier Type); 
 
 	// 현재 업그레이드 비용 반환
-	inline int32 GetCurrentUpgradeCost() const { return Gun->GetCurrentUpgradeCost(); }; 
+	inline int32 GetCurrentUpgradeCost() const { return Gun->GetCurrentUpgradeCost(); }; 	
 
 private:
 	UFUNCTION()

@@ -2,6 +2,7 @@
 
 
 #include "TowerBuilderActor.h"
+#include "TowerBaseActor.h"
 
 // Sets default values
 ATowerBuilderActor::ATowerBuilderActor()
@@ -21,5 +22,12 @@ void ATowerBuilderActor::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void ATowerBuilderActor::Test_BuildTower(int32 TowerIndex)
+{
+	UWorld* World = GetWorld();
+	Tower = World->SpawnActor<ATowerBaseActor>(
+		TowerClasses[TowerIndex], GetActorLocation(), GetActorRotation());
 }
 

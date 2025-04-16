@@ -41,6 +41,12 @@ void ATowerBaseActor::OnConstruction(const FTransform& Transform)
 	if (GunActor && GunActor->GetChildActor() == nullptr)
 	{
 		GunActor->SetChildActorClass(GunClass);
+
+		if (GunClass)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[%s] : GunClass is %s"),
+				*GetActorNameOrLabel(), *GunClass->GetName());
+		}
 	}
 }
 
@@ -53,6 +59,9 @@ void ATowerBaseActor::BeginPlay()
 	{
 		Gun = Cast<AGunBaseActor>(GunActor->GetChildActor());
 		Gun->SetOwnerTower(this);	// 총기 소유자 설정
+
+		UE_LOG(LogTemp, Warning, TEXT("[%s] : Gun is %s"),
+			*GetActorNameOrLabel(), *Gun->GetActorNameOrLabel());
 	}
 
 	UpgradeWidgetInstance = Cast<UTowerUpgradeWidget>(UpgradeWidget->GetUserWidgetObject());
