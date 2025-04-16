@@ -17,7 +17,7 @@ class TOWERDEFENCE_API UDebuffBase : public UObject
 public:
 	UDebuffBase();
 
-	virtual void OnInitialize(class AEnemyBase* Target);	// 디버프가 추가 되었을 때 할일
+	virtual void OnInitialize(class AEnemyBase* InTarget, float InModifier = 1.0f);	// 디버프가 추가 되었을 때 할일
 	virtual void OnTick(float DeltaTime);					// 개별 디버프 적용
 	virtual void OnEnd();									// 디버프가 끝났을 때 할일
 
@@ -44,5 +44,8 @@ protected:
 
 	UPROPERTY()
 	class AEnemyBase* TargetEnemy = nullptr; // 이 디버프가 적용된 적
+
+	UPROPERTY()
+	float ModifierValue = 1.0f; // 디버프 모디파이어 값
 
 };

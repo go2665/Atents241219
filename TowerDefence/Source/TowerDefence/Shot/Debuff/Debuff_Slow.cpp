@@ -12,9 +12,9 @@ UDebuff_Slow::UDebuff_Slow()
 	CurrentDuration = 0.0f;
 }
 
-void UDebuff_Slow::OnInitialize(AEnemyBase* Target)
+void UDebuff_Slow::OnInitialize(class AEnemyBase* InTarget, float InModifier)
 {
-	Super::OnInitialize(Target);	
+	Super::OnInitialize(InTarget, InModifier);	
 	TargetEnemy->UpdateSpeedModifier();
 }
 

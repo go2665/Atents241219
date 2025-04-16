@@ -16,7 +16,7 @@ class TOWERDEFENCE_API UDebuff_DotDamage : public UDebuffBase
 	
 public:
 	UDebuff_DotDamage();
-	virtual void OnInitialize(class AEnemyBase* Target) override;
+	virtual void OnInitialize(class AEnemyBase* InTarget, float InModifier = 1.0f) override;
 	virtual void OnEnd() override;
 
 private:

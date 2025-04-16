@@ -9,9 +9,10 @@ UDebuffBase::UDebuffBase()
 	DebuffName = FName("Base");
 }
 
-void UDebuffBase::OnInitialize(AEnemyBase* Target)
+void UDebuffBase::OnInitialize(AEnemyBase* InTarget, float InModifier)
 {
-	TargetEnemy = Target;
+	TargetEnemy = InTarget;
+	ModifierValue = InModifier;
 	CurrentDuration = DefaultDuration;
 
 	// 이 디버프가 처음 적용된 적의 상태를 변경하는 로직을 여기에 추가합니다.

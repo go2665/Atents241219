@@ -13,9 +13,9 @@ UDebuff_DotDamage::UDebuff_DotDamage()
 	CurrentDuration = 0.0f;
 }
 
-void UDebuff_DotDamage::OnInitialize(AEnemyBase* Target)
+void UDebuff_DotDamage::OnInitialize(class AEnemyBase* InTarget, float InModifier)
 {
-	Super::OnInitialize(Target);	
+	Super::OnInitialize(InTarget, InModifier);
 
 	UWorld* World = GetWorld();
 	FTimerManager& TimerManager = World->GetTimerManager();
@@ -39,7 +39,7 @@ void UDebuff_DotDamage::OnDotDamageTick()
 {
 	UGameplayStatics::ApplyDamage(
 		TargetEnemy,
-		DotDamage,
+		DotDamage * ModifierValue,
 		nullptr,
 		nullptr,
 		nullptr); // 지속 피해 적용

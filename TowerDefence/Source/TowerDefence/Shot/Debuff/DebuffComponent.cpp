@@ -45,7 +45,7 @@ void UDebuffComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	}
 }
 
-void UDebuffComponent::AddDebuff(EDebuffType Type)
+void UDebuffComponent::AddDebuff(EDebuffType Type, float InModifier)
 {
 	bool bIsExist = false;
 	// 이미 존재하는 디버프는 기간만 연장한다.
@@ -69,7 +69,7 @@ void UDebuffComponent::AddDebuff(EDebuffType Type)
 		if (NewDebuff)
 		{
 			ActiveDebuffs.Add(NewDebuff);	// 디버프 추가(OnInitialize 전에 추가되어야 한다.)
-			NewDebuff->OnInitialize(Cast<AEnemyBase>(GetOwner()));
+			NewDebuff->OnInitialize(Cast<AEnemyBase>(GetOwner()), InModifier);
 
 			FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
 			UE_LOG(LogTemp, Warning, TEXT("[%s] Success AddDebuff : [%s] (%.1f)"),
@@ -125,10 +125,10 @@ float UDebuffComponent::GetMaxiumModifierValue(EDebuffType IgnoreType, EDebuffMo
 	return MaxModifier;
 }
 
-UDebuffBase* UDebuffComponent::CreateDebuff(EDebuffType Type)
+UDebuffBase* UDebuffComponent::CreateDebuff(EDebuffType InType)
 {
 	UDebuffBase* NewDebuff = nullptr;
-	switch (Type)
+	switch (InType)
 	{
 	case EDebuffType::Slow:
 		NewDebuff = NewObject<UDebuff_Slow>(this, UDebuff_Slow::StaticClass(), TEXT("SlowDebuff"));

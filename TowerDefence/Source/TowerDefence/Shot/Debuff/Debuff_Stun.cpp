@@ -12,9 +12,9 @@ UDebuff_Stun::UDebuff_Stun()
 	CurrentDuration = 0.0f;
 }
 
-void UDebuff_Stun::OnInitialize(AEnemyBase* Target)
+void UDebuff_Stun::OnInitialize(class AEnemyBase* InTarget, float InModifier)
 {
-	Super::OnInitialize(Target);
+	Super::OnInitialize(InTarget, InModifier);
 	TargetEnemy->UpdateSpeedModifier();			// 스턴 상태에서는 이동 불가
 	TargetEnemy->UpdateDamageModifier();		// 스턴 상태에서는 추가 데미지 적용
 }

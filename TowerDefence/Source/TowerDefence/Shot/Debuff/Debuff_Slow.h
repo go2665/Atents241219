@@ -16,7 +16,7 @@ class TOWERDEFENCE_API UDebuff_Slow : public UDebuffBase
 
 public:
 	UDebuff_Slow();
-	virtual void OnInitialize(class AEnemyBase* Target) override;	
+	virtual void OnInitialize(class AEnemyBase* InTarget, float InModifier = 1.0f) override;
 	virtual void OnEnd() override;	
 
 	inline virtual float GetSpeedModifier() const override { return SlowRate; }	// 이동 속도 비율 반환

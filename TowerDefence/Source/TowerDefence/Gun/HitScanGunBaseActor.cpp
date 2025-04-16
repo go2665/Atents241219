@@ -25,7 +25,7 @@ bool AHitScanGunBaseActor::LineTraceToTarget(FVector InTarget, TArray<AEnemyBase
 	OutHitTargets.Empty(); // Out파라메터는 초기화하고 사용하기
 
 	bool bHit = false;
-	FVector Start = MuzzleLocation->GetComponentLocation();	// 총구 위치
+	FVector Start = GetActorLocation() + MuzzleLocation->GetRelativeLocation();	// 총구 위치
 	FVector End = InTarget;									// 적 위치
 
 	UWorld* World = GetWorld();
@@ -120,7 +120,19 @@ void AHitScanGunBaseActor::HitProcess()
 				);
 
 				// 디버프 처리
-				HitEnemy->GetDebuffComponent()->AddDebuff(CurrentGunData->ShotData->DebuffType); // 디버프 추가
+				float DebuffModifier = 1.0f;
+				switch (CurrentGunData->ShotData->DebuffType)
+				{
+				case EDebuffType::DotDamage:
+					DebuffModifier = OwnerTower->GetBuffModifierValue(ETowerBuffModifier::Damage);
+					break;
+				case EDebuffType::Slow:
+				case EDebuffType::Stun:
+				default:
+					break;
+				}
+
+				HitEnemy->GetDebuffComponent()->AddDebuff(CurrentGunData->ShotData->DebuffType, DebuffModifier); // 디버프 추가
 			}			
 		}
 	}
