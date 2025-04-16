@@ -3,7 +3,7 @@
 
 #include "TowerBuffBase.h"
 
-void UTowerBuffBase::OnInitialize(UTowerBuffDataAsset* Data)
+void UTowerBuffBase::OnInitialize(const UTowerBuffDataAsset* Data)
 {
 	BuffDataAsset = Data;
 }

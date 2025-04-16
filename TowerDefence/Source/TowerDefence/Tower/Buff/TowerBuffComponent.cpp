@@ -12,14 +12,13 @@
 // Sets default values for this component's properties
 UTowerBuffComponent::UTowerBuffComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 
-void UTowerBuffComponent::OnAddedBuff(UTowerBuffDataAsset* Data)
+// UTowerBuffDataAsset* const Data : Data가 저장하고 있는 주소를 수정하는 것이 불가능하다.
+// const UTowerBuffDataAsset* Data : Data가 저장하고 있는 주소에 있는 값을 수정하는 것이 불가능하다.
+
+void UTowerBuffComponent::OnAddedBuff(const UTowerBuffDataAsset* Data)
 {
 	// 이미 존재하는 버프는 기간만 리셋한다.
 	for (auto& Buff : BuffList)
@@ -27,6 +26,10 @@ void UTowerBuffComponent::OnAddedBuff(UTowerBuffDataAsset* Data)
 		if (Buff->GetBuffType() == Data->BuffType)
 		{
 			Buff->ResetDuration();
+
+			FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
+			UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Already Exist Buff => [%s]"), 
+				*TimeString, *GetOwner()->GetActorNameOrLabel(), *UEnum::GetValueAsString(Buff->GetBuffType()));
 			return;
 		}
 	}
@@ -38,6 +41,10 @@ void UTowerBuffComponent::OnAddedBuff(UTowerBuffDataAsset* Data)
 		NewBuff->OnInitialize(Data);
 		NewBuff->OnBuffBegin();
 		BuffList.AddUnique(NewBuff);
+
+		FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
+		UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Create New Buff => [%s]"),
+			*TimeString, *GetOwner()->GetActorNameOrLabel(), *UEnum::GetValueAsString(NewBuff->GetBuffType()));
 	}
 }
 
@@ -50,6 +57,10 @@ void UTowerBuffComponent::OnRemoveBuff(ETowerBuffType Type)
 		{
 			BuffList[i]->OnBuffEnd();
 			BuffList.RemoveAt(i);
+
+			FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
+			UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Remove Buff => [%s]"),
+				*TimeString, *GetOwner()->GetActorNameOrLabel(), *UEnum::GetValueAsString(Type));
 			break;
 		}
 	}
@@ -125,9 +136,10 @@ void UTowerBuffComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	}
 	for (int32 i = RemoveIndices.Num() - 1; i >= 0; i--)
 	{
-		//FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
-		//UE_LOG(LogTemp, Warning, TEXT("[%s] Success RemoveBuff : [%s]"),
-		//	*TimeString, *UEnum::GetValueAsString(BuffList[RemoveIndices[i]]->GetBuffType()))
+		FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
+		UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Buff Timeout => [%s]"),
+			*TimeString, *GetOwner()->GetActorNameOrLabel(), *UEnum::GetValueAsString(BuffList[RemoveIndices[i]]->GetBuffType()));
+
 		BuffList.RemoveAt(RemoveIndices[i]);
 	}
 }
@@ -139,6 +151,10 @@ void UTowerBuffComponent::AddBuffToAround()
 	{
 		if (TowerBuilder && TowerBuilder->GetTower())
 		{
+			FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
+			UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] is add buff to [%s]"),
+				*TimeString, *GetOwner()->GetActorNameOrLabel(), *TowerBuilder->GetTower()->GetActorNameOrLabel());
+
 			TowerBuilder->GetTower()->AddBuff(BuffDataAsset);
 		}
 	}

@@ -3,7 +3,7 @@
 
 #include "TowerBuff_PowerUp.h"
 
-void UTowerBuff_PowerUp::OnInitialize(UTowerBuffDataAsset* Data)
+void UTowerBuff_PowerUp::OnInitialize(const UTowerBuffDataAsset* Data)
 {
 	BuffModifiers.Add(ETowerBuffModifier::Damage, 1 + BuffDataAsset->Modifier1);	// 공격력 증가
 }

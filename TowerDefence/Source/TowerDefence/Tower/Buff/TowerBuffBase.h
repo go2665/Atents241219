@@ -18,7 +18,7 @@ class TOWERDEFENCE_API UTowerBuffBase : public UObject
 
 public:
 	// 버프가 생성 되었을 때 할일
-	virtual void OnInitialize(UTowerBuffDataAsset* Data);
+	virtual void OnInitialize(const UTowerBuffDataAsset* Data);
 	virtual void OnBuffBegin();						// 버프가 시작 되었을 때 할일
 	virtual void OnBuffTick(float DeltaTime);		// 버프 틱별 개별 적용
 	virtual void OnBuffEnd();						// 버프가 끝났을 때 할일
@@ -38,7 +38,7 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Buff")
-	UTowerBuffDataAsset* BuffDataAsset = nullptr;	// 버프 데이터 에셋(필수)
+	const UTowerBuffDataAsset* BuffDataAsset = nullptr;	// 버프 데이터 에셋(필수)
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Buff")
 	float CurrentDuration = 0.0f; // 디버프 지속 시간
