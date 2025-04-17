@@ -15,5 +15,5 @@ class TOWERDEFENCE_API UTowerBuff_LongRange : public UTowerBuffBase
 	GENERATED_BODY()
 	
 public:
-	virtual void OnInitialize(const UTowerBuffDataAsset* Data) override;
+	virtual void OnInitialize(const ATowerBaseActor* InTargetTower, const UTowerBuffDataAsset* InData) override;
 };

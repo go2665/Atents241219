@@ -19,12 +19,12 @@ UTowerBuffComponent::UTowerBuffComponent()
 // UTowerBuffDataAsset* const Data : Data가 저장하고 있는 주소를 수정하는 것이 불가능하다.
 // const UTowerBuffDataAsset* Data : Data가 저장하고 있는 주소에 있는 값을 수정하는 것이 불가능하다.
 
-void UTowerBuffComponent::OnAddedBuff(const UTowerBuffDataAsset* Data)
+void UTowerBuffComponent::OnAddedBuff(const UTowerBuffDataAsset* InData)
 {
 	// 이미 존재하는 버프는 기간만 리셋한다.
 	for (auto& Buff : BuffList)
 	{
-		if (Buff->GetBuffType() == Data->BuffType)
+		if (Buff->GetBuffType() == InData->BuffType)
 		{
 			Buff->ResetDuration();
 
@@ -33,17 +33,17 @@ void UTowerBuffComponent::OnAddedBuff(const UTowerBuffDataAsset* Data)
 			//	*TimeString, *GetOwner()->GetActorNameOrLabel(), *UEnum::GetValueAsString(Buff->GetBuffType()));
 			return;
 		}
-	}
+	}	
 
 	// 이전에 없던 버프는 새롭게 생성하고 리스트에 추가한다.
-	UTowerBuffBase* NewBuff = CreateBuff(Data->BuffType);
+	UTowerBuffBase* NewBuff = CreateBuff(InData->BuffType);
 	if (NewBuff)
 	{
-		NewBuff->OnInitialize(Data);	// 버프 데이터 에셋 설정하면서 초기화
-		NewBuff->OnBuffBegin();			// 버프 시작
-		BuffList.AddUnique(NewBuff);	// 버프 리스트에 추가
+		NewBuff->OnInitialize(OwnerTower, InData);	// 버프 데이터 에셋 설정하면서 초기화
+		BuffList.AddUnique(NewBuff);			// 버프 리스트에 추가
+		CalculateTotalBuffModifiers();			// 버프 모디파이어 재계산
 
-		CalculateTotalBuffModifiers();	// 버프 모디파이어 재계산
+		NewBuff->OnBuffBegin();			// 버프 시작(재계산 된 결과를 적용)
 
 		//FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
 		//UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Create New Buff => [%s]"),
@@ -58,10 +58,9 @@ void UTowerBuffComponent::OnRemoveBuff(ETowerBuffType Type)
 	{
 		if (BuffList[i]->GetBuffType() == Type)
 		{
-			BuffList[i]->OnBuffEnd();
 			BuffList.RemoveAt(i);
-
 			CalculateTotalBuffModifiers();	// 버프 모디파이어 재계산
+			BuffList[i]->OnBuffEnd();
 
 			//FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
 			//UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Remove Buff => [%s]"),
@@ -75,6 +74,8 @@ void UTowerBuffComponent::OnRemoveBuff(ETowerBuffType Type)
 void UTowerBuffComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	OwnerTower = Cast<ATowerBaseActor>(GetOwner());
 
 	// 주변에 있는 타워 배치 가능한 액터(ATowerBuilderActor)를 찾아서 TowerBuildActorList에 저장해 놓기
 	TowerBuilderList.Empty(); // 초기화
@@ -151,7 +152,7 @@ void UTowerBuffComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 		BuffList.RemoveAt(RemoveIndices[i]);
 	}
 
-	CalculateTotalBuffModifiers();	// 버프 모디파이어 재계산
+	CalculateTotalBuffModifiers();		// 버프 모디파이어 재계산	
 }
 
 void UTowerBuffComponent::AddBuffToAround()
@@ -216,5 +217,7 @@ void UTowerBuffComponent::CalculateTotalBuffModifiers()
 			}
 		}
 	}
+
+	OwnerTower->RefreshBuffModifiers();	// 타워에 적용된 버프 모디파이어 재적용
 }
 

@@ -28,14 +28,19 @@ public:
 	virtual void PostInitializeComponents() override;
 
 public:
+	// 총기 초기화 함수
+	void OnInitialize(ATowerBaseActor* InOwnerTower);
+
 	// Gun Level 설정
 	void SetGunLevel(int Level);
+
+	// 버프 모디파이어 재적용
+	void RefreshBuffModifiers();
 
 	// 현재 업그레이드 비용 반환
 	inline int GetCurrentUpgradeCost() const { return CurrentGunData->UpgradeCost; }
 
 	// 부모 타워 설정
-	inline void SetOwnerTower(ATowerBaseActor* InOwnerTower) { OwnerTower = InOwnerTower; }
 
 protected:
 	virtual void Shoot();

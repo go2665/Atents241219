@@ -2,10 +2,12 @@
 
 
 #include "TowerBuffBase.h"
+#include "TowerDefence/Tower/TowerBaseActor.h"
 
-void UTowerBuffBase::OnInitialize(const UTowerBuffDataAsset* Data)
+void UTowerBuffBase::OnInitialize(const ATowerBaseActor* InTargetTower, const UTowerBuffDataAsset* InData)
 {
-	BuffDataAsset = Data;
+	BuffDataAsset = InData;
+	TargetTower = InTargetTower;
 }
 
 void UTowerBuffBase::OnBuffBegin()

@@ -23,8 +23,7 @@ public:
 	UTowerBuffComponent();
 
 	// 버프 추가 되었을 때 실행할 일
-	UFUNCTION(BlueprintCallable, Category = "Buff")
-	void OnAddedBuff(const UTowerBuffDataAsset* Data);	
+	void OnAddedBuff(const UTowerBuffDataAsset * InData);	
 
 	// 버프가 제거 되었을 때 실행할 일
 	UFUNCTION(BlueprintCallable, Category = "Buff")
@@ -88,5 +87,7 @@ private:
 
 	// 버프 타이머 핸들
 	FTimerHandle BuffTimerHandle; 
+
+	class ATowerBaseActor* OwnerTower = nullptr;	// 이 컴포넌트가 붙어 있는 타워(Owner타워)
 
 };

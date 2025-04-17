@@ -34,6 +34,9 @@ public:
 	// 버프 추가 함수
 	void AddBuff(UTowerBuffDataAsset* BuffData); 
 
+	// 버프 모디파이어 재 적용
+	void RefreshBuffModifiers();
+
 	// 버프 모디파이어 값 가져오기
 	float GetBuffModifierValue(ETowerBuffModifier Type); 
 

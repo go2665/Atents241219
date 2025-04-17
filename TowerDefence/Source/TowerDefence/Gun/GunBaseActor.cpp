@@ -39,7 +39,6 @@ void AGunBaseActor::BeginPlay()
 	//check(GunDatas[0] != nullptr);		// 조건이 충족하지 않으면 종료
 	//ensure(GunDatas[0] != nullptr);		// 조건이 충족하지 않으면 경고 메시지 출력 후 계속 진행
 	//verify(GunDatas[0] != nullptr);		// 조건이 충족하지 않으면 종료(릴리즈에서는 생략)
-	SetGunLevel(1);							// 레벨 1의 총기 데이터로 초기화
 }
 
 // Called every frame
@@ -59,13 +58,21 @@ void AGunBaseActor::PostInitializeComponents()
 	SightSensor->OnComponentEndOverlap.AddUniqueDynamic(this, &AGunBaseActor::OnSightOverlapEnd); // 시야 센서의 겹침 종료 이벤트 바인딩
 }
 
+void AGunBaseActor::OnInitialize(ATowerBaseActor* InOwnerTower)
+{
+	OwnerTower = InOwnerTower;
+	SetGunLevel(1); // 레벨 1의 총기 데이터로 초기화
+}
+
 void AGunBaseActor::SetGunLevel(int Level)
 {
 	if (Level > 0 && Level <= GunDatas.Num())
 	{
 		CurrentGunData = GunDatas[Level - 1];	// 레벨에 맞는 총기 데이터 선택
 		verify(CurrentGunData != nullptr);		// 선택된 총기 데이터가 유효한지 확인
-		SightSensor->SetSphereRadius(CurrentGunData->Range); // 시야 반경 설정
+
+		float Modifier = OwnerTower->GetBuffModifierValue(ETowerBuffModifier::Range);			
+		SightSensor->SetSphereRadius(CurrentGunData->Range * Modifier); // 시야 반경 설정
 
 		if (!TargetEnemies.IsEmpty())	// 적이 있다 == Shoot타이머 실행중
 		{
@@ -76,6 +83,20 @@ void AGunBaseActor::SetGunLevel(int Level)
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Invalid gun level: %d"), Level);
+	}
+}
+
+void AGunBaseActor::RefreshBuffModifiers()
+{
+	// 총기 모디파이어 재적용
+	if (CurrentGunData)
+	{
+		float Modifier = OwnerTower->GetBuffModifierValue(ETowerBuffModifier::Range);
+		SightSensor->SetSphereRadius(CurrentGunData->Range * Modifier); // 시야 반경 설정
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("CurrentGunData is nullptr!"));
 	}
 }
 

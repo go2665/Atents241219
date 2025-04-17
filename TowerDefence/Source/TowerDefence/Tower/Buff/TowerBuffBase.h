@@ -8,6 +8,7 @@
 #include "TowerBuffDataAsset.h"
 #include "TowerBuffBase.generated.h"
 
+class ATowerBaseActor;
 /**
  * 
  */
@@ -18,7 +19,7 @@ class TOWERDEFENCE_API UTowerBuffBase : public UObject
 
 public:
 	// 버프가 생성 되었을 때 할일
-	virtual void OnInitialize(const UTowerBuffDataAsset* Data);
+	virtual void OnInitialize(const ATowerBaseActor* InTargetTower, const UTowerBuffDataAsset* InData);
 	virtual void OnBuffBegin();						// 버프가 시작 되었을 때 할일
 	virtual void OnBuffTick(float DeltaTime);		// 버프 틱별 개별 적용
 	virtual void OnBuffEnd();						// 버프가 끝났을 때 할일
@@ -45,4 +46,7 @@ protected:
 
 	UPROPERTY()
 	TMap<ETowerBuffModifier, float> BuffModifiers;	// 버프 수치(타입, 수치) (생성자에서 적용할 모디파이어만 타입별로 추가)
+
+private:
+	const ATowerBaseActor* TargetTower = nullptr; // 이 버프가 적용된 타워
 };

@@ -92,7 +92,8 @@ bool AHitScanGunBaseActor::LineTraceToTarget(AActor* InTarget, TArray<AEnemyBase
 	FVector Direction = InTarget->GetActorLocation() - MuzzleLocation->GetComponentLocation(); // 총구에서 적 캐릭터까지의 방향 벡터
 	Direction.Z = 0.0f;			// Z축 방향 제거(2D 평면에서의 거리 계산을 위해)
 	Direction.Normalize();		// 방향 벡터 정규화
-	FVector TargetLocation = MuzzleLocation->GetComponentLocation() + Direction * CurrentGunData->Range; // 총구에서 적 캐릭터까지의 거리만큼 나간 위치
+	float Modifier = OwnerTower->GetBuffModifierValue(ETowerBuffModifier::Range);
+	FVector TargetLocation = MuzzleLocation->GetComponentLocation() + CurrentGunData->Range * Modifier * Direction; // 총구에서 적 캐릭터까지의 거리만큼 나간 위치
 	return LineTraceToTarget(TargetLocation, OutHitTargets);
 }
 

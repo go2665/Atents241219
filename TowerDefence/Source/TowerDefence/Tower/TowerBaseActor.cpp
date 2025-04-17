@@ -58,7 +58,7 @@ void ATowerBaseActor::BeginPlay()
 	if (GunClass && !Gun)
 	{
 		Gun = Cast<AGunBaseActor>(GunActor->GetChildActor());
-		Gun->SetOwnerTower(this);	// 총기 소유자 설정
+		Gun->OnInitialize(this);	// 총기 소유자 설정
 
 		UE_LOG(LogTemp, Warning, TEXT("[%s] : Gun is %s"),
 			*GetActorNameOrLabel(), *Gun->GetActorNameOrLabel());
@@ -119,6 +119,11 @@ void ATowerBaseActor::AddBuff(UTowerBuffDataAsset* BuffData)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[%s] : BuffComponent is nullptr!"), *this->GetActorNameOrLabel());
 	}
+}
+
+void ATowerBaseActor::RefreshBuffModifiers()
+{
+	Gun->RefreshBuffModifiers();	// 총기 모디파이어 재적용
 }
 
 float ATowerBaseActor::GetBuffModifierValue(ETowerBuffModifier Type)

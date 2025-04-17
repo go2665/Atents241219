@@ -3,8 +3,8 @@
 
 #include "TowerBuff_RapidFire.h"
 
-void UTowerBuff_RapidFire::OnInitialize(const UTowerBuffDataAsset* Data)
+void UTowerBuff_RapidFire::OnInitialize(const ATowerBaseActor* InTargetTower, const UTowerBuffDataAsset* InData)
 {
-	Super::OnInitialize(Data);
+	Super::OnInitialize(InTargetTower, InData);
 	BuffModifiers.Add(ETowerBuffModifier::FireRate, 1 + BuffDataAsset->Modifier1);	// 발사 속도 증가
 }
