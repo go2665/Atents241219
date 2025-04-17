@@ -91,8 +91,12 @@ void AGunBaseActor::RefreshBuffModifiers()
 	// 총기 모디파이어 재적용
 	if (CurrentGunData)
 	{
+		// 시야 반경 재설정
 		float Modifier = OwnerTower->GetBuffModifierValue(ETowerBuffModifier::Range);
-		SightSensor->SetSphereRadius(CurrentGunData->Range * Modifier); // 시야 반경 설정
+		SightSensor->SetSphereRadius(CurrentGunData->Range * Modifier); 
+
+		// 발사 속도 재설정
+		bIsShootingReset = true; // 발사 속도 재설정 플래그 설정
 	}
 	else
 	{
@@ -109,7 +113,7 @@ void AGunBaseActor::OnSightOverlapBegin(UPrimitiveComponent* OverlappedComponent
 		{
 			if (TargetEnemies.IsEmpty())
 			{
-				ShootStart(); // 적 캐릭터가 처음 감지되면 발사 시작
+				ShootStart(FireFirstDelay); // 적 캐릭터가 처음 감지되면 발사 시작
 			}
 
 			TargetEnemies.AddUnique(Enemy); // 적 캐릭터를 목록에 추가
@@ -151,14 +155,17 @@ void AGunBaseActor::PrintEnemyList()
 	UE_LOG(LogTemp, Warning, TEXT("Enemies in range: [ %s ]"), *EnemyList);
 }
 
-void AGunBaseActor::ShootStart()
+void AGunBaseActor::ShootStart(float InFirstDelay)
 {
 	// 발사 시작
+	float Modifier = OwnerTower->GetBuffModifierValue(ETowerBuffModifier::FireRate);
 	FTimerManager& TimerManager = GetWorldTimerManager();
 	TimerManager.SetTimer(
 		ShootTimerHandle, 
 		this, &AGunBaseActor::Shoot, 
-		1 / CurrentGunData->FireRate, true, FireFirstDelay); // 발사 주기 설정
+		1 / (CurrentGunData->FireRate * Modifier), true, InFirstDelay); // 발사 주기 설정
+	//UE_LOG(LogTemp, Warning, TEXT("[ %s ] Shoot Start! : [%.2f] * [%.2f] "), 
+	//	*this->GetActorLabel(), CurrentGunData->FireRate, Modifier);
 }
 
 void AGunBaseActor::ShootStop()
@@ -176,8 +183,19 @@ void AGunBaseActor::Shoot()
 	UWorld* World = GetWorld();
 	
 	// 발사 로직 구현
-	FString TimeString = FDateTime::FromUnixTimestamp(World->TimeSeconds).ToString(TEXT("%H:%M:%S"));
+	//FString TimeString = FDateTime::FromUnixTimestamp(World->TimeSeconds).ToString(TEXT("%H:%M:%S"));
+
+	int Minutes = FMath::FloorToInt(World->TimeSeconds / 60);
+	float Seconds = FMath::Fmod(World->TimeSeconds, 60.0f);
+	FString TimeString = FString::Printf(TEXT("%02d:%05.3f"), Minutes, Seconds);
 	UE_LOG(LogTemp, Warning, TEXT("[%s] [%s] Shooting!"), *TimeString, *this->GetActorLabel());
+
+	if (bIsShootingReset)
+	{
+		bIsShootingReset = false; // 발사 속도 재설정 플래그 초기화
+		ShootStop();	// 기존 타이머 정지
+		ShootStart();	// 새로운 총기 데이터에 맞게 발사 시작
+	}
 }
 
 void AGunBaseActor::LookFirstTarget(float DeltaTime)

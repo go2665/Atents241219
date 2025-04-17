@@ -9,8 +9,6 @@
 
 void AHitScanGunBaseActor::Shoot()
 {
-	Super::Shoot();
-
 	// Line : 선. 시작점과 끝점으로 정의(위치 2개)
 	// Ray : 선. 시작점과 방향으로 정의(위치 + 벡터)
 
@@ -18,6 +16,8 @@ void AHitScanGunBaseActor::Shoot()
 	//FVector End = Start + MuzzleLocation->GetForwardVector() * CurrentGunData->Range; // 총구에서 앞쪽으로 사정거리만큼 나간 위치
 
 	HitProcess();
+
+	Super::Shoot();	// 리셋 처리만 있기 때문에 마지막에 호출
 }
 
 bool AHitScanGunBaseActor::LineTraceToTarget(FVector InTarget, TArray<AEnemyBase*>& OutHitTargets)

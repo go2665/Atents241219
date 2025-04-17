@@ -152,7 +152,10 @@ void UTowerBuffComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 		BuffList.RemoveAt(RemoveIndices[i]);
 	}
 
-	CalculateTotalBuffModifiers();		// 버프 모디파이어 재계산	
+	if (RemoveIndices.Num() > 0)
+	{
+		CalculateTotalBuffModifiers();		// 버프 모디파이어 재계산	
+	}
 }
 
 void UTowerBuffComponent::AddBuffToAround()

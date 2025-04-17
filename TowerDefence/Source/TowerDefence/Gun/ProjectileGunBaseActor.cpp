@@ -8,8 +8,6 @@
 
 void AProjectileGunBaseActor::Shoot()
 {
-	Super::Shoot();
-
 	UWorld* World = GetWorld();
 
 	UProjectileShotDataAsset* ShotData = Cast<UProjectileShotDataAsset>(CurrentGunData->ShotData);
@@ -39,4 +37,6 @@ void AProjectileGunBaseActor::Shoot()
 			}
 		}
 	}
+
+	Super::Shoot();	// 리셋 처리만 있기 때문에 마지막에 호출
 }

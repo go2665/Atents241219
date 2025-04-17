@@ -6,7 +6,6 @@
 
 void AHitScanNearMultyGunActor::Shoot()
 {
-	Super::Super::Shoot();
 
 	// 여러마리의 적을 동시에 공격하기(가까운 순서대로 공격하기)
 
@@ -18,6 +17,6 @@ void AHitScanNearMultyGunActor::Shoot()
 			float DistanceSquaredB = FVector::DistSquared(GunLocation, B.GetActorLocation());
 			return DistanceSquaredA < DistanceSquaredB;	// 오름차순 정렬
 		});
-
-	HitProcess();
+	
+	Super::Shoot();	// 리셋 처리만 있기 때문에 마지막에 호출
 }

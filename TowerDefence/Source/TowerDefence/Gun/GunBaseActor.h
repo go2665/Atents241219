@@ -59,7 +59,7 @@ private:
 
 	void PrintEnemyList();
 
-	void ShootStart();
+	void ShootStart(float InFirstDelay = -1.0f);
 	void ShootStop();
 
 	void LookFirstTarget(float DeltaTime);
@@ -97,5 +97,7 @@ protected:
 
 private:
 	FTimerHandle ShootTimerHandle;	// 발사 타이머 핸들
+
+	bool bIsShootingReset = false;
 	
 };
