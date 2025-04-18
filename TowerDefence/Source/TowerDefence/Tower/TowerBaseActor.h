@@ -24,6 +24,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UFUNCTION()
+	virtual void OnCancelClicked(AActor* InClickedTower);
+
 public:	
 	//virtual void Tick(float DeltaTime) override;
 	UFUNCTION(BlueprintCallable, Category = "Tower")
@@ -46,9 +49,6 @@ public:
 private:
 	UFUNCTION()
 	void OnTowerClicked(AActor* TouchedActor, FKey ButtonPressed);
-
-	UFUNCTION()
-	void OnCancelClicked(AActor* InClickedTower);
 
 protected:
 	// Components

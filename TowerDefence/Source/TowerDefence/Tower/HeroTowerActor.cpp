@@ -2,8 +2,23 @@
 #include "Kismet/GameplayStatics.h"
 #include "TowerDefence/Enemy/EnemyBase.h"  
 #include "TowerDefence/Shot/Debuff/DebuffComponent.h"
+#include "TowerDefence/Player/PlayerSpectatorPawn.h"
 
-void AHeroTowerActor::UseSkill(FVector InLocation)  
+AHeroTowerActor::AHeroTowerActor()
+{
+    PrimaryActorTick.bCanEverTick = true;
+}
+
+void AHeroTowerActor::SelectingSkillLocation()
+{
+	if (SkillCoolTime < 0.0f) // 쿨타임이 끝났을 때만 스킬 사용 가능
+	{
+        bIsSelectingSkillLocation = true;
+		Player->AreaIndicatorActivate(); // AreaIndicator 활성화
+	}
+}
+
+void AHeroTowerActor::UseSkill(FVector InLocation)
 {  
    // 스킬 사용  
    USkillDataAsset* SkillDataAsset = SkillDataAssets[GunLevel - 1]; // 스킬 데이터 에셋을 가져온다.  
@@ -62,9 +77,42 @@ void AHeroTowerActor::UseSkill(FVector InLocation)
                    }
                }
            }
-       }       
+       } 
+
+	   SkillCoolTime = SkillDataAsset->CooldownTime;    // 쿨타임 초기화
+	   bIsSelectingSkillLocation = false;               // 스킬 사용 후 위치 선택 종료
    }  
-}  
+}
+
+void AHeroTowerActor::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+
+	SkillCoolTime -= DeltaTime; // 쿨타임 감소
+}
+
+void AHeroTowerActor::BeginPlay()
+{
+    Super::BeginPlay();
+
+	UGameplayStatics::GetPlayerPawn(GetWorld(), 0); // 플레이어의 Pawn을 가져온다.
+
+    Player = Cast<APlayerSpectatorPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+}
+
+void AHeroTowerActor::OnCancelClicked(AActor* InClickedTower)
+{
+	// 스킬 사용 중일 때 클릭이 일어났으면 그 위치(AreaIndicator 위치)에 스킬 사용
+	if (bIsSelectingSkillLocation)
+	{
+		UseSkill(Player->GetAreaIndicatorLocation()); // AreaIndicator 위치 가져와서 스킬 사용
+	}
+	else
+	{
+		// 스킬 사용 중이 아닐 때는 기본 클릭 처리
+		Super::OnCancelClicked(InClickedTower);
+	}
+}
 
 //void AHeroTowerActor::FindEnemiesInRadius(FVector Center, float Radius, TArray<AEnemyBase*>& OutActors)  
 //{  

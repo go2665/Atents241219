@@ -9,6 +9,7 @@
 #include "HeroTowerActor.generated.h"
 
 class AEnemyBase;
+class APlayerSpectatorPawn;
 /**
  * 
  */
@@ -18,8 +19,19 @@ class TOWERDEFENCE_API AHeroTowerActor : public ATowerBaseActor
 	GENERATED_BODY()
 	
 public:
+	AHeroTowerActor();
+
+	UFUNCTION(BlueprintCallable, Category = "Tower|Hero")
+	void SelectingSkillLocation();
+
 	UFUNCTION(BlueprintCallable, Category = "Tower|Hero")
 	void UseSkill(FVector InLocation);
+
+	virtual void Tick(float DeltaTime) override;	
+
+protected:	
+	virtual void BeginPlay() override;
+	virtual void OnCancelClicked(AActor* InClickedTower) override;
 
 private:
 	//void FindEnemiesInRadius(FVector Center, float Radius, TArray<AEnemyBase*>& OutActors);
@@ -55,7 +67,7 @@ private:
 			Center,
 			FQuat::Identity,
 			FCollisionObjectQueryParams(CollisionChannel),
-			FCollisionShape::MakeSphere(Radius)
+			FCollisionShape::MakeCapsule(Radius, 200.0f) // 200.0f은 타워 높이가 150 정도이므로 여유분을 주기 위해 설정
 		);
 		if (bHasOverlaps)
 		{
@@ -72,13 +84,20 @@ private:
 		}
 
 		// 디버그용으로 구체를 그려줌 (선택 사항)  
-	    DrawDebugSphere(GetWorld(), Center, Radius, 12, FColor::Green, false, 2.0f);
+		DrawDebugCapsule(GetWorld(), Center, 200.0f, Radius, FQuat::Identity, FColor::Green, false, 2.0f);
 	}
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower|Hero")
 	TArray<USkillDataAsset*> SkillDataAssets;
 
+private:
+	bool bIsSelectingSkillLocation = false;	// 스킬 사용 위치 선택 중인지를 표시하는 변수
+
+	float SkillCoolTime = 0.0f;
+
+	UPROPERTY()
+	APlayerSpectatorPawn* Player = nullptr;	// 플레이어 스펙테이터 폰을 저장할 변수
 	
 };
 

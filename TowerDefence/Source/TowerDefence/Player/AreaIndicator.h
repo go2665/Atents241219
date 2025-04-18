@@ -26,6 +26,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Area")
 	void SetAreaRadius(float NewRadius);
 
+	void Activate();
+	void Deactivate();
+
+private:
+	UFUNCTION()
+	void OnMouseClick(AActor* HitActor);	// 마우스 클릭 이벤트 처리
+
+	void UpdateLocation();
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UStaticMeshComponent* AreaMesh = nullptr;

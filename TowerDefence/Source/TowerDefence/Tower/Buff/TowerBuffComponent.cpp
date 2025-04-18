@@ -35,6 +35,9 @@ void UTowerBuffComponent::OnAddedBuff(const UTowerBuffDataAsset* InData)
 		}
 	}	
 
+	UE_LOG(LogTemp, Warning, TEXT("[%s] : Add Buff"),
+		*GetOwner()->GetActorNameOrLabel());
+
 	// 이전에 없던 버프는 새롭게 생성하고 리스트에 추가한다.
 	UTowerBuffBase* NewBuff = CreateBuff(InData->BuffType);
 	if (NewBuff)

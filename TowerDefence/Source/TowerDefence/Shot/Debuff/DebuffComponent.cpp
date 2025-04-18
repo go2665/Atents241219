@@ -37,9 +37,9 @@ void UDebuffComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 	for (int32 i = RemoveIndices.Num() - 1; i >= 0 ; i--)
 	{
-		FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
-		UE_LOG(LogTemp, Warning, TEXT("[%s] Success RemoveDebuff : [%s]"),
-			*TimeString, *UEnum::GetValueAsString(ActiveDebuffs[RemoveIndices[i]]->GetDebuffType()))
+		//FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
+		//UE_LOG(LogTemp, Warning, TEXT("[%s] Success RemoveDebuff : [%s]"),
+		//	*TimeString, *UEnum::GetValueAsString(ActiveDebuffs[RemoveIndices[i]]->GetDebuffType()))
 		
 		ActiveDebuffs.RemoveAt(RemoveIndices[i]);
 	}
@@ -71,9 +71,9 @@ void UDebuffComponent::AddDebuff(EDebuffType Type, float InModifier)
 			ActiveDebuffs.Add(NewDebuff);	// 디버프 추가(OnInitialize 전에 추가되어야 한다.)
 			NewDebuff->OnInitialize(Cast<AEnemyBase>(GetOwner()), InModifier);
 
-			FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
-			UE_LOG(LogTemp, Warning, TEXT("[%s] Success AddDebuff : [%s] (%.1f)"),
-				*TimeString, *UEnum::GetValueAsString(Type), NewDebuff->GetCurrentDuration());
+			//FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
+			//UE_LOG(LogTemp, Warning, TEXT("[%s] Success AddDebuff : [%s] (%.1f)"),
+			//	*TimeString, *UEnum::GetValueAsString(Type), NewDebuff->GetCurrentDuration());
 		}
 		else
 		{
@@ -92,8 +92,8 @@ void UDebuffComponent::RemoveDebuff(EDebuffType Type)
 			ActiveDebuffs[i]->OnEnd();
 			ActiveDebuffs.RemoveAt(i);
 
-			FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
-			UE_LOG(LogTemp, Warning, TEXT("[%s] Success RemoveDebuff : [%s]"), *TimeString, *UEnum::GetValueAsString(Type))
+			//FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
+			//UE_LOG(LogTemp, Warning, TEXT("[%s] Success RemoveDebuff : [%s]"), *TimeString, *UEnum::GetValueAsString(Type))
 			break;
 		}
 	}

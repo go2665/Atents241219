@@ -38,10 +38,10 @@ void ATowerDefencePlayerController::OnMouseClick(const FInputActionValue& Value)
 	{
 		HitActor = HitResult.GetActor();
 	}
-	if (HitActor)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Clicked on: %s"), *HitActor->GetActorNameOrLabel());
-	}
+	//if (HitActor)
+	//{
+	//	UE_LOG(LogTemp, Warning, TEXT("Clicked on: %s"), *HitActor->GetActorNameOrLabel());
+	//}
 	OnMouseClickInput.Broadcast(HitActor);	// 마우스 클릭 델리게이트 호출
 
 }
