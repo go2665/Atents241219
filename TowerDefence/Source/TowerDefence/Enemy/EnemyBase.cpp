@@ -66,7 +66,7 @@ float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent
 	{
 		ActualDamage *= 2.0f;			// 약점 속성에 대한 데미지 배가
 	}
-
+	UE_LOG(LogTemp, Warning, TEXT("[%s] Take Damage: %.1f"), *this->GetActorLabel(), ActualDamage);
 	SetCurrentHealth(CurrentHealth - ActualDamage); // 체력 설정
 
 	if (DamageCauser)

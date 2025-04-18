@@ -32,6 +32,7 @@ public:
 protected:	
 	virtual void BeginPlay() override;
 	virtual void OnCancelClicked(AActor* InClickedTower) override;
+	inline virtual UTowerBuffComponent* GetBuffComponent() const override { return HeroBuffComponent; }	// 버프 컴포넌트 반환
 
 private:
 	//void FindEnemiesInRadius(FVector Center, float Radius, TArray<AEnemyBase*>& OutActors);
@@ -88,6 +89,9 @@ private:
 	}
 
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UTowerBuffComponent* HeroBuffComponent = nullptr;	// 버프 컴포넌트 저장할 변수
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower|Hero")
 	TArray<USkillDataAsset*> SkillDataAssets;
 

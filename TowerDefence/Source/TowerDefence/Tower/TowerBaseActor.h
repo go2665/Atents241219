@@ -9,6 +9,7 @@
 #include "TowerBaseActor.generated.h"
 
 class UTowerBuffDataAsset;
+class UTowerBuffComponent;
 
 UCLASS()
 class TOWERDEFENCE_API ATowerBaseActor : public AActor
@@ -24,8 +25,12 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+
 	UFUNCTION()
 	virtual void OnCancelClicked(AActor* InClickedTower);
+
+	// 버프 컴포넌트 반환
+	inline virtual UTowerBuffComponent* GetBuffComponent() const { return BuffComponent; }	
 
 public:	
 	//virtual void Tick(float DeltaTime) override;
@@ -45,6 +50,7 @@ public:
 
 	// 현재 업그레이드 비용 반환
 	inline int32 GetCurrentUpgradeCost() const { return Gun->GetCurrentUpgradeCost(); }; 	
+
 
 private:
 	UFUNCTION()
@@ -72,7 +78,7 @@ protected:
 	int32 GunLevel = 1; // 총기 레벨(1~3)
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower")
-	int32 TowerCost = 100; // 타워 설치 비용
+	int32 TowerCost = 100; // 타워 설치 비용	
 
 private:
 	const static int8 MaxGunLevel = 3;	// 총기 레벨의 최대값

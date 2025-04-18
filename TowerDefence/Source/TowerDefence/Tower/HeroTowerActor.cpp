@@ -3,10 +3,14 @@
 #include "TowerDefence/Enemy/EnemyBase.h"  
 #include "TowerDefence/Shot/Debuff/DebuffComponent.h"
 #include "TowerDefence/Player/PlayerSpectatorPawn.h"
+#include "TowerDefence/Tower/Buff/TowerBuffComponent.h"
 
 AHeroTowerActor::AHeroTowerActor()
+    : Super()
 {
     PrimaryActorTick.bCanEverTick = true;
+
+    HeroBuffComponent = CreateDefaultSubobject<UTowerBuffComponent>(TEXT("HeroBuffComponent"));
 }
 
 void AHeroTowerActor::SelectingSkillLocation()

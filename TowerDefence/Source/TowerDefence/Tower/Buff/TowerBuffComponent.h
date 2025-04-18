@@ -26,7 +26,7 @@ public:
 	void OnAddedBuff(const UTowerBuffDataAsset * InData);	
 
 	// 버프가 제거 되었을 때 실행할 일
-	UFUNCTION(BlueprintCallable, Category = "Tower/Buff")
+	UFUNCTION(BlueprintCallable, Category = "Tower|Buff")
 	void OnRemoveBuff(ETowerBuffType Type);	
 
 	// 모디파이어가 제공하는 배율 리턴

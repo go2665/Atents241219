@@ -32,7 +32,7 @@ ATowerBaseActor::ATowerBaseActor()
 	UpgradeWidget->SetWidgetClass(UTowerUpgradeWidget::StaticClass());	// 위젯 클래스 설정(블루프린트로 만든 것을 새로 넣어주어야 함)
 	UpgradeWidget->SetDrawSize(FVector2D(200.0f, 600.0f));	// 위젯 크기 설정
 
-	BuffComponent = CreateDefaultSubobject<UTowerBuffComponent>(TEXT("BuffComponent"));
+	BuffComponent = CreateDefaultSubobject<UTowerBuffComponent>(TEXT("BuffComponent"));	
 }
 
 void ATowerBaseActor::OnConstruction(const FTransform& Transform)
@@ -111,9 +111,9 @@ void ATowerBaseActor::Sell()
 
 void ATowerBaseActor::AddBuff(UTowerBuffDataAsset* BuffData)
 {
-	if (BuffComponent)
+	if (GetBuffComponent())
 	{
-		BuffComponent->OnAddedBuff(BuffData);
+		GetBuffComponent()->OnAddedBuff(BuffData);
 	}
 	else
 	{
@@ -128,9 +128,9 @@ void ATowerBaseActor::RefreshBuffModifiers()
 
 float ATowerBaseActor::GetBuffModifierValue(ETowerBuffModifier Type)
 {
-	if (BuffComponent)
+	if (GetBuffComponent())
 	{
-		return BuffComponent->GetBuffModifierValue(Type);
+		return GetBuffComponent()->GetBuffModifierValue(Type);
 	}
 	return 1.0f;
 }
