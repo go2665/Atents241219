@@ -13,7 +13,7 @@ class UTowerBuffDataAsset;
 
 // 주변 타워에 버프를 걸고, 자신에게 걸린 버프를 관리하는 컴포넌트
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(BlueprintType, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TOWERDEFENCE_API UTowerBuffComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -26,7 +26,7 @@ public:
 	void OnAddedBuff(const UTowerBuffDataAsset * InData);	
 
 	// 버프가 제거 되었을 때 실행할 일
-	UFUNCTION(BlueprintCallable, Category = "Buff")
+	UFUNCTION(BlueprintCallable, Category = "Tower/Buff")
 	void OnRemoveBuff(ETowerBuffType Type);	
 
 	// 모디파이어가 제공하는 배율 리턴
@@ -58,28 +58,28 @@ private:
 		
 protected:
 	// 버프 데이터 에셋(null이 아니면 주기적으로 버프를 건다, 버프 주는 타워인지 결정)
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Buff")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower|Buff")
 	UTowerBuffDataAsset* BuffDataAsset = nullptr;	
 
 	// 버프 거는 주기(초 단위)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Buff")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Buff")
 	float Interval = 1.0f; 
 
 	// 버프 범위(타워 주변 반경)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Buff")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Buff")
 	float Radius = 150.0f; 
 
 private:
 	// 현재 적용된 버프 리스트(Owner타워에 적용된 버프 리스트)
-	UPROPERTY(VisibleAnywhere, Category = "Buff")
+	UPROPERTY(VisibleAnywhere, Category = "Tower|Buff")
 	TArray<UTowerBuffBase*> BuffList;	
 
 	// 주변에 있는 타워 배치 가능한 액터(ATowerBuilderActor)를 저장하는 배열(시작하면 변하지 않는다)
-	UPROPERTY(VisibleAnywhere, Category = "Buff")
+	UPROPERTY(VisibleAnywhere, Category = "Tower|Buff")
 	TArray<ATowerBuilderActor*> TowerBuilderList;
 
 	// 타워에 적용된 버프의 모디파이어를 합산한 값
-	UPROPERTY(VisibleAnywhere, Category = "Buff")
+	UPROPERTY(VisibleAnywhere, Category = "Tower|Buff")
 	TMap<ETowerBuffModifier, float> TotalBuffModifiers;
 
 	// 매 틱마다 제거할 디버프 인덱스 저장(재할당을 방지하기 위해 맴버변수로 선언)
