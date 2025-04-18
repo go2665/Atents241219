@@ -23,12 +23,24 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	inline void SetAreaRadius(float NewRadius) { AreaRadius = NewRadius; }
+	UFUNCTION(BlueprintCallable, Category = "Area")
+	void SetAreaRadius(float NewRadius);
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UStaticMeshComponent* AreaMesh = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Area")
-	float AreaRadius = 100.0f;
+	float AreaRadius = 50.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Area")
+	float HeightOffset = 300.0f;	// Z축 높이 조정
+
+private:
+	UPROPERTY()
+	APlayerController* PlayerController = nullptr;
+
+	const float DefaultRadius = 50.0f;				// 기본 반지름(가독성을 위해 유지)
+	const float ScaleFactor = 1 / DefaultRadius;
+
 };
