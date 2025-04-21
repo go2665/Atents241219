@@ -4,11 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "TowerDefence/Tower/Data/CannonDataAsset.h"
 #include "Tower.generated.h"
 
 class UTowerUpgradeWidget;
-class ACannonBase;
-class UCannonDataAsset;
+class ACannon;
+//class UCannonDataAsset;
 class UWidgetComponent;
 
 /*
@@ -40,6 +41,17 @@ public:
 	// 버프 제거 함수
 	//bool RemoveEffect(UTowerBuffDataAsset* BuffData);
 
+	// void TowerFire();
+
+	// 타워의 사정거리
+	inline float GetRange() const { return Range; }
+
+	// 타워의 발사 속도
+	inline float GetFireRate() const { return FireRate; }
+
+	// 타워의 공격 시 한번에 공격 가능한 타겟 수
+	inline float GetTargetCount() const { return TargetCount; }
+
 private:
 	// 업그레이드 UI 닫기 or 스킬 사용에 사용됨(DEPRECATE된 OnCancelClicked)
 	// InClickedTower : 클릭한 타워(nullptr일 수 있다.)
@@ -58,9 +70,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UWidgetComponent* UpgradeWidget = nullptr;
 
-	// 대포 레벨(0~2, 표시할 때는 +1)
+	// 타워 레벨(0~2, 표시할 때는 +1)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower|Base Data", meta = (ClampMin = "0", ClampMax = "2"))
-	int32 CannonLevel = 0; 
+	int32 TowerLevel = 0; 
 
 	// 타워 설치 비용
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower|Base Data")
@@ -70,14 +82,29 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower|Base Data")
 	TArray<UCannonDataAsset*> CannonDatas;
 	
+
 	// 샷 데이터
 	// 버프 데이터(컴포넌트 추가)
 	// 스킬 데이터(컴포넌트 추가)
+	// 스텟
+	// 모디파이어
+	
+	// 대포 사정거리(모디파이어 적용된 값. 버프 변경시 재계산되어야 함)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tower|Buff Modified Value")
+	float Range = 300.0f;	
+
+	// 발사 속도(모디파이어 적용된 값. 버프 변경시 재계산되어야 함)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tower|Buff Modified Value")
+	float FireRate = 2.0f;	
+
+	// 공격 시 한번에 공격 가능한 타겟 수(모디파이어 적용된 값. 버프 변경시 재계산되어야 함)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tower|Buff Modified Value")
+	int32 TargetCount = 1;
 
 private:
 	// 총기 클래스의 인스턴스
 	UPROPERTY()
-	ACannonBase* CannonInstance = nullptr;		
+	ACannon* CannonInstance = nullptr;		
 
 	UPROPERTY()
 	UTowerUpgradeWidget* UpgradeWidgetInstance = nullptr;	// 업그레이드 위젯 인스턴스

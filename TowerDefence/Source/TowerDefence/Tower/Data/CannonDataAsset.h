@@ -10,7 +10,7 @@
  * 타워 위에 올라가는 대포의 데이터
  */
 
-class ACannonBase;
+class ACannon;
 
 UCLASS()
 class TOWERDEFENCE_API UCannonDataAsset : public UDataAsset
@@ -20,7 +20,7 @@ class TOWERDEFENCE_API UCannonDataAsset : public UDataAsset
 public:
 	// 대포의 액터 클래스
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Cannon Data")
-	TSubclassOf<ACannonBase> CannonClass;
+	TSubclassOf<ACannon> CannonClass;
 
 	// 대포의 이름
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Cannon Data")
