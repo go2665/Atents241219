@@ -40,7 +40,7 @@ void ATowerBaseActor::OnConstruction(const FTransform& Transform)
 	Super::OnConstruction(Transform);
 	if (GunActor && GunActor->GetChildActor() == nullptr)
 	{
-		GunActor->SetChildActorClass(GunClass);
+		GunActor->SetChildActorClass(GunClass);		
 
 		//if (GunClass)
 		//{
