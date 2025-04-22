@@ -7,7 +7,7 @@
 #include "TowerDefence/Framework/TowerDefencePlayerController.h"
 #include "TowerDefence/Framework/TowerDefenceGameMode.h"
 #include "TowerDefence/DEPRECATED_Tower/Gun/GunBaseActor.h"
-#include "TowerDefence/DEPRECATED_Tower/UI/TowerUpgradeWidget.h"
+#include "TowerDefence/DEPRECATED_Tower/UI/DEPRECATED_TowerUpgradeWidget.h"
 #include "TowerDefence/DEPRECATED_Tower/Effect/Buff/TowerBuffComponent.h"
 
 // Sets default values
@@ -29,7 +29,7 @@ ATowerBaseActor::ATowerBaseActor()
 	UpgradeWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("UpgradeWidget"));
 	UpgradeWidget->SetupAttachment(Root);
 	UpgradeWidget->SetWidgetSpace(EWidgetSpace::Screen);		
-	UpgradeWidget->SetWidgetClass(UTowerUpgradeWidget::StaticClass());	// 위젯 클래스 설정(블루프린트로 만든 것을 새로 넣어주어야 함)
+	UpgradeWidget->SetWidgetClass(U_DEPRECATED_TowerUpgradeWidget::StaticClass());	// 위젯 클래스 설정(블루프린트로 만든 것을 새로 넣어주어야 함)
 	UpgradeWidget->SetDrawSize(FVector2D(200.0f, 600.0f));	// 위젯 크기 설정
 
 	BuffComponent = CreateDefaultSubobject<UTowerBuffComponent>(TEXT("BuffComponent"));	
@@ -64,7 +64,7 @@ void ATowerBaseActor::BeginPlay()
 		//	*GetActorNameOrLabel(), *Gun->GetActorNameOrLabel());
 	}
 
-	UpgradeWidgetInstance = Cast<UTowerUpgradeWidget>(UpgradeWidget->GetUserWidgetObject());
+	UpgradeWidgetInstance = Cast<U_DEPRECATED_TowerUpgradeWidget>(UpgradeWidget->GetUserWidgetObject());
 	if (UpgradeWidgetInstance)
 	{
 		UpgradeWidgetInstance->UpgradeWidgetInitialize(this);	// 위젯에 타워 설정

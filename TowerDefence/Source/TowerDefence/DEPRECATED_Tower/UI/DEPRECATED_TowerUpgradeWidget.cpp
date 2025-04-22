@@ -1,19 +1,19 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "TowerUpgradeWidget.h"
+#include "DEPRECATED_TowerUpgradeWidget.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "Animation/WidgetAnimation.h"
 #include "TowerDefence/DEPRECATED_Tower/TowerBaseActor.h"
 #include "TowerDefence/Framework/TowerDefenceGameMode.h"
 
-void UTowerUpgradeWidget::NativeConstruct()
+void U_DEPRECATED_TowerUpgradeWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	UpgradeButton->OnClicked.AddDynamic(this, &UTowerUpgradeWidget::UpgradeTower);
-	CloseButton->OnClicked.AddDynamic(this, &UTowerUpgradeWidget::SellTower);
+	UpgradeButton->OnClicked.AddDynamic(this, &U_DEPRECATED_TowerUpgradeWidget::UpgradeTower);
+	CloseButton->OnClicked.AddDynamic(this, &U_DEPRECATED_TowerUpgradeWidget::SellTower);
 
 	SetRenderScale(FVector2D(0.0f, 0.0f));		// Close 테스트 때문에 무조건 0으로 시작
 	SetVisibility(ESlateVisibility::Hidden);	
@@ -23,14 +23,14 @@ void UTowerUpgradeWidget::NativeConstruct()
 	BindToAnimationFinished(Close, CloseEvent);	
 }
 
-void UTowerUpgradeWidget::UpgradeWidgetInitialize(ATowerBaseActor* Tower)
+void U_DEPRECATED_TowerUpgradeWidget::UpgradeWidgetInitialize(ATowerBaseActor* Tower)
 {
 	ensure(Tower);
 	OwnerTower = Tower;	
 	GameMode = Cast<ATowerDefenceGameMode>(GetWorld()->GetAuthGameMode());
 }
 
-void UTowerUpgradeWidget::OpenUpgradeWidget()
+void U_DEPRECATED_TowerUpgradeWidget::OpenUpgradeWidget()
 {
 	// Open 애니메이션 재생
 	//UE_LOG(LogTemp, Warning, TEXT("[%s] : Open Upgrade Widget"), *OwnerTower->GetActorNameOrLabel());
@@ -41,7 +41,7 @@ void UTowerUpgradeWidget::OpenUpgradeWidget()
 	PlayAnimation(Open);	// 확대 애니메이션 재생
 }
 
-void UTowerUpgradeWidget::Test_PrintTower()
+void U_DEPRECATED_TowerUpgradeWidget::Test_PrintTower()
 {
 	if (OwnerTower)
 	{
@@ -53,7 +53,7 @@ void UTowerUpgradeWidget::Test_PrintTower()
 	}
 }
 
-void UTowerUpgradeWidget::SellTower()
+void U_DEPRECATED_TowerUpgradeWidget::SellTower()
 {
 	if (OwnerTower)
 	{
@@ -61,7 +61,7 @@ void UTowerUpgradeWidget::SellTower()
 	}
 }
 
-void UTowerUpgradeWidget::UpgradeTower()
+void U_DEPRECATED_TowerUpgradeWidget::UpgradeTower()
 {
 	if (OwnerTower)
 	{
@@ -70,7 +70,7 @@ void UTowerUpgradeWidget::UpgradeTower()
 	CloseUpgradeWidget();		// 업그레이드 위젯 닫기
 }
 
-void UTowerUpgradeWidget::UpdateButtonState()
+void U_DEPRECATED_TowerUpgradeWidget::UpdateButtonState()
 {
 	// GameMode에 있는 돈을 확인해서 UpgradeButton 활성 및 비활성화
 	bool IsEnabled = GameMode->GetGold() >= OwnerTower->GetCurrentUpgradeCost() ? true : false;
@@ -88,13 +88,13 @@ void UTowerUpgradeWidget::UpdateButtonState()
 	}
 }
 
-void UTowerUpgradeWidget::OnCloseAnimationFinished()
+void U_DEPRECATED_TowerUpgradeWidget::OnCloseAnimationFinished()
 {
 	SetVisibility(ESlateVisibility::Hidden);
 	//UE_LOG(LogTemp, Warning, TEXT("[%s] : Close Animation Finished"), *OwnerTower->GetActorNameOrLabel());
 }
 
-void UTowerUpgradeWidget::CloseUpgradeWidget()
+void U_DEPRECATED_TowerUpgradeWidget::CloseUpgradeWidget()
 {
 	if (GetRenderTransform().Scale.X > 0)
 	{

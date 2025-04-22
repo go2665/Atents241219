@@ -7,13 +7,13 @@
 #include "TowerDefence/DEPRECATED_Tower/Defines/ShotEnums.h"
 #include "TowerDefence/DEPRECATED_Tower/Defines/DamageAttribute/TowerDamageType.h"
 #include "TowerDefence/DEPRECATED_Tower/Defines/DebuffEnums.h"
-#include "ShotDataAsset.generated.h"
+#include "_DEPRECATED_ShotDataAsset.generated.h"
 
 /**
  * 총이 발사하는 총알의 데이터
  */
 UCLASS()
-class TOWERDEFENCE_API UShotDataAsset : public UDataAsset
+class TOWERDEFENCE_API U_DEPRECATED_ShotDataAsset : public UDataAsset
 {
 	GENERATED_BODY()
 	

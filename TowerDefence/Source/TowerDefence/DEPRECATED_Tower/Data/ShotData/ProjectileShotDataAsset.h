@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ShotDataAsset.h"
+#include "_DEPRECATED_ShotDataAsset.h"
 #include "ProjectileShotDataAsset.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class TOWERDEFENCE_API UProjectileShotDataAsset : public UShotDataAsset
+class TOWERDEFENCE_API UProjectileShotDataAsset : public U_DEPRECATED_ShotDataAsset
 {
 	GENERATED_BODY()
 	

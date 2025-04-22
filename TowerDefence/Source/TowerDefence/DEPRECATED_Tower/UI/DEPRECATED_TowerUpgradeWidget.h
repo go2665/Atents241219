@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "TowerUpgradeWidget.generated.h"
+#include "DEPRECATED_TowerUpgradeWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class TOWERDEFENCE_API UTowerUpgradeWidget : public UUserWidget
+class TOWERDEFENCE_API U_DEPRECATED_TowerUpgradeWidget : public UUserWidget
 {
 	GENERATED_BODY()
 

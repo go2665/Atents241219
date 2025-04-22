@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "TowerDefence/DEPRECATED_Tower/Data/ShotData/ShotDataAsset.h"
+#include "TowerDefence/DEPRECATED_Tower/Data/ShotData/_DEPRECATED_ShotDataAsset.h"
 #include "GunDataAsset.generated.h"
 
 /**
@@ -32,5 +32,5 @@ public:
 	int32 UpgradeCost = 50;		// 업그레이드 비용
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gun Data")
-	UShotDataAsset* ShotData;	// 발사체 데이터
+	U_DEPRECATED_ShotDataAsset* ShotData;	// 발사체 데이터
 };

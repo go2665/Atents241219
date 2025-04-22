@@ -87,7 +87,7 @@ private:
 	AGunBaseActor* Gun = nullptr;		// 총기 클래스의 인스턴스
 
 	UPROPERTY()
-	class UTowerUpgradeWidget* UpgradeWidgetInstance = nullptr;	// 업그레이드 위젯 인스턴스
+	class U_DEPRECATED_TowerUpgradeWidget* UpgradeWidgetInstance = nullptr;	// 업그레이드 위젯 인스턴스
 
 	int32 SellCost = 0;	// 타워 판매 비용
 };

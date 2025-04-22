@@ -18,7 +18,15 @@ public:
 	inline int32 GetGold() const { return Gold; }
 	inline void SetGold(int32 NewGold) { Gold = NewGold; }
 	inline void AddGold(int32 AddedGold) { Gold += AddedGold; }
-	inline void UseGold(int32 UsedGold) { Gold -= UsedGold; }
+	inline bool UseGold(int32 UsedGold) { 
+		if (Gold > UsedGold)
+		{
+			Gold -= UsedGold; 
+			return true;
+		}
+		//UE_LOG(LogTemp, Warning, TEXT("Not enough gold!"));
+		return false;
+	}
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "StageData")

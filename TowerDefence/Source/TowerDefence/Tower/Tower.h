@@ -11,6 +11,8 @@ class UTowerUpgradeWidget;
 class ACannon;
 //class UCannonDataAsset;
 class UWidgetComponent;
+class AEnemyBase;
+class UShotDataAsset;
 
 /*
 타워 클래스. 데이터 파일을 기반으로 기능이 변화함.
@@ -22,7 +24,6 @@ class TOWERDEFENCE_API ATower : public AActor
 	
 public:	
 	ATower();
-	virtual void OnConstruction(const FTransform& Transform) override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -33,6 +34,7 @@ public:
 	void TowerLevelUp(); 
 
 	// 타워 판매 함수
+	UFUNCTION(BlueprintCallable, Category = "Tower")
 	void TowerSell(); 
 
 	//// 버프 추가 함수
@@ -41,7 +43,18 @@ public:
 	// 버프 제거 함수
 	//bool RemoveEffect(UTowerBuffDataAsset* BuffData);
 
-	// void TowerFire();
+	UFUNCTION(BlueprintCallable, Category = "Tower")
+	void TowerFire(const TArray<AEnemyBase*>& InTargetEnemies);
+
+	// 타워의 현재 캐논 데이터
+	inline const UCannonDataAsset* GetCannonData() const
+	{
+		if (TowerLevel < CannonDatas.Num())
+		{
+			return CannonDatas[TowerLevel];
+		}
+		return nullptr;
+	}
 
 	// 타워의 사정거리
 	inline float GetRange() const { return Range; }
@@ -53,13 +66,23 @@ public:
 	inline float GetTargetCount() const { return TargetCount; }
 
 private:
+	// 타워 클릭했을 때 실행(타워 업그레이드 UI 위젯 열기에 사용됨)
+	UFUNCTION()
+	void OnTowerClicked(AActor* TouchedActor, FKey ButtonPressed);
+
 	// 업그레이드 UI 닫기 or 스킬 사용에 사용됨(DEPRECATE된 OnCancelClicked)
 	// InClickedTower : 클릭한 타워(nullptr일 수 있다.)
 	UFUNCTION()
 	void OnScreenClicked(AActor* InClickedTower);
 
 	// 버프 모디파이어 재계산
-	void RefreshModifiers();
+	void UpdateModifiers();
+
+	// 타워 데이터를 전체 갱신하는 함수
+	void UpdateData();
+
+	// 공격하는 적 목록 출력하기
+	void Test_PrintFireTargetList(const TArray<AEnemyBase*>& InTargetEnemies);
 
 protected:
 	// 타워 메시 
@@ -82,8 +105,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower|Base Data")
 	TArray<UCannonDataAsset*> CannonDatas;
 	
-
 	// 샷 데이터
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower|Base Data")
+	TArray<UShotDataAsset*> ShotDatas;
+
 	// 버프 데이터(컴포넌트 추가)
 	// 스킬 데이터(컴포넌트 추가)
 	// 스텟
@@ -110,7 +135,7 @@ private:
 	UTowerUpgradeWidget* UpgradeWidgetInstance = nullptr;	// 업그레이드 위젯 인스턴스
 
 	// 대포 레벨의 최대값
-	const static int8 MaxCannonLevel = 2;	
+	const static int8 MaxTowerLevel = 2;	
 
 	// 타워 판매 비용
 	int32 SellCost = 50;	

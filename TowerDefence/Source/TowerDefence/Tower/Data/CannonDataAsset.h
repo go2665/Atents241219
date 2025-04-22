@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "TowerDefence/Defines/TowerDefenceEnums.h"
 #include "CannonDataAsset.generated.h"
 
 /**
@@ -37,6 +38,10 @@ public:
 	// 공격 시 한번에 공격 가능한 타겟 수
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Cannon Data")
 	int32 TargetCount = 1;		
+
+	// TargetCount가 여러명일 때 발사 순서(발견 순서 or 거리 순서)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Cannon Data")
+	EFireOrder FireOrder = EFireOrder::Discovery;	
 
 	// 업그레이드 비용
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Cannon Data")

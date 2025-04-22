@@ -86,7 +86,7 @@ void ACannon::OnSightOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor
 		if (Enemy)
 		{
 			TargetEnemies.Remove(Enemy); // 적 캐릭터를 목록에서 제거
-			Test_PrintEnemyList();
+			//Test_PrintEnemyList();
 
 			if (TargetEnemies.IsEmpty())
 			{
@@ -110,7 +110,20 @@ void ACannon::FireStart(float InFirstDelay)
 
 void ACannon::Fire()
 {
-	// 발사 델리게이트 호출
+	// 공격 대상을 결정하는 방식이 거리로 되어 있으면 정렬 필요
+	if (FireOrder == EFireOrder::Distance)
+	{
+		// 적을 거리의 오름차순으로 정렬하기
+		FVector GunLocation = GetActorLocation();
+		TargetEnemies.Sort([GunLocation](const AEnemyBase& A, const AEnemyBase& B)
+			{
+				float DistanceSquaredA = FVector::DistSquared(GunLocation, A.GetActorLocation());
+				float DistanceSquaredB = FVector::DistSquared(GunLocation, B.GetActorLocation());
+				return DistanceSquaredA < DistanceSquaredB;	// 오름차순 정렬
+			});
+	}
+
+	// 공격 대상 결정
 	int32 Count = FMath::Min(ParentTower->GetTargetCount(), TargetEnemies.Num()); // 공격할 적의 수
 	TArray<AEnemyBase*> CurrentTargetEnemies;
 	CurrentTargetEnemies.Reserve(Count);
@@ -122,6 +135,7 @@ void ACannon::Fire()
 		}
 	}
 	
+	// 발사 델리게이트 호출
 	OnCannonFire.Broadcast(CurrentTargetEnemies);	// 델리게이트 호출(ParentTower에서 처리)
 
 	//UWorld* World = GetWorld();

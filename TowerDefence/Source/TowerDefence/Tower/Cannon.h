@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "TowerDefence/Defines/TowerDefenceEnums.h"
 #include "Cannon.generated.h"
 
 class ATower;
@@ -25,12 +26,6 @@ class TOWERDEFENCE_API ACannon : public AActor
 public:	
 	ACannon();
 	virtual void Tick(float DeltaTime) override;
-
-	enum class EFireOrder
-	{
-		Discovery,	// 발견 순서
-		Distance,	// 거리 순서
-	};
 
 public:
 	// 대포 초기화 함수
@@ -100,10 +95,6 @@ protected:
 	// 적을 바라보는 속도(FireFirstDelay초 안에 180도 이상 회전 할 수 있는 속도이어야 한다.)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower|Cannon")
 	float LookSpeed = 360.0f;
-
-	//// 대포 데이터
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tower|Cannon")
-	//UCannonDataAsset* CannonData = nullptr;
 
 private:
 	// 부모 타워
