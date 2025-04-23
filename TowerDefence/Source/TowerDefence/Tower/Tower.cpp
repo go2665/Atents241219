@@ -119,7 +119,7 @@ void ATower::TowerSell()
 
 void ATower::TowerFire(const TArray<AEnemyBase*>& InTargetEnemies)
 {
-	if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] : Tower Fire!"), *this->GetActorNameOrLabel());
+	//if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] : Tower Fire!"), *this->GetActorNameOrLabel());
 	//Test_PrintFireTargetList(InTargetEnemies);	// 공격하는 적 목록 출력
 
 	if (ShotData->IsProjectile())
@@ -236,6 +236,7 @@ bool ATower::LineTraceToTarget(AActor* InTarget, TArray<AEnemyBase*>& OutHitTarg
 	Direction.Normalize();		// 방향 벡터 정규화
 
 	FVector Start = CannonInstance->GetMuzzleLocation();	// 총구 위치
+	//UE_LOG(LogTemp, Warning, TEXT("[%s] : Start = %s"), *this->GetActorNameOrLabel(), *Start.ToString());
 	FVector End = Start + Range * Direction; // 총구에서 적 캐릭터까지의 거리만큼 나간 위치
 
 	UWorld* World = GetWorld();

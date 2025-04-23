@@ -36,8 +36,7 @@ public:
 
 	// 포탄 발사 위치
 	inline FVector GetMuzzleLocation() const { 
-		/*return MuzzleLocation->GetComponentLocation();*/
-		return GetActorLocation() + MuzzleLocation->GetRelativeLocation();	
+		return MuzzleLocation->GetComponentLocation();
 	}
 
 	// 포탄 발사 방향
