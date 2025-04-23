@@ -5,14 +5,15 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "TowerDefence/Tower/Data/CannonDataAsset.h"
+#include "TowerDefence/Tower/Data/ShotDataAsset.h"
 #include "Tower.generated.h"
 
 class UTowerUpgradeWidget;
 class ACannon;
-//class UCannonDataAsset;
 class UWidgetComponent;
 class AEnemyBase;
-class UShotDataAsset;
+//class UCannonDataAsset;
+//class UShotDataAsset;
 
 /*
 타워 클래스. 데이터 파일을 기반으로 기능이 변화함.
@@ -43,8 +44,12 @@ public:
 	// 버프 제거 함수
 	//bool RemoveEffect(UTowerBuffDataAsset* BuffData);
 
+	// 타워가 공격 할 때 호출되는 함수
 	UFUNCTION(BlueprintCallable, Category = "Tower")
 	void TowerFire(const TArray<AEnemyBase*>& InTargetEnemies);
+
+	// 타워의 공격당 데미지
+	inline float GetDamage() const { return Damage; }
 
 	// 타워의 사정거리
 	inline float GetRange() const { return Range; }
@@ -71,10 +76,25 @@ private:
 	// 타워 데이터를 전체 갱신하는 함수
 	void UpdateData();
 
+	// 타워가 공격할 때 발사체를 만들어서 쏘는 함수
+	void ShootProjectile(const TArray<AEnemyBase*>& InTargetEnemies);
+
+	// 타워가 공격할 때 히트스캔으로 처리하는 함수
+	void ShootHitScan(const TArray<AEnemyBase*>& InTargetEnemies);
+
+	// 실제 라인트레이스를 수행하는 함수(InTarget 공격 대상, OutHitTargets 맞은 적 목록)
+	bool LineTraceToTarget(AActor* InTarget, TArray<AEnemyBase*>& OutHitTargets);
+
 	// 타워의 현재 캐논 데이터
 	inline const FCannonLevelData& GetCannonLevelData() const
 	{
 		return CannonData->LevelData[TowerLevel];
+	}
+
+	// 타워의 현재 Shot 데이터
+	inline const FShotLevelData& GetShotLevelData() const
+	{
+		return ShotData->LevelData[TowerLevel];
 	}
 
 	// 공격하는 적 목록 출력하기
@@ -105,11 +125,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower|Base Data")
 	UShotDataAsset* ShotData;
 
-	// 버프 데이터(컴포넌트 추가)
+	// Effect : 버프 데이터(컴포넌트 추가), 모디파이어
 	// 스킬 데이터(컴포넌트 추가)
 	// 스텟
-	// 모디파이어
 	
+	// 타워가 주는 공격당 데미지(모디파이어 적용된 값. 버프 변경시 재계산되어야 함)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tower|Buff Modified Value")
+	float Damage = 1.0f;	
+
 	// 대포 사정거리(모디파이어 적용된 값. 버프 변경시 재계산되어야 함)
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tower|Buff Modified Value")
 	float Range = 300.0f;	

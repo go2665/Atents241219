@@ -3,10 +3,10 @@
 
 #include "EnemyBase.h"
 #include "Engine/DamageEvents.h"
-#include "TowerDefence/DEPRECATED_Tower/Defines/DamageAttribute/FireDamageType.h"
-#include "TowerDefence/DEPRECATED_Tower/Defines/DamageAttribute/IceDamageType.h"
-#include "TowerDefence/DEPRECATED_Tower/Defines/DamageAttribute/LightningDamageType.h"
-#include "TowerDefence/DEPRECATED_Tower/Defines/DamageAttribute/PoisonDamageType.h"
+#include "TowerDefence/Defines/DamageAttribute/FireDamageType.h"
+#include "TowerDefence/Defines/DamageAttribute/IceDamageType.h"
+#include "TowerDefence/Defines/DamageAttribute/LightningDamageType.h"
+#include "TowerDefence/Defines/DamageAttribute/PoisonDamageType.h"
 #include "TowerDefence/DEPRECATED_Tower/Effect/Debuff/DebuffComponent.h"
 #include "TowerDefence/DEPRECATED_Tower/Shot/ShotProjectileBase.h"
 

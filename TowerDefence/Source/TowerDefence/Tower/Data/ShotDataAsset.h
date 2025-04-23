@@ -4,12 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "TowerDefence/DEPRECATED_Tower/Defines/ShotEnums.h"
-#include "TowerDefence/DEPRECATED_Tower/Defines/DamageAttribute/TowerDamageType.h"
+#include "TowerDefence/Tower/Projectile.h"
 #include "TowerDefence/DEPRECATED_Tower/Defines/DebuffEnums.h"
+#include "TowerDefence/Defines/TowerDefenceEnums.h"
+#include "TowerDefence/Defines/DamageAttribute/TowerDamageType.h"
 #include "ShotDataAsset.generated.h"
-
-class AProjectile;
 
 // 레벨별 데이터를 가지는 구조체
 USTRUCT(BlueprintType)
@@ -41,7 +40,7 @@ class TOWERDEFENCE_API UShotDataAsset : public UDataAsset
 public:
 	// 속성 타입(데미지 타입)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Shot")
-	TSubclassOf<UTowerDamageType> AttributeType = UTowerDamageType::StaticClass(); // 속성 타입(데미지 타입)
+	TSubclassOf<UTowerDamageType> DamageType = UTowerDamageType::StaticClass(); // 속성 타입(데미지 타입)
 	
 	// 레벨별 데이터
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Shot")
@@ -58,4 +57,12 @@ public:
 	// 범위 공격 감쇠 비율(0.0 ~ 1.0)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Shot|Splash")
 	float SplashFalloff = 0.8f;
+
+	// 이 Shot이 Projectile인지 확인하는 함수(true면 발사체)
+	UFUNCTION()
+	inline bool IsProjectile() const { return ProjectileClass != nullptr; }
+
+	// 이 Shot이 HitScan인지 확인하는 함수(true면 히트스캔)
+	UFUNCTION()
+	inline bool IsHitScan() const { return ProjectileClass == nullptr; }
 };

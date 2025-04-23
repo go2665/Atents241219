@@ -29,8 +29,6 @@ AProjectile::AProjectile()
 void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	verify(ShotData != nullptr);		// 발사체 데이터가 반드시 설정되어 있어야 함
 
 	// 오버랩 이벤트 바인딩
 	OnActorBeginOverlap.AddDynamic(this, &AProjectile::OnOverlapEnemy);
@@ -65,6 +63,9 @@ void AProjectile::Tick(float DeltaTime)
 void AProjectile::OnInitialize(const AActor* InTarget, const UShotDataAsset* InShotData, int32 InLevel,
 	float InDamageModifier, float InEffectModifier)
 {
+	// 타겟과 발사체 데이터는 반드시 존재해야 한다.
+	verify(InTarget != nullptr && InShotData != nullptr);		
+
 	TargetActor = InTarget;
 	TargetLocation = TargetActor->GetActorLocation();
 
@@ -78,10 +79,11 @@ void AProjectile::OnInitialize(const AActor* InTarget, const UShotDataAsset* InS
 	{
 		TargetActor = nullptr; // 범위 공격이면 TargetActor는 nullptr로 설정
 	}
+
 	ShotLevel = InLevel;
 
 	DamageModifier = InDamageModifier;
-	EffectModifier = InEffectModifier;
+	EffectModifier = InEffectModifier;	
 }
 
 void AProjectile::OnOverlapEnemy(AActor* OverlappedActor, AActor* OtherActor)
@@ -109,7 +111,7 @@ void AProjectile::DamageToEnemy(AEnemyBase* HitEnemy)
 		HitEnemy,
 		GetShotLevelData().Damage * DamageModifier,
 		nullptr, nullptr,
-		ShotData->AttributeType);
+		ShotData->DamageType);
 
 	// 적에게 디버프 추가(델리게이트로 알리기?)
 	//HitEnemy->GetDebuffComponent()->AddDebuff(ShotData->DebuffType, DebuffModifier);
@@ -131,7 +133,7 @@ void AProjectile::DamageToArea(AActor* InIgnore)
 		GetShotLevelData().SplashRadius * 0.5f,
 		GetShotLevelData().SplashRadius,
 		ShotData->SplashFalloff,
-		ShotData->AttributeType,
+		ShotData->DamageType,
 		Ignores,
 		this // 이 발사체를 맞은 대상을 기록하기 위해 사용
 	);
@@ -148,5 +150,10 @@ void AProjectile::DamageToArea(AActor* InIgnore)
 	//		}
 	//	}
 	//}
+}
+
+const FShotLevelData& AProjectile::GetShotLevelData() const
+{
+	return ShotData->LevelData[ShotLevel];
 }
 

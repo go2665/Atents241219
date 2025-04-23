@@ -7,7 +7,7 @@
 #include "NiagaraSystem.h"
 #include "TowerDefence/DEPRECATED_Tower/Data/BuffData/TowerBuffDataAsset.h"
 #include "TowerDefence/DEPRECATED_Tower/Defines/DebuffEnums.h"
-#include "TowerDefence/DEPRECATED_Tower/Defines/DamageAttribute/TowerDamageType.h"
+#include "TowerDefence/Defines/DamageAttribute/TowerDamageType.h"
 #include "SkillDataAsset.generated.h"
 
 /**

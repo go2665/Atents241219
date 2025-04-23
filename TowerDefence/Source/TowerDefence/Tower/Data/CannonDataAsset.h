@@ -55,7 +55,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Cannon")
 	EFireOrder FireOrder = EFireOrder::Discovery;	
 
-	// 대포의 레벨별 데이터(0~2)
+	// 대포의 레벨별 데이터
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Cannon")
 	TArray<FCannonLevelData> LevelData;
 };

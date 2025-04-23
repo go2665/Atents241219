@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "TowerDefence/DEPRECATED_Tower/Defines/ShotEnums.h"
-#include "TowerDefence/DEPRECATED_Tower/Defines/DamageAttribute/TowerDamageType.h"
 #include "TowerDefence/DEPRECATED_Tower/Defines/DebuffEnums.h"
+#include "TowerDefence/Defines/TowerDefenceEnums.h"
+#include "TowerDefence/Defines/DamageAttribute/TowerDamageType.h"
 #include "EnemyBase.generated.h"
 
 UCLASS()

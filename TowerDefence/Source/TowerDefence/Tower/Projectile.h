@@ -4,12 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "TowerDefence/Tower/Data/ShotDataAsset.h"
 #include "Projectile.generated.h"
 
 class AEnemyBase;
-//class UShotDataAsset;
+class UShotDataAsset;
 class UProjectileMovementComponent;
+struct FShotLevelData;
+
+//#define GET_SHOT_LEVEL_DATA ShotData->LevelData[ShotLevel]	// 메크로 예시
 
 /**
  * 발사체 클래스. 블루프린트는 외형과 이동속도만 설정. 그 외 데이터는 OnInitialize에서 설정한 UShotDataAsset로 설정됨.
@@ -48,10 +50,7 @@ protected:
 	void DamageToArea(AActor* InIgnore);
 
 private:
-	const inline FShotLevelData& GetShotLevelData() const
-	{
-		return ShotData->LevelData[ShotLevel];
-	}
+	const FShotLevelData& GetShotLevelData() const;
 
 protected:
 	// 발사체 이동 컴포넌트

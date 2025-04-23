@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/DamageType.h"
-#include "TowerDefence/DEPRECATED_Tower/Defines/ShotEnums.h"
+#include "TowerDefence/Defines/TowerDefenceEnums.h"
 #include "TowerDamageType.h"
 #include "PoisonDamageType.generated.h"
 
@@ -17,6 +17,6 @@ class TOWERDEFENCE_API UPoisonDamageType : public UTowerDamageType
 	GENERATED_BODY()
 	
 public:
-	static inline EAttributeType GetAttributeType() { return EAttributeType::Poison; } // 속성 타입을 반환하는 함수
+	static inline EDamageType GetAttributeType() { return EDamageType::Poison; } // 속성 타입을 반환하는 함수
 
 };

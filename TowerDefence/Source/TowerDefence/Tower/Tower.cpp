@@ -3,7 +3,11 @@
 
 #include "Tower.h"
 #include "Components/WidgetComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "TowerDefence/Tower/Cannon.h"
+#include "TowerDefence/Tower/Projectile.h"
+#include "TowerDefence/Tower/Data/CannonDataAsset.h"
+#include "TowerDefence/Tower/Data/ShotDataAsset.h"
 #include "TowerDefence/Tower/UI/TowerUpgradeWidget.h"
 #include "TowerDefence/Framework/TowerDefenceGameMode.h"
 #include "TowerDefence/Framework/TowerDefencePlayerController.h"
@@ -33,6 +37,7 @@ void ATower::BeginPlay()
 	Super::BeginPlay();
 
 	verify(CannonData != nullptr);
+	verify(ShotData != nullptr);
 
 	TowerLevel = 0;
 	TowerLevelCap = CannonData->LevelData.Num();
@@ -117,7 +122,16 @@ void ATower::TowerFire(const TArray<AEnemyBase*>& InTargetEnemies)
 	UE_LOG(LogTemp, Warning, TEXT("[%s] : Tower Fire!"), *this->GetActorNameOrLabel());
 	//Test_PrintFireTargetList(InTargetEnemies);	// 공격하는 적 목록 출력
 
-
+	if (ShotData->IsProjectile())
+	{
+		// 발사체 생성해서 발사
+		ShootProjectile(InTargetEnemies);
+	}
+	else
+	{
+		// 히트스캔으로 공격
+		ShootHitScan(InTargetEnemies);
+	}
 }
 
 void ATower::OnTowerClicked(AActor* TouchedActor, FKey ButtonPressed)
@@ -155,10 +169,134 @@ void ATower::UpdateData()
 {
 	UpdateModifiers();
 
-	// Range, FireRate, TargetCount 등에 기본 값과 모디파이어를 곱한 값을 설정
-	Range = GetCannonLevelData().Range;			// 모디파이어 곱하기 적용할 것
+	// Damage, Range, FireRate, TargetCount 등에 기본 값과 모디파이어를 곱한 값을 설정
+	Damage = GetShotLevelData().Damage;					// 모디파이어 곱하기 적용할 것
+	Range = GetCannonLevelData().Range;
 	FireRate = GetCannonLevelData().FireRate;
 	TargetCount = GetCannonLevelData().TargetCount;
+}
+
+void ATower::ShootProjectile(const TArray<AEnemyBase*>& InTargetEnemies)
+{
+	UWorld* World = GetWorld();
+
+	// ProjectileClass를 MuzzleLocation에 스폰
+	int32 Count = FMath::Min(GetCannonLevelData().TargetCount, InTargetEnemies.Num()); // 공격할 적의 수
+	for (int32 i = 0; i < Count; i++)
+	{
+		AProjectile* Projectile = World->SpawnActor<AProjectile>(
+			ShotData->ProjectileClass, CannonInstance->GetMuzzleTransform());
+		if (Projectile)
+		{
+			// 발사체 데이터 초기화
+			Projectile->OnInitialize(
+				InTargetEnemies[i], 
+				ShotData, TowerLevel
+				/*나중에 모디파이어 적용할 것*/
+			);	
+		}
+	}
+}
+
+void ATower::ShootHitScan(const TArray<AEnemyBase*>& InTargetEnemies)
+{
+	int32 Count = FMath::Min(GetCannonLevelData().TargetCount, InTargetEnemies.Num()); // 공격할 적의 수
+	for (int32 i = 0; i < Count; i++)
+	{
+		TArray<AEnemyBase*> HitEnemies; // 맞은 적 캐릭터 배열
+		bool bHit = LineTraceToTarget(InTargetEnemies[i], HitEnemies);
+		if (bHit)
+		{
+			for (auto HitEnemy : HitEnemies) // HitEnemies는 Shot데이터가 (bIsSplashAttack == true)일때 여러명일 수 있다.
+			{
+				// 맞은 적 캐릭터에 대한 처리
+
+				// 데미지 처리
+				UGameplayStatics::ApplyDamage(
+					HitEnemy,		// 적 캐릭터
+					Damage,			// 데미지
+					nullptr,		// 행위자
+					nullptr,		// 공격자
+					ShotData->DamageType // 총알의 속성 타입
+				);
+
+				// 디버프 처리(나중에 추가할 것)
+			}
+		}
+	}
+}
+
+bool ATower::LineTraceToTarget(AActor* InTarget, TArray<AEnemyBase*>& OutHitTargets)
+{
+	OutHitTargets.Empty(); // Out파라메터는 초기화하고 사용하기
+	bool bHit = false;
+
+	FVector Direction = InTarget->GetActorLocation() - CannonInstance->GetMuzzleLocation(); // 총구에서 적 캐릭터까지의 방향 벡터
+	Direction.Z = 0.0f;			// Z축 방향 제거(2D 평면에서의 거리 계산을 위해)
+	Direction.Normalize();		// 방향 벡터 정규화
+
+	FVector Start = CannonInstance->GetMuzzleLocation();	// 총구 위치
+	FVector End = Start + Range * Direction; // 총구에서 적 캐릭터까지의 거리만큼 나간 위치
+
+	UWorld* World = GetWorld();
+
+	FCollisionQueryParams CollisionParams; // 충돌 쿼리 파라미터
+	CollisionParams.AddIgnoredActor(this); // 쿼리에서 무시할 액터 추가
+
+	if (ShotData->bIsSplashAttack)
+	{
+		TArray<FHitResult> HitResults;
+		bHit = World->LineTraceMultiByObjectType(
+			HitResults,			// 충돌 결과
+			Start,				// 시작 위치
+			End,				// 끝 위치
+			FCollisionObjectQueryParams(ECC_GameTraceChannel1), // 충돌 오브젝트 채널
+			CollisionParams
+		);
+
+		if (bHit)	// 맞았으면 맞은 시간과 대상 출력(단순 확인용)
+		{
+			for (const FHitResult& HitResult : HitResults)
+			{
+				AEnemyBase* HitEnemy = Cast<AEnemyBase>(HitResult.GetActor()); // 충돌한 액터가 적 캐릭터인지 확인
+				if (HitEnemy)
+				{
+					//FString TimeString = FDateTime::FromUnixTimestamp(World->TimeSeconds).ToString(TEXT("%H:%M:%S"));
+					//UE_LOG(LogTemp, Warning, TEXT("[%s] [%s] Hit!"), *TimeString, *HitEnemy->GetActorLabel());
+					OutHitTargets.Add(HitEnemy); // 맞은 적 캐릭터를 배열에 추가
+				}
+			}
+		}
+	}
+	else
+	{
+		FHitResult HitResult; // 충돌 결과를 저장할 변수
+		bHit = World->LineTraceSingleByObjectType(
+			HitResult,			// 충돌 결과
+			Start,				// 시작 위치
+			End,				// 끝 위치
+			FCollisionObjectQueryParams(ECC_GameTraceChannel1), // 충돌 오브젝트 채널
+			CollisionParams
+		);
+
+		if (bHit)	// 맞았으면 맞은 시간과 대상 출력(단순 확인용)
+		{
+			AEnemyBase* HitEnemy = Cast<AEnemyBase>(HitResult.GetActor()); // 충돌한 액터가 적 캐릭터인지 확인
+			if (HitEnemy)
+			{
+				//FString TimeString = FDateTime::FromUnixTimestamp(World->TimeSeconds).ToString(TEXT("%H:%M:%S"));
+				//UE_LOG(LogTemp, Warning, TEXT("[%s] [%s] Hit!"), *TimeString, *HitEnemy->GetActorLabel());
+				OutHitTargets.Add(HitEnemy); // 맞은 적 캐릭터를 배열에 추가
+			}
+		}
+	}
+
+#if WITH_EDITOR
+	FColor LineColor = bHit ? FColor::Red : FColor::Green; // 충돌 여부에 따라 선 색상 설정
+	DrawDebugLine(World, Start, End, LineColor, false, 1.0f, 0, 1.0f); // 선 그리기
+#endif
+
+	return bHit;
 }
 
 void ATower::Test_PrintFireTargetList(const TArray<AEnemyBase*>& InTargetEnemies)

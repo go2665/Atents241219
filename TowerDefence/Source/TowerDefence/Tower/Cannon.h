@@ -35,10 +35,16 @@ public:
 	void OnModifierChange();
 
 	// 포탄 발사 위치
-	inline FVector GetMuzzleLocation() const { return MuzzleLocation->GetComponentLocation(); }
+	inline FVector GetMuzzleLocation() const { 
+		/*return MuzzleLocation->GetComponentLocation();*/
+		return GetActorLocation() + MuzzleLocation->GetRelativeLocation();	
+	}
 
 	// 포탄 발사 방향
 	inline FVector GetMuzzleForwardVector() const { return MuzzleLocation->GetForwardVector(); }
+
+	// 포탄 발사 트랜스폼
+	inline FTransform GetMuzzleTransform() const { return MuzzleLocation->GetComponentTransform(); }
 
 private:
 	// 시야 범위안에 들어온 적을 관리하는 함수
