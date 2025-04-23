@@ -54,6 +54,21 @@ void AProjectile::Tick(float DeltaTime)
 		//UE_LOG(LogTemp, Warning, TEXT("DistSquared: %.2f"), DistSquared);
 		if (DistSquared < 100)	// 목표 위치와 10cm 안인지 확인
 		{
+			if (bShowDebugInfo)
+			{
+				UWorld* World = GetWorld();
+				float Radius = ShotData->bIsSplashAttack ? GetShotLevelData().SplashRadius : 10.0f;
+				DrawDebugSphere(
+					World,
+					TargetLocation,
+					Radius,
+					12,
+					FColor::Red,
+					false,
+					1.0f
+				);
+			}
+
 			DamageToArea(nullptr);	// 바닥에 충돌
 			Destroy();
 		}
@@ -61,14 +76,14 @@ void AProjectile::Tick(float DeltaTime)
 }
 
 void AProjectile::OnInitialize(const AActor* InTarget, const UShotDataAsset* InShotData, int32 InLevel,
-	float InDamageModifier, float InEffectModifier)
+	bool InbShowDebugInfo, float InDamageModifier, float InEffectModifier)
 {
 	// 타겟과 발사체 데이터는 반드시 존재해야 한다.
 	verify(InTarget != nullptr && InShotData != nullptr);		
 
 	TargetActor = InTarget;
 	TargetLocation = TargetActor->GetActorLocation();
-
+	
 	FVector Direction = TargetActor->GetActorLocation() - GetActorLocation();
 	Direction.Normalize();
 	ProjectileMovement->Velocity = Direction * MoveSpeed;
@@ -84,6 +99,32 @@ void AProjectile::OnInitialize(const AActor* InTarget, const UShotDataAsset* InS
 
 	DamageModifier = InDamageModifier;
 	EffectModifier = InEffectModifier;	
+
+	bShowDebugInfo = InbShowDebugInfo; // 디버그 정보 표시 여부
+	if (bShowDebugInfo)
+	{
+		UWorld* World = GetWorld();
+		DrawDebugLine(
+			World,
+			GetActorLocation(),
+			TargetLocation,
+			FColor::Yellow,
+			false,
+			1.0f,
+			0,
+			1.0f
+		);
+		float Radius = ShotData->bIsSplashAttack ? GetShotLevelData().SplashRadius : 10.0f;
+		DrawDebugSphere(
+			World,
+			TargetLocation,
+			Radius,
+			12,
+			FColor::Yellow,
+			false,
+			1.0f
+		);
+	}
 }
 
 void AProjectile::OnOverlapEnemy(AActor* OverlappedActor, AActor* OtherActor)
@@ -93,6 +134,21 @@ void AProjectile::OnOverlapEnemy(AActor* OverlappedActor, AActor* OtherActor)
 		AEnemyBase* HitEnemy = Cast<AEnemyBase>(OtherActor);
 		if (HitEnemy)
 		{
+			if (bShowDebugInfo)
+			{
+				UWorld* World = GetWorld();				
+				float Radius = ShotData->bIsSplashAttack ? GetShotLevelData().SplashRadius : 10.0f;
+				DrawDebugSphere(
+					World,
+					OverlappedActor->GetActorLocation(),
+					Radius,
+					12,
+					FColor::Red,
+					false,
+					1.0f
+				);
+			}
+
 			DamageToEnemy(HitEnemy);	// 데미지 주기
 
 			if (TargetActor == nullptr) 

@@ -145,6 +145,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tower|Buff Modified Value")
 	int32 TargetCount = 1;
 
+	// 디버그 정보 표시 여부
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Debug")
+	bool bShowDebugInfo = false;	
+
 private:
 	// 총기 클래스의 인스턴스
 	UPROPERTY()

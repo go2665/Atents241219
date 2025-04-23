@@ -52,6 +52,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy")
 	float Speed = 100.0f;								// 적의 이동 속도
 
+	// 디버그 정보 표시 여부
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Debug")
+	bool bShowDebugInfo = false;
+
 private:
 	float SpeedModifier = 0.0f;							// 적의 이동 속도 수정 값
 	float DamageModifier = 1.0f;						// 적의 데미지 배율

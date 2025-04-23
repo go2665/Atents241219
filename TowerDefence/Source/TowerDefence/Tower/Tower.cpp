@@ -104,7 +104,7 @@ void ATower::TowerLevelUp()
 
 void ATower::TowerSell()
 {
-	//UE_LOG(LogTemp, Warning, TEXT("[%s] : Tower Sell!"), *this->GetActorNameOrLabel());
+	if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] : Tower Sell!"), *this->GetActorNameOrLabel());
 	ATowerDefenceGameMode* GameMode = Cast<ATowerDefenceGameMode>(GetWorld()->GetAuthGameMode());
 	GameMode->AddGold(SellCost);	// 판매 비용 추가
 	if (CannonInstance)
@@ -119,7 +119,7 @@ void ATower::TowerSell()
 
 void ATower::TowerFire(const TArray<AEnemyBase*>& InTargetEnemies)
 {
-	UE_LOG(LogTemp, Warning, TEXT("[%s] : Tower Fire!"), *this->GetActorNameOrLabel());
+	if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] : Tower Fire!"), *this->GetActorNameOrLabel());
 	//Test_PrintFireTargetList(InTargetEnemies);	// 공격하는 적 목록 출력
 
 	if (ShotData->IsProjectile())
@@ -142,7 +142,7 @@ void ATower::OnTowerClicked(AActor* TouchedActor, FKey ButtonPressed)
 		if (UpgradeWidgetInstance)
 		{
 			UpgradeWidgetInstance->OpenUpgradeWidget(GetCannonLevelData().UpgradeCost);
-			//UE_LOG(LogTemp, Warning, TEXT("[%s] : Clicked Tower!"), *this->GetActorNameOrLabel());
+			//if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] : Clicked Tower!"), *this->GetActorNameOrLabel());
 		}
 	}
 }
@@ -152,11 +152,11 @@ void ATower::OnScreenClicked(AActor* InClickedTower)
 	if (UpgradeWidgetInstance && InClickedTower != this)
 	{
 		UpgradeWidgetInstance->CloseUpgradeWidget();
-		//UE_LOG(LogTemp, Warning, TEXT("[%s] : Close Upgrade Widget!"), *this->GetActorNameOrLabel());
+		//if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] : Close Upgrade Widget!"), *this->GetActorNameOrLabel());
 	}
 	//else
 	//{
-	//	UE_LOG(LogTemp, Warning, TEXT("[%s] : Not Close Upgrade Widget!"), *InClickedTower->GetActorNameOrLabel());
+	//	if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] : Not Close Upgrade Widget!"), *InClickedTower->GetActorNameOrLabel());
 	//}
 }
 
@@ -191,7 +191,7 @@ void ATower::ShootProjectile(const TArray<AEnemyBase*>& InTargetEnemies)
 			// 발사체 데이터 초기화
 			Projectile->OnInitialize(
 				InTargetEnemies[i], 
-				ShotData, TowerLevel
+				ShotData, TowerLevel, bShowDebugInfo
 				/*나중에 모디파이어 적용할 것*/
 			);	
 		}
@@ -264,6 +264,12 @@ bool ATower::LineTraceToTarget(AActor* InTarget, TArray<AEnemyBase*>& OutHitTarg
 					//FString TimeString = FDateTime::FromUnixTimestamp(World->TimeSeconds).ToString(TEXT("%H:%M:%S"));
 					//UE_LOG(LogTemp, Warning, TEXT("[%s] [%s] Hit!"), *TimeString, *HitEnemy->GetActorLabel());
 					OutHitTargets.Add(HitEnemy); // 맞은 적 캐릭터를 배열에 추가
+
+					if (bShowDebugInfo)
+					{
+						// 맞은 위치에 구 그리기
+						DrawDebugSphere(World, HitResult.Location, 10.0f, 12, FColor::Red, false, 1.0f);
+					}
 				}
 			}
 		}
@@ -287,13 +293,22 @@ bool ATower::LineTraceToTarget(AActor* InTarget, TArray<AEnemyBase*>& OutHitTarg
 				//FString TimeString = FDateTime::FromUnixTimestamp(World->TimeSeconds).ToString(TEXT("%H:%M:%S"));
 				//UE_LOG(LogTemp, Warning, TEXT("[%s] [%s] Hit!"), *TimeString, *HitEnemy->GetActorLabel());
 				OutHitTargets.Add(HitEnemy); // 맞은 적 캐릭터를 배열에 추가
+
+				if (bShowDebugInfo)
+				{
+					// 맞은 위치에 구 그리기
+					DrawDebugSphere(World, HitResult.Location, 10.0f, 12, FColor::Red, false, 1.0f); 
+				}
 			}
 		}
 	}
 
 #if WITH_EDITOR
-	FColor LineColor = bHit ? FColor::Red : FColor::Green; // 충돌 여부에 따라 선 색상 설정
-	DrawDebugLine(World, Start, End, LineColor, false, 1.0f, 0, 1.0f); // 선 그리기
+	if (bShowDebugInfo)
+	{
+		FColor LineColor = bHit ? FColor::Red : FColor::Green; // 충돌 여부에 따라 선 색상 설정
+		DrawDebugLine(World, Start, End, LineColor, false, 1.0f, 0, 1.0f); // 선 그리기
+	}
 #endif
 
 	return bHit;

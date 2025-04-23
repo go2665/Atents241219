@@ -65,7 +65,8 @@ float AEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent
 	{
 		ActualDamage *= 2.0f;			// 약점 속성에 대한 데미지 배가
 	}
-	UE_LOG(LogTemp, Warning, TEXT("[%s] Take Damage: %.1f"), *this->GetActorLabel(), ActualDamage);
+
+	if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] Take Damage: %.1f"), *this->GetActorLabel(), ActualDamage);
 	SetCurrentHealth(CurrentHealth - ActualDamage); // 체력 설정
 
 	if (DamageCauser)
@@ -98,12 +99,12 @@ void AEnemyBase::SetCurrentHealth(float NewHealth)
 		// 적 캐릭터가 죽었을 때의 처리
 		//Destroy(); // 적 캐릭터 삭제
 
-		UE_LOG(LogTemp, Warning, TEXT("[%s] is dead!"), *this->GetActorLabel());
+		if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] is dead!"), *this->GetActorLabel());
 	}
 	else
 	{
 		// 적 캐릭터가 살아있을 때의 처리
-		UE_LOG(LogTemp, Warning, TEXT("[%s] Current Health: %.1f"), *this->GetActorLabel(), CurrentHealth);
+		if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] Current Health: %.1f"), *this->GetActorLabel(), CurrentHealth);
 	}
 }
 
