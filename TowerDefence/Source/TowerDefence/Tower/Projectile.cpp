@@ -62,7 +62,7 @@ void AProjectile::Tick(float DeltaTime)
 	}
 }
 
-void AProjectile::OnInitialize(const AActor* InTarget, const UShotDataAsset* InShotData,
+void AProjectile::OnInitialize(const AActor* InTarget, const UShotDataAsset* InShotData, int32 InLevel,
 	float InDamageModifier, float InEffectModifier)
 {
 	TargetActor = InTarget;
@@ -74,10 +74,12 @@ void AProjectile::OnInitialize(const AActor* InTarget, const UShotDataAsset* InS
 	ProjectileMovement->InitialSpeed = MoveSpeed;
 
 	ShotData = InShotData;	
-	if (ShotData->bIsAreaAttack)
+	if (ShotData->bIsSplashAttack)
 	{
 		TargetActor = nullptr; // 범위 공격이면 TargetActor는 nullptr로 설정
 	}
+	ShotLevel = InLevel;
+
 	DamageModifier = InDamageModifier;
 	EffectModifier = InEffectModifier;
 }
@@ -105,11 +107,11 @@ void AProjectile::DamageToEnemy(AEnemyBase* HitEnemy)
 	// 적 한명에게 데미지 적용
 	UGameplayStatics::ApplyDamage(
 		HitEnemy,
-		ShotData->Damage * DamageModifier,
+		GetShotLevelData().Damage * DamageModifier,
 		nullptr, nullptr,
 		ShotData->AttributeType);
 
-	// 적에게 디버프 추가
+	// 적에게 디버프 추가(델리게이트로 알리기?)
 	//HitEnemy->GetDebuffComponent()->AddDebuff(ShotData->DebuffType, DebuffModifier);
 }
 
@@ -123,18 +125,18 @@ void AProjectile::DamageToArea(AActor* InIgnore)
 
 	UGameplayStatics::ApplyRadialDamageWithFalloff(
 		GetWorld(),
-		ShotData->Damage * DamageModifier,
+		GetShotLevelData().Damage * DamageModifier,
 		0.0f,
 		GetActorLocation(),
-		ShotData->AreaRadius * 0.5f,
-		ShotData->AreaRadius,
-		ShotData->AreaFalloff,
+		GetShotLevelData().SplashRadius * 0.5f,
+		GetShotLevelData().SplashRadius,
+		ShotData->SplashFalloff,
 		ShotData->AttributeType,
 		Ignores,
 		this // 이 발사체를 맞은 대상을 기록하기 위해 사용
 	);
 
-	// 디버프 처리
+	// 디버프 처리(델리게이트로 알리기?)
 	//for (AActor* Target : HitEnemies)
 	//{
 	//	if (ShotData->DebuffType != EDebuffType::None)

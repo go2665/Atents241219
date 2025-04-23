@@ -32,7 +32,10 @@ void ATower::BeginPlay()
 {
 	Super::BeginPlay();
 
-	verify(CannonDatas.Num() > 0);
+	verify(CannonData != nullptr);
+
+	TowerLevel = 0;
+	TowerLevelCap = CannonData->LevelData.Num();
 
 	// 타워 데이터 초기화
 	UpdateData();
@@ -43,14 +46,14 @@ void ATower::BeginPlay()
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
 		CannonInstance = GetWorld()->SpawnActor<ACannon>(
-			CannonDatas[0]->CannonClass,
+			CannonData->CannonClass,
 			FTransform::Identity,
 			SpawnParams);
 		CannonInstance->AttachToComponent(
 			TowerBodyMesh,
 			FAttachmentTransformRules::KeepRelativeTransform, TEXT("TowerRoof"));
 
-		CannonInstance->OnInitialize(this, GetCannonData()->FireOrder);		// 발사 순서 기준
+		CannonInstance->OnInitialize(this, CannonData->FireOrder);			// 발사 순서 기준
 		CannonInstance->OnCannonFire.AddDynamic(this, &ATower::TowerFire);	// 발사 시 타워에 신호 전달
 	}
 	
@@ -80,9 +83,9 @@ void ATower::BeginPlay()
 
 void ATower::TowerLevelUp()
 {
-	if (TowerLevel < MaxTowerLevel)
+	if (TowerLevel < TowerLevelCap)
 	{
-		float UpgradeCost = GetCannonData()->UpgradeCost;
+		float UpgradeCost = GetCannonLevelData().UpgradeCost;
 		ATowerDefenceGameMode* GameMode = Cast<ATowerDefenceGameMode>(GetWorld()->GetAuthGameMode());
 		if (GameMode->UseGold(UpgradeCost))	// 업그레이드 비용 차감 시도
 		{
@@ -124,7 +127,7 @@ void ATower::OnTowerClicked(AActor* TouchedActor, FKey ButtonPressed)
 	{
 		if (UpgradeWidgetInstance)
 		{
-			UpgradeWidgetInstance->OpenUpgradeWidget(GetCannonData()->UpgradeCost);
+			UpgradeWidgetInstance->OpenUpgradeWidget(GetCannonLevelData().UpgradeCost);
 			//UE_LOG(LogTemp, Warning, TEXT("[%s] : Clicked Tower!"), *this->GetActorNameOrLabel());
 		}
 	}
@@ -153,9 +156,9 @@ void ATower::UpdateData()
 	UpdateModifiers();
 
 	// Range, FireRate, TargetCount 등에 기본 값과 모디파이어를 곱한 값을 설정
-	Range = GetCannonData()->Range;			// 모디파이어 곱하기 적용할 것
-	FireRate = GetCannonData()->FireRate;
-	TargetCount = GetCannonData()->TargetCount;
+	Range = GetCannonLevelData().Range;			// 모디파이어 곱하기 적용할 것
+	FireRate = GetCannonLevelData().FireRate;
+	TargetCount = GetCannonLevelData().TargetCount;
 }
 
 void ATower::Test_PrintFireTargetList(const TArray<AEnemyBase*>& InTargetEnemies)

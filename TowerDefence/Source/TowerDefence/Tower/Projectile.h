@@ -4,11 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "TowerDefence/Tower/Data/ShotDataAsset.h"
 #include "Projectile.generated.h"
 
 class AEnemyBase;
-class UShotDataAsset;
+//class UShotDataAsset;
 class UProjectileMovementComponent;
+
+/**
+ * 발사체 클래스. 블루프린트는 외형과 이동속도만 설정. 그 외 데이터는 OnInitialize에서 설정한 UShotDataAsset로 설정됨.
+ */ 
 
 UCLASS()
 class TOWERDEFENCE_API AProjectile : public AActor
@@ -27,7 +32,8 @@ protected:
 public:	
 	// 발사체 데이터 초기화(스폰 직후에 반드시 호출 되어야 함)
 	UFUNCTION(BlueprintCallable, Category = "Shot")
-	void OnInitialize(const AActor* InTarget, const UShotDataAsset* InShotData, 
+	void OnInitialize(const AActor* InTarget, 
+		const UShotDataAsset* InShotData, int32 InLevel,
 		float InDamageModifier = 1.0f, float InEffectModifier = 1.0f);
 
 protected:
@@ -40,6 +46,12 @@ protected:
 
 	// 현재 범위 안에 있는 모든 적에게 데미지 적용
 	void DamageToArea(AActor* InIgnore);
+
+private:
+	const inline FShotLevelData& GetShotLevelData() const
+	{
+		return ShotData->LevelData[ShotLevel];
+	}
 
 protected:
 	// 발사체 이동 컴포넌트
@@ -62,6 +74,9 @@ private:
 	// 발사체가 날아갈 타겟 액터(적)
 	UPROPERTY()
 	const AActor* TargetActor = nullptr;
+
+	// 발사체 레벨
+	int32 ShotLevel = 0;	
 
 	// 발사체가 날아갈 목표 위치
 	FVector TargetLocation = FVector::ZeroVector;	

@@ -46,16 +46,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Tower")
 	void TowerFire(const TArray<AEnemyBase*>& InTargetEnemies);
 
-	// 타워의 현재 캐논 데이터
-	inline const UCannonDataAsset* GetCannonData() const
-	{
-		if (TowerLevel < CannonDatas.Num())
-		{
-			return CannonDatas[TowerLevel];
-		}
-		return nullptr;
-	}
-
 	// 타워의 사정거리
 	inline float GetRange() const { return Range; }
 
@@ -81,6 +71,12 @@ private:
 	// 타워 데이터를 전체 갱신하는 함수
 	void UpdateData();
 
+	// 타워의 현재 캐논 데이터
+	inline const FCannonLevelData& GetCannonLevelData() const
+	{
+		return CannonData->LevelData[TowerLevel];
+	}
+
 	// 공격하는 적 목록 출력하기
 	void Test_PrintFireTargetList(const TArray<AEnemyBase*>& InTargetEnemies);
 
@@ -101,13 +97,13 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower|Base Data")
 	int32 TowerCost = 100; 	
 
-	// 대포 데이터(레벨별 1개씩)
+	// 대포 데이터
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower|Base Data")
-	TArray<UCannonDataAsset*> CannonDatas;
+	UCannonDataAsset* CannonData = nullptr;
 	
 	// 샷 데이터
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower|Base Data")
-	TArray<UShotDataAsset*> ShotDatas;
+	UShotDataAsset* ShotData;
 
 	// 버프 데이터(컴포넌트 추가)
 	// 스킬 데이터(컴포넌트 추가)
@@ -134,8 +130,8 @@ private:
 	UPROPERTY()
 	UTowerUpgradeWidget* UpgradeWidgetInstance = nullptr;	// 업그레이드 위젯 인스턴스
 
-	// 대포 레벨의 최대값
-	const static int8 MaxTowerLevel = 2;	
+	// 대포 레벨의 최대 + 1
+	int8 TowerLevelCap = 3;	
 
 	// 타워 판매 비용
 	int32 SellCost = 50;	
