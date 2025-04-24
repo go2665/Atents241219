@@ -26,7 +26,7 @@ public:
 	void Tick(float DeltaTime);
 
 	// 이팩트가 생성 되었을 때 할일
-	virtual void OnInitialize(EEffectType InType, const UEffectDataAsset* InData, const AActor* InTarget);
+	virtual void OnInitialize(EEffectType InType, const UEffectDataAsset* InData, AActor* InTarget);
 
 	// 이팩트가 시작 되었을 때 할일
 	virtual void OnBegin();						
@@ -72,7 +72,7 @@ protected:
 
 	// 이 이팩트가 적용된 대상
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Effect")
-	const AActor* Target = nullptr; 
+	AActor* Target = nullptr; 
 
 	// 이팩트 지속 시간
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Effect")

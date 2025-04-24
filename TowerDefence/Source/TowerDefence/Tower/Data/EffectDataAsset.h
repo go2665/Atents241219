@@ -6,10 +6,11 @@
 #include "Engine/DataAsset.h"
 #include "EffectDataAsset.generated.h"
 
+class UEffectBase;
 /**
  * 
  */
-UCLASS()
+UCLASS(Blueprintable)
 class TOWERDEFENCE_API UEffectDataAsset : public UDataAsset
 {
 	GENERATED_BODY()
@@ -21,7 +22,7 @@ public:
 
 	// 이팩트 클래스
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect Data")
-	TSubclassOf<class UEffectBase> EffectClass;	
+	TSubclassOf<UEffectBase> EffectClass;	
 
 	// 이팩트 기본 지속 시간
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect Data")
@@ -31,7 +32,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect Data")
 	int32 MaxStackCount = 1; 
 
-	// 이팩트 수치 1
+	// 이팩트 수치 1(변화 비율. 예) 0.5면 50% 증가, -0.3이면 30% 감소)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect Data")
 	float Modifier1 = 0.0f;	
 

@@ -1,0 +1,51 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "EffectDebuff_DotDamage.h"
+#include "Kismet/GameplayStatics.h"
+
+void UEffectDebuff_DotDamage::OnInitialize(EEffectType InType, const UEffectDataAsset* InData, AActor* InTarget)
+{
+	Super::OnInitialize(InType, InData, InTarget);
+
+	//InData->Modifier1;	// 총 데미지
+	Interval = InData->Modifier2;	// 인터벌
+	TickDamage = InData->Modifier1 / (InData->Duration / Interval);	// 틱당 데미지
+}
+
+void UEffectDebuff_DotDamage::OnBegin()
+{
+	Super::OnBegin();
+
+	// 타이머 시작
+	UWorld* World = GetWorld();	
+	if (World)
+	{
+		World->GetTimerManager().SetTimer(
+			TimerHandle, 
+			this, &UEffectDebuff_DotDamage::DealTarget, 
+			Interval, true);
+	}
+}
+
+void UEffectDebuff_DotDamage::OnEnd()
+{
+	Super::OnEnd();
+
+	// 타이머 종료
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		World->GetTimerManager().ClearTimer(TimerHandle);
+	}
+}
+
+void UEffectDebuff_DotDamage::DealTarget()
+{
+	UGameplayStatics::ApplyDamage(
+		Target,
+		TickDamage,
+		nullptr,
+		nullptr,
+		DamageTypeClass);
+}

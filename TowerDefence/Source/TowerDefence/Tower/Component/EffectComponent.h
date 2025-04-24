@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "TowerDefence/Defines/TowerDefenceEnums.h"
 #include "TowerDefence/Tower/Data/EffectDataAsset.h"
+#include "TowerDefence/Tower/Effect/EffectBase.h"
 #include "EffectComponent.generated.h"
 
 class UEffectBase;	// 각종 버프/디버프 구현 클래스

@@ -59,8 +59,8 @@ void UEffectComponent::RemoveEffect(EEffectType InType)
 	{
 		if (EffectList[i]->GetEffectType() == InType)
 		{
-			EffectList.RemoveAt(i);
 			EffectList[i]->OnEnd();
+			EffectList.RemoveAt(i);
 
 			//FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
 			//UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Remove Buff => [%s]"),

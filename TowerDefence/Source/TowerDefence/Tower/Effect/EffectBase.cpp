@@ -17,7 +17,7 @@ void UEffectBase::Tick(float DeltaTime)
 	}
 }
 
-void UEffectBase::OnInitialize(EEffectType InType, const UEffectDataAsset* InData, const AActor* InTarget)
+void UEffectBase::OnInitialize(EEffectType InType, const UEffectDataAsset* InData, AActor* InTarget)
 {
 	EffectType = InType;
 	EffectDataAsset = InData;
