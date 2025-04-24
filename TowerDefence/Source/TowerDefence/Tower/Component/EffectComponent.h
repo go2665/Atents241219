@@ -1,0 +1,60 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Components/ActorComponent.h"
+#include "TowerDefence/Defines/TowerDefenceEnums.h"
+#include "TowerDefence/Tower/Data/EffectDataAsset.h"
+#include "EffectComponent.generated.h"
+
+class UEffectBase;	// 각종 버프/디버프 구현 클래스
+
+// 이팩트 변경 델리게이트(전체 이팩트 목록을 전달해야함)
+DECLARE_DYNAMIC_DELEGATE_OneParam(FOnEffectChanged, const TArray<UEffectBase*>&, InEffectList);	
+
+/*
+* 타워 이팩트 컴포넌트(이팩트를 관리하는 컴포넌트. 버프/디버프 추가 및 삭제, 틱 처리 등)
+*/
+UCLASS(Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+class TOWERDEFENCE_API UEffectComponent : public UActorComponent
+{
+	GENERATED_BODY()
+
+	// 컴포넌트는 이팩트만 관리(추가/삭제 등), 컴포넌트는 블루프린트에서 추가(클래스의 기본값으로 넣지 않아야함)
+	// 이팩트가 추가/삭제 되었을 때 타워에 델리게이트로 알림
+
+public:	
+	// Sets default values for this component's properties
+	UEffectComponent();
+
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	// 이팩트 추가 함수
+	UFUNCTION(BlueprintCallable, Category = "Tower|Effect")
+	void AddEffect(EEffectType InType);
+
+	// 이팩트 제거 함수
+	UFUNCTION(BlueprintCallable, Category = "Tower|Effect")
+	void RemoveEffect(EEffectType InType);
+
+protected:
+private:
+	// 버프 인스턴스 생성
+	UEffectBase* CreateEffect(EEffectType InType);
+
+public:
+	// 이팩트 변경 델리게이트(전체 이팩트 목록을 전달해야함)
+	FOnEffectChanged OnEffectChanged;
+
+protected:
+	// 게임에서 사용되는 모든 종류의 이팩트가 설정되어야 한다.(이팩트 타입과 이팩트 데이터 매핑)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower|Effect")
+	TMap<EEffectType, UEffectDataAsset*> EffectDataMap;	
+
+private:
+	// 현재 적용된 이팩트 리스트(타워에 적용 될 버프 리스트)
+	UPROPERTY(VisibleAnywhere, Category = "Tower|Effect")
+	TArray<UEffectBase*> EffectList;
+
+};
