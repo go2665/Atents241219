@@ -3,8 +3,7 @@
 
 #include "EffectBuff_RapidFire.h"
 
-void UEffectBuff_RapidFire::OnInitialize(EEffectType InType, const UEffectDataAsset* InData, AActor* InTarget)
+void UEffectBuff_RapidFire::UpdateModifiers()
 {
-	Super::OnInitialize(InType, InData, InTarget);
-	EffectModifiers.Add(EEffectModifier::FireRate, EffectDataAsset->Modifier1);	// 공격 속도 증가
+	EffectModifiers.Add(EEffectModifier::FireRate, EffectDataAsset->Modifier1 * StackCount);	// 공격 속도 증가
 }

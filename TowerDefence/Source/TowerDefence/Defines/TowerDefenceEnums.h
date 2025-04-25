@@ -56,9 +56,10 @@ enum class EEffectType : uint8
 UENUM(BlueprintType)
 enum class EEffectModifier : uint8
 {
-	FireRate	UMETA(DisplayName = "FireRate"),
-	FireRange	UMETA(DisplayName = "FireRange"),
-	FireDamage	UMETA(DisplayName = "FireDamage"),
-	MoveSpeed	UMETA(DisplayName = "MoveSpeed"),
+	FireRate	UMETA(DisplayName = "FireRate"),	// 공격 속도
+	FireRange	UMETA(DisplayName = "FireRange"),	// 사정거리
+	FireDamage	UMETA(DisplayName = "FireDamage"),	// 데미지(공격력)
+	MoveSpeed	UMETA(DisplayName = "MoveSpeed"),	// 이동 속도
+	// Add more modifier types as needed
 	COUNT		UMETA(Hidden),	// 모디파이어 타입 개수
 };

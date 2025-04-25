@@ -14,6 +14,6 @@ class TOWERDEFENCE_API UEffectDebuff_Slow : public UEffectBase
 {
 	GENERATED_BODY()
 
-public:
-	virtual void OnInitialize(EEffectType InType, const UEffectDataAsset* InData, AActor* InTarget) override;
+protected:
+	virtual void UpdateModifiers() override;
 };

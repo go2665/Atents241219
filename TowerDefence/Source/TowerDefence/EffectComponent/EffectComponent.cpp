@@ -3,6 +3,7 @@
 
 #include "EffectComponent.h"
 #include "TowerDefence/Tower/Effect/EffectBase.h"
+#include "TowerDefence/EffectComponent/EffectTargetable.h"
 
 // Sets default values for this component's properties
 UEffectComponent::UEffectComponent()
@@ -10,15 +11,25 @@ UEffectComponent::UEffectComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
+void UEffectComponent::BeginPlay()
+{
+	Super::BeginPlay();	// 이팩트 컴포넌트 시작
+	
+	// 이팩트가 적용될 타겟을 인터페이스로 저장한다.
+	EffectTarget = TScriptInterface<IEffectTargetable>(GetOwner());	
+}
+
 void UEffectComponent::AddEffect(EEffectType InType)
 {
-	// 이미 존재하는 버프는 중첩시킨다.
+	// 이미 존재하는 이팩트는 중첩시킨다.
 	for (auto& Effect : EffectList)
 	{
 		if (Effect->GetEffectType() == InType)
 		{
 			Effect->OnStack();
-			OnEffectChanged.ExecuteIfBound(EffectList);	// 이팩트 변경 델리게이트 호출
+			//OnEffectChanged.ExecuteIfBound(EffectList);	// 이팩트 변경 델리게이트 호출
+			ApplyTotalModifiersToTarget(); // 모디파이어 다시 합산하고 대상에 적용
+			
 			//FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
 			//UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Already Exist Effect => [%s]"), 
 			//	*TimeString, *GetOwner()->GetActorNameOrLabel(), *UEnum::GetValueAsString(Effect->GetBuffType()));
@@ -47,7 +58,8 @@ void UEffectComponent::AddEffect(EEffectType InType)
 			//UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Create New Effect => [%s]"),
 			//	*TimeString, *GetOwner()->GetActorNameOrLabel(), *UEnum::GetValueAsString(NewEffect->GetBuffType()));
 
-			OnEffectChanged.ExecuteIfBound(EffectList);	// 이팩트 변경 델리게이트 호출
+			//OnEffectChanged.ExecuteIfBound(EffectList);	// 이팩트 변경 델리게이트 호출
+			ApplyTotalModifiersToTarget(); // 모디파이어 다시 합산하고 대상에 적용
 		}
 	}
 }
@@ -66,7 +78,8 @@ void UEffectComponent::RemoveEffect(EEffectType InType)
 			//UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Remove Buff => [%s]"),
 			//	*TimeString, *GetOwner()->GetActorNameOrLabel(), *UEnum::GetValueAsString(Type));
 
-			OnEffectChanged.ExecuteIfBound(EffectList);	// 이팩트 변경 델리게이트 호출
+			//OnEffectChanged.ExecuteIfBound(EffectList);	// 이팩트 변경 델리게이트 호출
+			ApplyTotalModifiersToTarget(); // 모디파이어 다시 합산하고 대상에 적용
 			break;
 		}
 	}
@@ -85,6 +98,32 @@ UEffectBase* UEffectComponent::CreateEffect(EEffectType InType)
 	}
 
 	return NewEffect;
+}
+
+void UEffectComponent::ApplyTotalModifiersToTarget()
+{
+	// 현재 적용된 이팩트의 모디파이어를 합산하고 대상에게 적용
+	TotalModifiers.Empty();
+	int32 EffectCount = static_cast<int32>(EEffectModifier::COUNT);	// 모든 버프 모디파이어의 개수
+	for (auto& Effect : EffectList)
+	{
+		// EffectList에 있는 모든 이팩트를 순회하면서 모디파이어를 곱연산으로 합산한다.
+		for (int32 i = 0; i < EffectCount; i++)
+		{
+			EEffectModifier ModifierType = static_cast<EEffectModifier>(i);
+			float ModifierValue = Effect->GetModifierValue(ModifierType);
+			if (TotalModifiers.Contains(ModifierType))
+			{
+				TotalModifiers[ModifierType] *= ModifierValue;	// 서로 다른 이팩트의 모디파이어는 곱연산으로 적용.
+			}
+			else
+			{
+				TotalModifiers.Add(ModifierType, ModifierValue);
+			}
+		}
+	}
+	if (EffectTarget)
+		EffectTarget->ApplyModifiers(TotalModifiers);	// 대상에게 모디파이어 값을 적용하기
 }
 
 void UEffectComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

@@ -3,10 +3,9 @@
 
 #include "EffectBuff_Hero.h"
 
-void UEffectBuff_Hero::OnInitialize(EEffectType InType, const UEffectDataAsset* InData, AActor* InTarget)
+void UEffectBuff_Hero::UpdateModifiers()
 {
-	Super::OnInitialize(InType, InData, InTarget);
-	EffectModifiers.Add(EEffectModifier::FireDamage, EffectDataAsset->Modifier1);	// 공격력 증가
-	EffectModifiers.Add(EEffectModifier::FireRate, EffectDataAsset->Modifier2);		// 공격 속도 증가
-	EffectModifiers.Add(EEffectModifier::FireRange, EffectDataAsset->Modifier3);	// 사거리 증가
+	EffectModifiers.Add(EEffectModifier::FireDamage, EffectDataAsset->Modifier1 * StackCount);	// 공격력 증가
+	EffectModifiers.Add(EEffectModifier::FireRate, EffectDataAsset->Modifier2 * StackCount);		// 공격 속도 증가
+	EffectModifiers.Add(EEffectModifier::FireRange, EffectDataAsset->Modifier3 * StackCount);	// 사거리 증가
 }

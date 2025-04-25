@@ -57,6 +57,10 @@ public:
 		return 1.0f;	// 모디파이어는 전부 배율이기 때문에 없으면 1을 리턴
 	}
 
+protected:
+	// 모디파이어 업데이트 하는 함수(초기화 할 때와 스택 될 때 실행)
+	virtual void UpdateModifiers() {}
+
 public:
 	// 이팩트 만료 델리게이트(이팩트가 만료 되었을 때 호출됨)
 	FOnEffectExpire OnEffectExpire;	

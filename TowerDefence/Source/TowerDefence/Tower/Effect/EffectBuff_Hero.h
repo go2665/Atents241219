@@ -13,7 +13,7 @@ UCLASS()
 class TOWERDEFENCE_API UEffectBuff_Hero : public UEffectBase
 {
 	GENERATED_BODY()
-	
-public:
-	virtual void OnInitialize(EEffectType InType, const UEffectDataAsset* InData, AActor* InTarget) override;
+
+protected:
+	virtual void UpdateModifiers() override;	
 };

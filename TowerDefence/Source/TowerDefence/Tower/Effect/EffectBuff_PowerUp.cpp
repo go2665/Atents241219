@@ -3,8 +3,7 @@
 
 #include "EffectBuff_PowerUp.h"
 
-void UEffectBuff_PowerUp::OnInitialize(EEffectType InType, const UEffectDataAsset* InData, AActor* InTarget)
+void UEffectBuff_PowerUp::UpdateModifiers()
 {
-	Super::OnInitialize(InType, InData, InTarget);
-	EffectModifiers.Add(EEffectModifier::FireDamage, EffectDataAsset->Modifier1);	// 공격력 증가
+	EffectModifiers.Add(EEffectModifier::FireDamage, EffectDataAsset->Modifier1 * StackCount);	// 공격력 증가
 }

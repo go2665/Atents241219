@@ -23,13 +23,15 @@ void UEffectBase::OnInitialize(EEffectType InType, const UEffectDataAsset* InDat
 	EffectDataAsset = InData;
 	Target = InTarget;
 	StackCount = 1;
+
+	UpdateModifiers();
 }
 
 void UEffectBase::OnBegin()
 {
 	// 버프가 시작 되었을 때 할일
 	RemainingDuration = EffectDataAsset->Duration;
-	// 이 버프가 처음 적용된 타워의 상태를 변경하는 로직을 여기에 추가합니다.
+	// 이 이팩트가 처음 적용될 때 일어나야 하는 로직을 여기에 추가합니다.
 }
 
 void UEffectBase::OnTick(float DeltaTime)
@@ -39,14 +41,17 @@ void UEffectBase::OnTick(float DeltaTime)
 
 void UEffectBase::OnEnd()
 {
-	// 이 버프가 끝났을 때 타워의 상태를 원래대로 되돌리는 로직을 여기에 추가합니다.
+	// 이 이팩트가 끝났을 때 원래대로 되돌리는 로직을 여기에 추가합니다.
 	RemainingDuration = 0.0f;
+	EffectModifiers.Empty();
 }
 
 void UEffectBase::OnStack()
 {
 	RemainingDuration = EffectDataAsset->Duration; // 이팩트의 지속 시간 초기화
 	StackCount = FMath::Min(StackCount + 1, EffectDataAsset->MaxStackCount); // 스택 수 증가 + 최대 스택 수 제한
+
+	UpdateModifiers();
 }
 
 void UEffectBase::OnExtend()

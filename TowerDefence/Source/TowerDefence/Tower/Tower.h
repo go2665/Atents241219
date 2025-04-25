@@ -126,11 +126,11 @@ protected:
 	UShotDataAsset* ShotData;
 
 	// 컴포넌트는 이팩트만 관리(추가/삭제 등), 컴포넌트는 블루프린트에서 추가(클래스의 기본값으로 넣지 않아야함)
-	// 이팩트가 추가/삭제 되었을 때 타워에 델리게이트로 알림
+	// 이팩트가 추가/삭제 되었을 때 타워에 델리게이트로 알림 <- 기능 제거
 	
 	// 완료 --------------------------------------
 
-	// 타워는 모디파이어를 관리
+	// 타워는 모디파이어를 관리(인터페이스를 통해 컴포넌트가 함수를 호출한다.)
 	// 타워는 이팩트에 변화가 있을 때 모디파이어 수정하고 타워에 최종값 수정
 	// 스텟이 필요한 행위(공격, 스킬)는 타워에서 받아오기
 
@@ -146,19 +146,19 @@ protected:
 	// 스텟
 	
 	// 타워가 주는 공격당 데미지(모디파이어 적용된 값. 버프 변경시 재계산되어야 함)
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tower|Buff Modified Value")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tower|Effect Modified Value")
 	float Damage = 1.0f;	
 
 	// 대포 사정거리(모디파이어 적용된 값. 버프 변경시 재계산되어야 함)
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tower|Buff Modified Value")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tower|Effect Modified Value")
 	float Range = 300.0f;	
 
 	// 발사 속도(모디파이어 적용된 값. 버프 변경시 재계산되어야 함)
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tower|Buff Modified Value")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tower|Effect Modified Value")
 	float FireRate = 2.0f;	
 
 	// 공격 시 한번에 공격 가능한 타겟 수(모디파이어 적용된 값. 버프 변경시 재계산되어야 함)
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tower|Buff Modified Value")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tower|Effect Modified Value")
 	int32 TargetCount = 1;
 
 	// 디버그 정보 표시 여부
@@ -178,4 +178,5 @@ private:
 
 	// 타워 판매 비용
 	int32 SellCost = 50;	
+
 };

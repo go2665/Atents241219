@@ -3,8 +3,7 @@
 
 #include "EffectBuff_LongRange.h"
 
-void UEffectBuff_LongRange::OnInitialize(EEffectType InType, const UEffectDataAsset* InData, AActor* InTarget)
+void UEffectBuff_LongRange::UpdateModifiers()
 {
-	Super::OnInitialize(InType, InData, InTarget);
-	EffectModifiers.Add(EEffectModifier::FireRange, EffectDataAsset->Modifier1);	// 사거리 증가
+	EffectModifiers.Add(EEffectModifier::FireRange, EffectDataAsset->Modifier1 * StackCount);	// 사거리 증가
 }

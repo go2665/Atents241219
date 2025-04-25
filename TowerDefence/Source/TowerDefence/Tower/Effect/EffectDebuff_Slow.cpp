@@ -3,8 +3,7 @@
 
 #include "EffectDebuff_Slow.h"
 
-void UEffectDebuff_Slow::OnInitialize(EEffectType InType, const UEffectDataAsset* InData, AActor* InTarget)
+void UEffectDebuff_Slow::UpdateModifiers()
 {
-	Super::OnInitialize(InType, InData, InTarget);
-	EffectModifiers.Add(EEffectModifier::MoveSpeed, EffectDataAsset->Modifier1);	// 이동 속도 감소
+	EffectModifiers.Add(EEffectModifier::MoveSpeed, EffectDataAsset->Modifier1 * StackCount);	// 이동 속도 감소
 }

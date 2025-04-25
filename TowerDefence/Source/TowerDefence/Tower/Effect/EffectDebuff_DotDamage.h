@@ -18,6 +18,7 @@ public:
 	virtual void OnInitialize(EEffectType InType, const UEffectDataAsset* InData, AActor* InTarget) override;
 	virtual void OnBegin() override;
 	virtual void OnEnd() override;
+	virtual void OnStack() override;
 
 	// 데미지 타입을 설정합니다.
 	inline void SetDamageType(TSubclassOf<UDamageType> InDamageType) { DamageTypeClass = InDamageType; }
@@ -33,6 +34,9 @@ private:
 
 	// 틱당 데미지 양
 	float TickDamage = 0.0f;	
+
+	// 기본 틱당 데미지 양(초기화 때 결정)
+	float BaseTickDamage = 0.0f;
 
 	// 타이머 핸들
 	FTimerHandle TimerHandle;	

@@ -9,7 +9,8 @@
 #include "TowerDefence/Tower/Effect/EffectBase.h"
 #include "EffectComponent.generated.h"
 
-class UEffectBase;	// 각종 버프/디버프 구현 클래스
+class UEffectBase;			// 각종 버프/디버프 구현 기본 클래스
+class IEffectTargetable;	// 이팩트가 적용될 타겟을 나타내는 인터페이스
 
 // 이팩트 변경 델리게이트(전체 이팩트 목록을 전달해야함)
 DECLARE_DYNAMIC_DELEGATE_OneParam(FOnEffectChanged, const TArray<UEffectBase*>&, InEffectList);	
@@ -29,6 +30,10 @@ public:
 	// Sets default values for this component's properties
 	UEffectComponent();
 
+protected:
+	virtual void BeginPlay() override;
+
+public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	// 이팩트 추가 함수
@@ -39,14 +44,16 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Tower|Effect")
 	void RemoveEffect(EEffectType InType);
 
-protected:
 private:
 	// 버프 인스턴스 생성
 	UEffectBase* CreateEffect(EEffectType InType);
 
+	// 현재 적용된 이팩트의 모디파이어를 합산하고 대상에게 적용하는 함수
+	void ApplyTotalModifiersToTarget();
+
 public:
 	// 이팩트 변경 델리게이트(전체 이팩트 목록을 전달해야함)
-	FOnEffectChanged OnEffectChanged;
+	// FOnEffectChanged OnEffectChanged;
 
 protected:
 	// 게임에서 사용되는 모든 종류의 이팩트가 설정되어야 한다.(이팩트 타입과 이팩트 데이터 매핑)
@@ -57,5 +64,13 @@ private:
 	// 현재 적용된 이팩트 리스트(타워에 적용 될 버프 리스트)
 	UPROPERTY(VisibleAnywhere, Category = "Tower|Effect")
 	TArray<UEffectBase*> EffectList;
+
+	// 모든 이팩트의 모디파이어가 합산된 값
+	UPROPERTY(VisibleAnywhere, Category = "Tower|Effect")
+	TMap<EEffectModifier, float> TotalModifiers;
+
+	// 이팩트의 효과가 적용될 대상
+	UPROPERTY(VisibleAnywhere, Category = "Tower|Effect")
+	TScriptInterface<IEffectTargetable> EffectTarget = nullptr;
 
 };
