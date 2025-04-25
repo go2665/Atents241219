@@ -17,7 +17,7 @@ struct FShotLevelData
 	GENERATED_BODY()
 
 	// 한발 당 데미지
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Shot|Level Data")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Shot|Level Data", meta = (ClampMin = "0"))
 	float Damage = 1;
 
 	// 디버프 타입
@@ -25,7 +25,7 @@ struct FShotLevelData
 	EDebuffType DebuffType = EDebuffType::None;
 
 	// 범위 공격 반경
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Shot|Splash")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Shot|Splash", meta = (ClampMin = "10"))
 	float SplashRadius = 100.0f;
 };
 

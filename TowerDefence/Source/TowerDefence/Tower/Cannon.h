@@ -32,7 +32,7 @@ public:
 	void OnInitialize(ATower* InTower, EFireOrder InOrder = EFireOrder::Discovery);
 
 	// 타워의 모디파이어가 변경되었을 때 호출되는 함수(타워가 호출하는 함수)
-	void OnModifierChange();
+	void ApplyModifierChanges();
 
 	// 포탄 발사 위치
 	inline FVector GetMuzzleLocation() const { 

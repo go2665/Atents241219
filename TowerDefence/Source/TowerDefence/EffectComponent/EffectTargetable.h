@@ -23,11 +23,11 @@ class TOWERDEFENCE_API IEffectTargetable
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void ApplyModifiers(const TMap<EEffectModifier, float>& InModifierMap ) = 0;
+	virtual void ApplyModifiers(const TMap<EEffectModifier, float>* InModifierMap ) = 0;
 
 	// 타겟이 되는 액터의 체력을 설정하는 함수
-	virtual void SetHealth(float InHealth) = 0;
+	virtual inline void SetHealth(float InHealth) = 0;
 
 	// 타겟이 되는 액터가 살아 있는지 체크하는 함수
-	virtual bool IsAlive() const = 0;
+	virtual inline bool IsAlive() const = 0;
 };

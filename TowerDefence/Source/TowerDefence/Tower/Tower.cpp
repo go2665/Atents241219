@@ -134,6 +134,12 @@ void ATower::TowerFire(const TArray<AEnemyBase*>& InTargetEnemies)
 	}
 }
 
+void ATower::ApplyModifiers(const TMap<EEffectModifier, float>* InModifierMap)
+{
+	EffectModifiers = InModifierMap;	// 모디파이어 맵의 주소를 저장
+	UpdateData();
+}
+
 void ATower::OnTowerClicked(AActor* TouchedActor, FKey ButtonPressed)
 {
 	// 타워 클릭 시 업그레이드 UI 위젯 열기
@@ -160,20 +166,20 @@ void ATower::OnScreenClicked(AActor* InClickedTower)
 	//}
 }
 
-void ATower::UpdateModifiers()
-{
-	// 버프나 디버프 추가/삭제가 있을 때마다 실행
-}
-
 void ATower::UpdateData()
 {
-	UpdateModifiers();
+	// Damage, Range, FireRate, TargetCount 등에 기본값과 모디파이어를 곱한 값을 설정(없으면 기본값 사용)
+	
+	// 모디파이어 있으면 모디파이어 값을 곱할것
+	Damage = FMath::Min(1.0f, GetShotLevelData().Damage * GetModifier(EEffectModifier::FireDamage));
+	Range = FMath::Min(1.0f, GetCannonLevelData().Range * GetModifier(EEffectModifier::FireRange));
+	FireRate = FMath::Min(0.1f, GetCannonLevelData().FireRate * GetModifier(EEffectModifier::FireRate));
 
-	// Damage, Range, FireRate, TargetCount 등에 기본 값과 모디파이어를 곱한 값을 설정
-	Damage = GetShotLevelData().Damage;					// 모디파이어 곱하기 적용할 것
-	Range = GetCannonLevelData().Range;
-	FireRate = GetCannonLevelData().FireRate;
-	TargetCount = GetCannonLevelData().TargetCount;
+	// 현재 모디파이어 없음. 생기면 추가
+	TargetCount = GetCannonLevelData().TargetCount; 
+
+	// 캐논에 적용
+	CannonInstance->ApplyModifierChanges();
 }
 
 void ATower::ShootProjectile(const TArray<AEnemyBase*>& InTargetEnemies)
@@ -329,4 +335,3 @@ void ATower::Test_PrintFireTargetList(const TArray<AEnemyBase*>& InTargetEnemies
 
 	UE_LOG(LogTemp, Warning, TEXT("Enemies in range: [ %s ]"), *EnemyList);
 }
-

@@ -20,19 +20,19 @@ struct FCannonLevelData
 	GENERATED_BODY()
 	
 	// 시간 당 공격 회수(1초당 2발)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Cannon|Level Data")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Cannon|Level Data", meta = (ClampMin = "0.1"))
 	float FireRate = 2.0f;
 
 	// 공격 사정거리(cm 단위, 3m)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Cannon|Level Data")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Cannon|Level Data", meta = (ClampMin = "100.0"))
 	float Range = 300.0f;
 
 	// 공격 시 한번에 공격 가능한 타겟 수
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Cannon|Level Data")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Cannon|Level Data", meta = (ClampMin = "1"))
 	int32 TargetCount = 1;
 
 	// 업그레이드 비용
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Cannon|Level Data")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Cannon|Level Data", meta = (ClampMin = "1"))
 	int32 UpgradeCost = 50;
 
 };

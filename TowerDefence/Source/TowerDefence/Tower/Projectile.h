@@ -36,8 +36,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Shot")
 	void OnInitialize(const AActor* InTarget, 
 		const UShotDataAsset* InShotData, int32 InLevel,
+		float InDamage,
 		bool InbShowDebugInfo = false,	// 나중에 파라메터 마지막으로 보낼것
-		float InDamageModifier = 1.0f, float InEffectModifier = 1.0f );
+		float InEffectModifier = 1.0f );
 
 protected:
 	// 적과의 겹침을 판단하기 위한 함수
@@ -81,8 +82,8 @@ private:
 	// 발사체가 날아갈 목표 위치
 	FVector TargetLocation = FVector::ZeroVector;	
 
-	// 발사체가 적에게 줄 데미지 배율
-	float DamageModifier = 1.0f;					
+	// 발사체가 적에게 줄 데미지
+	float Damage = 1.0f;
 
 	// 발사체가 적에게 줄 효과에 대한 배율(디버프 배율)
 	float EffectModifier = 1.0f;					

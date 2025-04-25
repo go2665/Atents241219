@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "TowerDefence/Tower/Data/CannonDataAsset.h"
 #include "TowerDefence/Tower/Data/ShotDataAsset.h"
+#include "TowerDefence/EffectComponent/EffectTargetable.h"
 #include "Tower.generated.h"
 
 class UTowerUpgradeWidget;
@@ -19,7 +20,7 @@ class AEnemyBase;
 타워 클래스. 데이터 파일을 기반으로 기능이 변화함.
 */
 UCLASS()
-class TOWERDEFENCE_API ATower : public AActor
+class TOWERDEFENCE_API ATower : public AActor, public IEffectTargetable
 {
 	GENERATED_BODY()
 	
@@ -48,9 +49,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Tower")
 	void TowerFire(const TArray<AEnemyBase*>& InTargetEnemies);
 
+	// 받아온 모디파이어를 자신에게 적용해서 최종 값을 만드는 함수
+	virtual void ApplyModifiers(const TMap<EEffectModifier, float>* InModifierMap) override;
+
 	// 타워의 공격당 데미지
 	inline float GetDamage() const { return Damage; }
-
+	
 	// 타워의 사정거리
 	inline float GetRange() const { return Range; }
 
@@ -59,6 +63,15 @@ public:
 
 	// 타워의 공격 시 한번에 공격 가능한 타겟 수
 	inline float GetTargetCount() const { return TargetCount; }
+
+	// 타워의 모디파이어 가져오기
+	inline float GetModifier(EEffectModifier ModifierType) const {
+		if (EffectModifiers && EffectModifiers->Contains(ModifierType))
+		{
+			return (*EffectModifiers)[ModifierType];
+		}
+		return 1.0f;
+	}
 
 private:
 	// 타워 클릭했을 때 실행(타워 업그레이드 UI 위젯 열기에 사용됨)
@@ -69,9 +82,6 @@ private:
 	// InClickedTower : 클릭한 타워(nullptr일 수 있다.)
 	UFUNCTION()
 	void OnScreenClicked(AActor* InClickedTower);
-
-	// 버프 모디파이어 재계산
-	void UpdateModifiers();
 
 	// 타워 데이터를 전체 갱신하는 함수
 	void UpdateData();
@@ -91,7 +101,7 @@ private:
 		return CannonData->LevelData[TowerLevel];
 	}
 
-	// 타워의 현재 Shot 데이터
+	// 타워의 현재 Shot 데이터(기본값)
 	inline const FShotLevelData& GetShotLevelData() const
 	{
 		return ShotData->LevelData[TowerLevel];
@@ -99,6 +109,12 @@ private:
 
 	// 공격하는 적 목록 출력하기
 	void Test_PrintFireTargetList(const TArray<AEnemyBase*>& InTargetEnemies);
+
+	// 타워의 체력 설정(타워는 체력이 없음. 사용될 일이 없어야 한다.)
+	virtual inline void SetHealth(float InHealth) override {};
+
+	// 타워의 생존 여부(무조건 살아있다. 사용될 일이 없어야 한다.)
+	virtual inline bool IsAlive() const override { return true; };
 
 protected:
 	// 타워 메시 
@@ -127,11 +143,11 @@ protected:
 
 	// 컴포넌트는 이팩트만 관리(추가/삭제 등), 컴포넌트는 블루프린트에서 추가(클래스의 기본값으로 넣지 않아야함)
 	// 이팩트가 추가/삭제 되었을 때 타워에 델리게이트로 알림 <- 기능 제거
+	// 이팩트 컴포넌트가 이팩트에 변화가 있을 때 모디파이어 수정하고 타워에 모디파이어 전달
 	
 	// 완료 --------------------------------------
 
-	// 타워는 모디파이어를 관리(인터페이스를 통해 컴포넌트가 함수를 호출한다.)
-	// 타워는 이팩트에 변화가 있을 때 모디파이어 수정하고 타워에 최종값 수정
+	// 타워는 모디파이어를 전달 받았을 때 최종값 수정
 	// 스텟이 필요한 행위(공격, 스킬)는 타워에서 받아오기
 
 	// 스텟 : 기본값(타워가 데이터 파일에 의해 기본적으로 가지는 값)
@@ -178,5 +194,9 @@ private:
 
 	// 타워 판매 비용
 	int32 SellCost = 50;	
+
+	// 모디파이어 맵의 주소(EffectComponent가 전달한다)
+	const TMap<EEffectModifier, float>* EffectModifiers = nullptr;	
+
 
 };

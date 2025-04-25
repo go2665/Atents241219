@@ -123,7 +123,7 @@ void UEffectComponent::ApplyTotalModifiersToTarget()
 		}
 	}
 	if (EffectTarget)
-		EffectTarget->ApplyModifiers(TotalModifiers);	// 대상에게 모디파이어 값을 적용하기
+		EffectTarget->ApplyModifiers(&TotalModifiers);	// 대상에게 모디파이어 값을 적용하기
 }
 
 void UEffectComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

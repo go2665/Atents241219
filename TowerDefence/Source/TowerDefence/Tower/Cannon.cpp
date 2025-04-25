@@ -40,7 +40,7 @@ void ACannon::OnInitialize(ATower* InTower, EFireOrder InOrder)
 {
 	ParentTower = InTower;		// 부모 타워 설정
 	FireOrder = InOrder;		// 발사 순서 설정
-	OnModifierChange();			// 모디파이어 초기화
+	ApplyModifierChanges();		// 모디파이어 초기화
 
 	// 시야 센서의 겹침 시작 이벤트 바인딩
 	SightSensor->OnComponentBeginOverlap.AddUniqueDynamic(this, &ACannon::OnSightOverlapBegin); 
@@ -48,7 +48,7 @@ void ACannon::OnInitialize(ATower* InTower, EFireOrder InOrder)
 	SightSensor->OnComponentEndOverlap.AddUniqueDynamic(this, &ACannon::OnSightOverlapEnd); 
 }
 
-void ACannon::OnModifierChange()
+void ACannon::ApplyModifierChanges()
 {
 	// 시야 반경 설정
 	SightSensor->SetSphereRadius(ParentTower->GetRange()); 

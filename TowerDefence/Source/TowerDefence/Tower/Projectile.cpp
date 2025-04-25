@@ -76,7 +76,7 @@ void AProjectile::Tick(float DeltaTime)
 }
 
 void AProjectile::OnInitialize(const AActor* InTarget, const UShotDataAsset* InShotData, int32 InLevel,
-	bool InbShowDebugInfo, float InDamageModifier, float InEffectModifier)
+	float InDamage, bool InbShowDebugInfo,  float InEffectModifier)
 {
 	// 타겟과 발사체 데이터는 반드시 존재해야 한다.
 	verify(InTarget != nullptr && InShotData != nullptr);		
@@ -97,7 +97,7 @@ void AProjectile::OnInitialize(const AActor* InTarget, const UShotDataAsset* InS
 
 	ShotLevel = InLevel;
 
-	DamageModifier = InDamageModifier;
+	Damage = InDamage;
 	EffectModifier = InEffectModifier;	
 
 	bShowDebugInfo = InbShowDebugInfo; // 디버그 정보 표시 여부
@@ -165,7 +165,7 @@ void AProjectile::DamageToEnemy(AEnemyBase* HitEnemy)
 	// 적 한명에게 데미지 적용
 	UGameplayStatics::ApplyDamage(
 		HitEnemy,
-		GetShotLevelData().Damage * DamageModifier,
+		Damage,
 		nullptr, nullptr,
 		ShotData->DamageType);
 
@@ -183,7 +183,7 @@ void AProjectile::DamageToArea(AActor* InIgnore)
 
 	UGameplayStatics::ApplyRadialDamageWithFalloff(
 		GetWorld(),
-		GetShotLevelData().Damage * DamageModifier,
+		Damage,
 		0.0f,
 		GetActorLocation(),
 		GetShotLevelData().SplashRadius * 0.5f,
