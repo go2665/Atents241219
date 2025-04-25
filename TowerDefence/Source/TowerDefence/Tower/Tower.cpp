@@ -44,7 +44,7 @@ void ATower::BeginPlay()
 
 	// 타워 데이터 초기화
 	UpdateData();
-
+		
 	// 대포 인스턴스가 없으면 생성하고 초기화
 	if (!CannonInstance)
 	{
@@ -171,15 +171,16 @@ void ATower::UpdateData()
 	// Damage, Range, FireRate, TargetCount 등에 기본값과 모디파이어를 곱한 값을 설정(없으면 기본값 사용)
 	
 	// 모디파이어 있으면 모디파이어 값을 곱할것
-	Damage = FMath::Min(1.0f, GetShotLevelData().Damage * GetModifier(EEffectModifier::FireDamage));
-	Range = FMath::Min(1.0f, GetCannonLevelData().Range * GetModifier(EEffectModifier::FireRange));
-	FireRate = FMath::Min(0.1f, GetCannonLevelData().FireRate * GetModifier(EEffectModifier::FireRate));
+	Damage = FMath::Max(1.0f, GetShotLevelData().Damage * GetModifier(EEffectModifier::FireDamage));
+	Range = FMath::Max(1.0f, GetCannonLevelData().Range * GetModifier(EEffectModifier::FireRange));
+	FireRate = FMath::Max(0.1f, GetCannonLevelData().FireRate * GetModifier(EEffectModifier::FireRate));
 
 	// 현재 모디파이어 없음. 생기면 추가
 	TargetCount = GetCannonLevelData().TargetCount; 
 
 	// 캐논에 적용
-	CannonInstance->ApplyModifierChanges();
+	if(CannonInstance)
+		CannonInstance->ApplyModifierChanges();
 }
 
 void ATower::ShootProjectile(const TArray<AEnemyBase*>& InTargetEnemies)
@@ -197,9 +198,19 @@ void ATower::ShootProjectile(const TArray<AEnemyBase*>& InTargetEnemies)
 			// 발사체 데이터 초기화
 			Projectile->OnInitialize(
 				InTargetEnemies[i], 
-				ShotData, TowerLevel, bShowDebugInfo
+				ShotData, TowerLevel, Damage,
+				bShowDebugInfo
 				/*나중에 모디파이어 적용할 것*/
 			);	
+
+			if (bShowDebugInfo)
+			{
+				// 발사한 타워의 이름과 발사 시간을 로그로 출력(소수점 둘째자리 까지 초단위로 출력)
+				int Minutes = FMath::FloorToInt(World->TimeSeconds / 60);
+				float Seconds = FMath::Fmod(World->TimeSeconds, 60.0f);
+				FString TimeString = FString::Printf(TEXT("%02d:%05.2f"), Minutes, Seconds);
+				UE_LOG(LogTemp, Warning, TEXT("[%s] [%s] : Shoot!"), *TimeString, *this->GetActorNameOrLabel());
+			}
 		}
 	}
 }

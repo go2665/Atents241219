@@ -147,6 +147,11 @@ void AProjectile::OnOverlapEnemy(AActor* OverlappedActor, AActor* OtherActor)
 					false,
 					1.0f
 				);
+
+				int Minutes = FMath::FloorToInt(World->TimeSeconds / 60);
+				float Seconds = FMath::Fmod(World->TimeSeconds, 60.0f);
+				FString TimeString = FString::Printf(TEXT("%02d:%05.2f"), Minutes, Seconds);
+				UE_LOG(LogTemp, Warning, TEXT("[%s] [%s] : Hit!"), *TimeString, *this->GetActorNameOrLabel());
 			}
 
 			DamageToEnemy(HitEnemy);	// 데미지 주기
