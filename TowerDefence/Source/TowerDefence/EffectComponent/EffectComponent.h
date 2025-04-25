@@ -38,11 +38,11 @@ public:
 
 	// 이팩트 추가 함수
 	UFUNCTION(BlueprintCallable, Category = "Tower|Effect")
-	void AddEffect(EEffectType InType);
+	bool AddEffect(EEffectType InType);
 
 	// 이팩트 제거 함수
 	UFUNCTION(BlueprintCallable, Category = "Tower|Effect")
-	void RemoveEffect(EEffectType InType);
+	bool RemoveEffect(EEffectType InType);
 
 private:
 	// 버프 인스턴스 생성

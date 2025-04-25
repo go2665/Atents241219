@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "TowerDefence/Defines/TowerDefenceEnums.h"
+#include "TowerDefence/Tower/Data/EffectDataAsset.h"
 #include "EffectTargetable.generated.h"
 
 // This class does not need to be modified.
@@ -23,6 +24,13 @@ class TOWERDEFENCE_API IEffectTargetable
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
+	// 버프 추가 함수
+	virtual bool AddEffect(EEffectType InType) = 0;
+
+	// 버프 제거 함수
+	virtual bool RemoveEffect(EEffectType InType) = 0;
+
+	// 타겟에 모디파이어를 적용하는 함수
 	virtual void ApplyModifiers(const TMap<EEffectModifier, float>* InModifierMap ) = 0;
 
 	// 타겟이 되는 액터의 체력을 설정하는 함수

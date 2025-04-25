@@ -12,6 +12,7 @@
 #include "TowerDefence/Framework/TowerDefenceGameMode.h"
 #include "TowerDefence/Framework/TowerDefencePlayerController.h"
 #include "TowerDefence/Enemy/EnemyBase.h"
+#include "TowerDefence/EffectComponent/EffectComponent.h"
 
 // Sets default values
 ATower::ATower()
@@ -41,6 +42,9 @@ void ATower::BeginPlay()
 
 	TowerLevel = 0;
 	TowerLevelCap = CannonData->LevelData.Num();
+
+    // UEffectComponent를 찾아서 EffectComponent에 저장
+    EffectComponent = FindComponentByClass<UEffectComponent>();
 
 	// 타워 데이터 초기화
 	UpdateData();
@@ -132,6 +136,26 @@ void ATower::TowerFire(const TArray<AEnemyBase*>& InTargetEnemies)
 		// 히트스캔으로 공격
 		ShootHitScan(InTargetEnemies);
 	}
+}
+
+bool ATower::AddEffect(EEffectType InType)
+{
+	if (EffectComponent)
+	{
+		// EffectComponent에 이팩트 추가
+		return EffectComponent->AddEffect(InType);
+	}
+	return false;
+}
+
+bool ATower::RemoveEffect(EEffectType InType)
+{
+	if (EffectComponent)
+	{
+		// EffectComponent에 이팩트 제거
+		return EffectComponent->RemoveEffect(InType);
+	}
+	return false;
 }
 
 void ATower::ApplyModifiers(const TMap<EEffectModifier, float>* InModifierMap)

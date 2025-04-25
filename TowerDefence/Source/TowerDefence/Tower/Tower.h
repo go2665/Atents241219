@@ -13,6 +13,7 @@ class UTowerUpgradeWidget;
 class ACannon;
 class UWidgetComponent;
 class AEnemyBase;
+class UEffectComponent;
 //class UCannonDataAsset;
 //class UShotDataAsset;
 
@@ -39,15 +40,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Tower")
 	void TowerSell(); 
 
-	//// 버프 추가 함수
-	//bool AddEffect(UTowerBuffDataAsset* BuffData);
-	
-	// 버프 제거 함수
-	//bool RemoveEffect(UTowerBuffDataAsset* BuffData);
-
 	// 타워가 공격 할 때 호출되는 함수
 	UFUNCTION(BlueprintCallable, Category = "Tower")
 	void TowerFire(const TArray<AEnemyBase*>& InTargetEnemies);
+
+	// 버프 추가 함수
+	UFUNCTION(BlueprintCallable, Category = "Tower")
+	virtual bool AddEffect(EEffectType InType) override;
+	
+	// 버프 제거 함수
+	UFUNCTION(BlueprintCallable, Category = "Tower")
+	virtual bool RemoveEffect(EEffectType InType) override;
 
 	// 받아온 모디파이어를 자신에게 적용해서 최종 값을 만드는 함수
 	virtual void ApplyModifiers(const TMap<EEffectModifier, float>* InModifierMap) override;
@@ -141,25 +144,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower|Base Data")
 	UShotDataAsset* ShotData;
 
-	// 컴포넌트는 이팩트만 관리(추가/삭제 등), 컴포넌트는 블루프린트에서 추가(클래스의 기본값으로 넣지 않아야함)
-	// 이팩트가 추가/삭제 되었을 때 타워에 델리게이트로 알림 <- 기능 제거
-	// 이팩트 컴포넌트가 이팩트에 변화가 있을 때 모디파이어 수정하고 타워에 모디파이어 전달
-	
-	// 완료 --------------------------------------
-
-	// 타워는 모디파이어를 전달 받았을 때 최종값 수정
-	// 스텟이 필요한 행위(공격, 스킬)는 타워에서 받아오기
-
-	// 스텟 : 기본값(타워가 데이터 파일에 의해 기본적으로 가지는 값)
-	// 모디파이어 : 배율(버프/디버프로 인해 스텟을 증폭시키는 정도)
-	// 최종값 : 스텟에 모디파이어가 곱해진 값
-
-
-
-	// Effect : 버프 데이터(컴포넌트 추가), 모디파이어
 	// 스킬 데이터(컴포넌트 추가)
 	// 주변에 버프 제공(컴포넌트 추가?)
-	// 스텟
 	
 	// 타워가 주는 공격당 데미지(모디파이어 적용된 값. 버프 변경시 재계산되어야 함)
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tower|Effect Modified Value")
@@ -188,6 +174,9 @@ private:
 
 	UPROPERTY()
 	UTowerUpgradeWidget* UpgradeWidgetInstance = nullptr;	// 업그레이드 위젯 인스턴스
+
+	UPROPERTY()
+	UEffectComponent* EffectComponent = nullptr;			// 이팩트 컴포넌트 인스턴스
 
 	// 대포 레벨의 최대 + 1
 	int8 TowerLevelCap = 3;	

@@ -19,7 +19,7 @@ void UEffectComponent::BeginPlay()
 	EffectTarget = TScriptInterface<IEffectTargetable>(GetOwner());	
 }
 
-void UEffectComponent::AddEffect(EEffectType InType)
+bool UEffectComponent::AddEffect(EEffectType InType)
 {
 	// 이미 존재하는 이팩트는 중첩시킨다.
 	for (auto& Effect : EffectList)
@@ -33,7 +33,7 @@ void UEffectComponent::AddEffect(EEffectType InType)
 			//FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
 			//UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Already Exist Effect => [%s]"), 
 			//	*TimeString, *GetOwner()->GetActorNameOrLabel(), *UEnum::GetValueAsString(Effect->GetBuffType()));
-			return;
+			return true;
 		}
 	}
 
@@ -60,11 +60,13 @@ void UEffectComponent::AddEffect(EEffectType InType)
 
 			//OnEffectChanged.ExecuteIfBound(EffectList);	// 이팩트 변경 델리게이트 호출
 			ApplyTotalModifiersToTarget(); // 모디파이어 다시 합산하고 대상에 적용
+			return true;
 		}
 	}
+	return false;
 }
 
-void UEffectComponent::RemoveEffect(EEffectType InType)
+bool UEffectComponent::RemoveEffect(EEffectType InType)
 {
 	// 특정 버프 하나를 제거한다.
 	for (int32 i = EffectList.Num() - 1; i > -1; i--)	// TArray에서 제거 작업은 뒤에서부터 진행하는 것이 유리하다.
@@ -80,9 +82,11 @@ void UEffectComponent::RemoveEffect(EEffectType InType)
 
 			//OnEffectChanged.ExecuteIfBound(EffectList);	// 이팩트 변경 델리게이트 호출
 			ApplyTotalModifiersToTarget(); // 모디파이어 다시 합산하고 대상에 적용
-			break;
+			return true;
 		}
 	}
+
+	return false;
 }
 
 UEffectBase* UEffectComponent::CreateEffect(EEffectType InType)
