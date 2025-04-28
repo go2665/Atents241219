@@ -65,7 +65,7 @@ public:
 		{
 			return (*EffectModifiers)[ModifierType];
 		}
-		return 1.0f;
+		return 0.0f;
 	}
 
 	// 타워의 공격당 데미지

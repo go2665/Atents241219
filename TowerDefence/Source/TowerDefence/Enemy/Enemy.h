@@ -26,9 +26,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override; // 데미지 처리 함수
 
-	// IEffectTargetable을(를) 통해 상속됨
+	UFUNCTION(BlueprintCallable, Category = "Enemy")
 	bool AddEffect(EEffectType InType) override;
 
+	UFUNCTION(BlueprintCallable, Category = "Enemy")
 	bool RemoveEffect(EEffectType InType) override;
 
 	void ApplyModifiers(const TMap<EEffectModifier, float>* InModifierMap) override;
@@ -46,7 +47,7 @@ public:
 		{
 			return (*EffectModifiers)[ModifierType];
 		}
-		return 1.0f;
+		return 0.0f;
 	}
 
 private:
@@ -74,6 +75,10 @@ protected:
 	// 적의 이동 속도(모디파이어 적용된 값. 버프 변경시 재계산되어야 함)
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy|Effect Modified Value")
 	float Speed = 100.0f;						
+
+	// 방어력(모디파이어 적용된 값. 버프 변경시 재계산되어야 함)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy|Effect Modified Value")
+	float Defence = 0.0f;	
 
 	// 디버그 정보 표시 여부
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Debug")

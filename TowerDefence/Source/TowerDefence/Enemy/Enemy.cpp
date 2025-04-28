@@ -32,13 +32,21 @@ void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// UEffectComponent를 찾아서 EffectComponent에 저장
+	EffectComponent = FindComponentByClass<UEffectComponent>();
+
 	ensure(GetEnemyData() != nullptr); // EnemyData가 nullptr이 아닌지 확인
 
 	if (GetEnemyData())
 	{		
 		CurrentHealth = GetEnemyData()->Health;	// 적 캐릭터의 체력 설정
-		Speed = GetEnemyData()->Speed; // 적 캐릭터의 이동 속도 설정
+		Speed = GetEnemyData()->Speed;			// 적 캐릭터의 이동 속도 설정
+		Defence = GetEnemyData()->Defence;		// 적의 방어력 설정
+
+		// 속성과 골드는 데이터에서 직접 확인
 	}	
+
+	
 }
 
 // Called every frame
@@ -104,7 +112,16 @@ void AEnemy::ApplyModifiers(const TMap<EEffectModifier, float>* InModifierMap)
 	// Speed 등에 기본값과 모디파이어를 곱한 값(최종값)을 설정(없으면 기본값 사용)
 
 	// 모디파이어 있으면 모디파이어 값을 곱할것
-	Speed = FMath::Max(0.0f, GetEnemyData()->Speed * GetModifier(EEffectModifier::MoveSpeed)); // 이동 속도
+	Speed = FMath::Max(0.0f, GetEnemyData()->Speed * (1 + GetModifier(EEffectModifier::MoveSpeed))); // 이동 속도
+	Defence = FMath::Max(0.0f, GetEnemyData()->Defence * (1 + GetModifier(EEffectModifier::Defence))); // 방어력
+
+	if (bShowDebugInfo)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[%s] Speed: (%.1f, %.1f), Defence: (%.1f, %.1f)"), 
+			*this->GetActorLabel(), 
+			GetEnemyData()->Speed, GetModifier(EEffectModifier::MoveSpeed),
+			GetEnemyData()->Defence, GetModifier(EEffectModifier::Defence));
+	}
 }
 
 void AEnemy::SetHealth(float InHealth)

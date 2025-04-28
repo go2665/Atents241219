@@ -5,5 +5,5 @@
 
 void UEffectBuff_PowerUp::UpdateModifiers()
 {
-	EffectModifiers.Add(EEffectModifier::FireDamage, EffectDataAsset->Modifier1 * StackCount);	// 공격력 증가
+	EffectModifiers.Add(EEffectModifier::Attack, EffectDataAsset->Modifier1 * StackCount);	// 공격력 증가
 }

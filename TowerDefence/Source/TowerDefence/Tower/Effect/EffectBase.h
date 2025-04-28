@@ -54,7 +54,7 @@ public:
 	{
 		if (EffectModifiers.Contains(InType))
 			return EffectModifiers[InType];
-		return 1.0f;	// 모디파이어는 전부 배율이기 때문에 없으면 1을 리턴
+		return 0.0f;	// 모디파이어는 0을 기준으로 +-되는 배율이기 때문에 없으면 0을 리턴
 	}
 
 protected:

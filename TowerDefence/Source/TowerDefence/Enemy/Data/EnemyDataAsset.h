@@ -25,7 +25,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy|Data")
 	float Speed = 100.0f;
 
+	// 방어력
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy|Data")
+	float Defence = 0.0f;
+
 	// 적의 약점 타입
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy|Data")
 	TSubclassOf<UTowerDamageType> WeakType = nullptr;
+
+	// 골드
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy|Data")
+	int32 Gold = 10;
 };
