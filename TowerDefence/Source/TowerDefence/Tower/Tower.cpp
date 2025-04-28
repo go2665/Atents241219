@@ -195,7 +195,7 @@ void ATower::UpdateData()
 	// Damage, Range, FireRate, TargetCount 등에 기본값과 모디파이어를 곱한 값을 설정(없으면 기본값 사용)
 	
 	// 모디파이어 있으면 모디파이어 값을 곱할것
-	Damage = FMath::Max(1.0f, GetShotLevelData().Damage * GetModifier(EEffectModifier::FireDamage));
+	Damage = FMath::Max(1.0f, GetShotLevelData().Damage * GetModifier(EEffectModifier::FireDamage)); // 1.0은 음수나 0이 되는 것을 방지하기 위한 것
 	Range = FMath::Max(1.0f, GetCannonLevelData().Range * GetModifier(EEffectModifier::FireRange));
 	FireRate = FMath::Max(0.1f, GetCannonLevelData().FireRate * GetModifier(EEffectModifier::FireRate));
 

@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Projectile.generated.h"
 
-class AEnemyBase;
+class AEnemy;
 class UShotDataAsset;
 class UProjectileMovementComponent;
 struct FShotLevelData;
@@ -40,13 +40,16 @@ public:
 		bool InbShowDebugInfo = false,	// 나중에 파라메터 마지막으로 보낼것
 		float InEffectModifier = 1.0f );
 
+	// 이 발사체에 맞은 적 기록
+	void AddHitEnemy(AEnemy* InEnemy) { HitEnemies.Add(InEnemy); }	
+
 protected:
 	// 적과의 겹침을 판단하기 위한 함수
 	UFUNCTION()
 	void OnOverlapEnemy(AActor* OverlappedActor, AActor* OtherActor);	
 
 	// 실제 겹친 적에 대한 처리를 하는 함수
-	void DamageToEnemy(AEnemyBase* HitEnemy);	
+	void DamageToEnemy(AEnemy* HitEnemy);	
 
 	// 현재 범위 안에 있는 모든 적에게 데미지 적용
 	void DamageToArea(AActor* InIgnore);
@@ -90,4 +93,7 @@ private:
 
 	// 디버그 정보 표시 여부
 	bool bShowDebugInfo = false;	
+
+	// 이 발사체에 맞은 적들(범위 공격일 때만 사용)
+	TArray<AEnemy*> HitEnemies;
 };

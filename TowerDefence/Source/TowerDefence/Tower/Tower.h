@@ -55,6 +55,19 @@ public:
 	// 받아온 모디파이어를 자신에게 적용해서 최종 값을 만드는 함수
 	virtual void ApplyModifiers(const TMap<EEffectModifier, float>* InModifierMap) override;
 
+	// 모디파이어 맵을 가져오는 함수
+	inline virtual const TMap<EEffectModifier, float>* GetModifiersMap() const override { return EffectModifiers; }	
+
+	// 특정 모디파이어 값을 가져오는 함수
+	inline virtual float GetModifier(EEffectModifier ModifierType) const override
+	{
+		if (EffectModifiers && EffectModifiers->Contains(ModifierType))
+		{
+			return (*EffectModifiers)[ModifierType];
+		}
+		return 1.0f;
+	}
+
 	// 타워의 공격당 데미지
 	inline float GetDamage() const { return Damage; }
 	
@@ -66,15 +79,6 @@ public:
 
 	// 타워의 공격 시 한번에 공격 가능한 타겟 수
 	inline float GetTargetCount() const { return TargetCount; }
-
-	// 타워의 모디파이어 가져오기
-	inline float GetModifier(EEffectModifier ModifierType) const {
-		if (EffectModifiers && EffectModifiers->Contains(ModifierType))
-		{
-			return (*EffectModifiers)[ModifierType];
-		}
-		return 1.0f;
-	}
 
 private:
 	// 타워 클릭했을 때 실행(타워 업그레이드 UI 위젯 열기에 사용됨)
@@ -113,11 +117,11 @@ private:
 	// 공격하는 적 목록 출력하기
 	void Test_PrintFireTargetList(const TArray<AEnemyBase*>& InTargetEnemies);
 
-	// 타워의 체력 설정(타워는 체력이 없음. 사용될 일이 없어야 한다.)
-	virtual inline void SetHealth(float InHealth) override {};
+	//// 타워의 체력 설정(타워는 체력이 없음. 사용될 일이 없어야 한다.)
+	//inline virtual void SetHealth(float InHealth) override {};
 
-	// 타워의 생존 여부(무조건 살아있다. 사용될 일이 없어야 한다.)
-	virtual inline bool IsAlive() const override { return true; };
+	//// 타워의 생존 여부(무조건 살아있다. 사용될 일이 없어야 한다.)
+	//inline virtual bool IsAlive() const override { return true; };
 
 protected:
 	// 타워 메시 
@@ -174,17 +178,18 @@ private:
 
 	UPROPERTY()
 	UTowerUpgradeWidget* UpgradeWidgetInstance = nullptr;	// 업그레이드 위젯 인스턴스
-
-	UPROPERTY()
-	UEffectComponent* EffectComponent = nullptr;			// 이팩트 컴포넌트 인스턴스
-
+	
 	// 대포 레벨의 최대 + 1
 	int8 TowerLevelCap = 3;	
 
 	// 타워 판매 비용
 	int32 SellCost = 50;	
 
-	// 모디파이어 맵의 주소(EffectComponent가 전달한다)
+	// 이팩트 컴포넌트 인스턴스
+	UPROPERTY()
+	UEffectComponent* EffectComponent = nullptr;
+
+	// 모디파이어 맵의 주소(EffectComponent가 전달해준다)
 	const TMap<EEffectModifier, float>* EffectModifiers = nullptr;	
 
 

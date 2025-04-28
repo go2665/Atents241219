@@ -37,11 +37,11 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	// 이팩트 추가 함수
-	UFUNCTION(BlueprintCallable, Category = "Tower|Effect")
+	UFUNCTION(BlueprintCallable, Category = "Effect")
 	bool AddEffect(EEffectType InType);
 
 	// 이팩트 제거 함수
-	UFUNCTION(BlueprintCallable, Category = "Tower|Effect")
+	UFUNCTION(BlueprintCallable, Category = "Effect")
 	bool RemoveEffect(EEffectType InType);
 
 private:
@@ -57,20 +57,20 @@ public:
 
 protected:
 	// 게임에서 사용되는 모든 종류의 이팩트가 설정되어야 한다.(이팩트 타입과 이팩트 데이터 매핑)
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower|Effect")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effect")
 	TMap<EEffectType, UEffectDataAsset*> EffectDataMap;	
 
 private:
 	// 현재 적용된 이팩트 리스트(타워에 적용 될 버프 리스트)
-	UPROPERTY(VisibleAnywhere, Category = "Tower|Effect")
+	UPROPERTY(VisibleAnywhere, Category = "Effect")
 	TArray<UEffectBase*> EffectList;
 
 	// 모든 이팩트의 모디파이어가 합산된 값
-	UPROPERTY(VisibleAnywhere, Category = "Tower|Effect")
+	UPROPERTY(VisibleAnywhere, Category = "Effect")
 	TMap<EEffectModifier, float> TotalModifiers;
 
 	// 이팩트의 효과가 적용될 대상
-	UPROPERTY(VisibleAnywhere, Category = "Tower|Effect")
+	UPROPERTY(VisibleAnywhere, Category = "Effect")
 	TScriptInterface<IEffectTargetable> EffectTarget = nullptr;
 
 };

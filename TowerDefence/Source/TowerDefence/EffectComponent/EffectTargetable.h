@@ -33,9 +33,18 @@ public:
 	// 타겟에 모디파이어를 적용하는 함수
 	virtual void ApplyModifiers(const TMap<EEffectModifier, float>* InModifierMap ) = 0;
 
-	// 타겟이 되는 액터의 체력을 설정하는 함수
-	virtual inline void SetHealth(float InHealth) = 0;
+	// 모디파이어 맵을 가져오는 함수
+	inline virtual const TMap<EEffectModifier, float>* GetModifiersMap() const = 0;
 
-	// 타겟이 되는 액터가 살아 있는지 체크하는 함수
-	virtual inline bool IsAlive() const = 0;
+	// 특정 모디파이어를 가져오는 함수
+	inline virtual float GetModifier(EEffectModifier ModifierType) const = 0;
+
+	//// 타겟이 되는 액터의 체력을 설정하는 함수
+	//inline virtual void SetHealth(float InHealth) = 0;
+
+	//// 타겟이 되는 액터가 살아 있는지 체크하는 함수
+	//inline virtual bool IsAlive() const = 0;
+
+	// 필요한 맴버 변수(EffectComponent가 전달해 줄 것)
+	// const TMap<EEffectModifier, float>* EffectModifiers = nullptr;
 };

@@ -4,7 +4,7 @@
 #include "Projectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "TowerDefence/Enemy/DEPRECATED_Enemy/EnemyBase.h"
+#include "TowerDefence/Enemy/Enemy.h"
 #include "TowerDefence/Tower/Data/ShotDataAsset.h"
 
 // Sets default values
@@ -131,7 +131,7 @@ void AProjectile::OnOverlapEnemy(AActor* OverlappedActor, AActor* OtherActor)
 {
 	if (OtherActor->ActorHasTag(FName("Enemy")))
 	{
-		AEnemyBase* HitEnemy = Cast<AEnemyBase>(OtherActor);
+		AEnemy* HitEnemy = Cast<AEnemy>(OtherActor);
 		if (HitEnemy)
 		{
 			if (bShowDebugInfo)
@@ -165,7 +165,7 @@ void AProjectile::OnOverlapEnemy(AActor* OverlappedActor, AActor* OtherActor)
 	}
 }
 
-void AProjectile::DamageToEnemy(AEnemyBase* HitEnemy)
+void AProjectile::DamageToEnemy(AEnemy* HitEnemy)
 {
 	// 적 한명에게 데미지 적용
 	UGameplayStatics::ApplyDamage(
@@ -174,17 +174,18 @@ void AProjectile::DamageToEnemy(AEnemyBase* HitEnemy)
 		nullptr, nullptr,
 		ShotData->DamageType);
 
-	// 적에게 디버프 추가(델리게이트로 알리기?)
-	//HitEnemy->GetDebuffComponent()->AddDebuff(ShotData->DebuffType, DebuffModifier);
+	// 맞은 적에게 이팩트 주기
+	HitEnemy->AddEffect(GetShotLevelData().EffectType);
 }
 
 void AProjectile::DamageToArea(AActor* InIgnore)
 {
 	// 범위 공격 데미지 처리
-
 	TArray<AActor*> Ignores;
 	if (InIgnore)
 		Ignores.Add(InIgnore); // InIgnore는 무시한다. 
+
+	HitEnemies.Empty(); // 범위로 데미지 주기 전에 초기화
 
 	UGameplayStatics::ApplyRadialDamageWithFalloff(
 		GetWorld(),
@@ -199,18 +200,18 @@ void AProjectile::DamageToArea(AActor* InIgnore)
 		this // 이 발사체를 맞은 대상을 기록하기 위해 사용
 	);
 
-	// 디버프 처리(델리게이트로 알리기?)
-	//for (AActor* Target : HitEnemies)
-	//{
-	//	if (ShotData->DebuffType != EDebuffType::None)
-	//	{
-	//		AEnemyBase* Enemy = Cast<AEnemyBase>(Target);
-	//		if (Enemy)
-	//		{
-	//			Enemy->GetDebuffComponent()->AddDebuff(ShotData->DebuffType, DebuffModifier); // 디버프 추가
-	//		}
-	//	}
-	//}
+	// 이팩트 처리(HitEnemies에 들어있는 적 사용)
+	if (GetShotLevelData().EffectType != EEffectType::None)
+	{
+		for (AEnemy* Target : HitEnemies)
+		{
+			AEnemy* Enemy = Cast<AEnemy>(Target);
+			if (Enemy)
+			{
+				Enemy->AddEffect(GetShotLevelData().EffectType);
+			}
+		}
+	}
 }
 
 const FShotLevelData& AProjectile::GetShotLevelData() const

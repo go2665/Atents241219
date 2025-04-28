@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "TowerDefence/Tower/Projectile.h"
-#include "TowerDefence/Tower/DEPRECATED_Tower/Defines/DebuffEnums.h"
 #include "TowerDefence/Defines/TowerDefenceEnums.h"
 #include "TowerDefence/Defines/DamageAttribute/TowerDamageType.h"
 #include "ShotDataAsset.generated.h"
@@ -22,7 +21,7 @@ struct FShotLevelData
 
 	// 디버프 타입
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Shot|Level Data")
-	EDebuffType DebuffType = EDebuffType::None;
+	EEffectType EffectType = EEffectType::None;
 
 	// 범위 공격 반경
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Shot|Splash", meta = (ClampMin = "10"))
