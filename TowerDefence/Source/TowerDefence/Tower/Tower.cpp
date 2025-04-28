@@ -11,7 +11,7 @@
 #include "TowerDefence/Tower/UI/TowerUpgradeWidget.h"
 #include "TowerDefence/Framework/TowerDefenceGameMode.h"
 #include "TowerDefence/Framework/TowerDefencePlayerController.h"
-#include "TowerDefence/Enemy/EnemyBase.h"
+#include "TowerDefence/Enemy/DEPRECATED_Enemy/EnemyBase.h"
 #include "TowerDefence/EffectComponent/EffectComponent.h"
 
 // Sets default values

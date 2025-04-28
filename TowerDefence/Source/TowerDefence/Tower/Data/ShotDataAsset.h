@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "TowerDefence/Tower/Projectile.h"
-#include "TowerDefence/DEPRECATED_Tower/Defines/DebuffEnums.h"
+#include "TowerDefence/Tower/DEPRECATED_Tower/Defines/DebuffEnums.h"
 #include "TowerDefence/Defines/TowerDefenceEnums.h"
 #include "TowerDefence/Defines/DamageAttribute/TowerDamageType.h"
 #include "ShotDataAsset.generated.h"

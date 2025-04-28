@@ -4,7 +4,7 @@
 #include "Projectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "TowerDefence/Enemy/EnemyBase.h"
+#include "TowerDefence/Enemy/DEPRECATED_Enemy/EnemyBase.h"
 #include "TowerDefence/Tower/Data/ShotDataAsset.h"
 
 // Sets default values

@@ -4,7 +4,7 @@
 #include "Cannon.h"
 #include "Components/SphereComponent.h"
 #include "TowerDefence/Tower/Tower.h"
-#include "TowerDefence/Enemy/EnemyBase.h"
+#include "TowerDefence/Enemy/DEPRECATED_Enemy/EnemyBase.h"
 
 // Sets default values
 ACannon::ACannon()
