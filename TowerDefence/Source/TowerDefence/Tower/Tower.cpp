@@ -102,6 +102,8 @@ void ATower::TowerLevelUp()
 			SellCost += UpgradeCost * 0.5f; // 판매 비용 증가
 			
 			UpdateData();	// 타워 데이터 갱신
+
+			// 레벨업 델리게이트 방송. TowerLevel 전달(캐논, 버퍼에 방송)
 		}
 	}
 }
