@@ -10,10 +10,10 @@
 class ATower;
 class USphereComponent;
 class USceneComponent;
-class AEnemyBase;
+class AEnemy;
 
 // 발사 시 타겟 적들을 전달하는 델리게이트
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCannonFire, const TArray<AEnemyBase*>&, TargetEnemies); 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCannonFire, const TArray<AEnemy*>&, TargetEnemies); 
 
 /*
 대포 클래스. 범위 안에 있는 적 관리 및 타게팅, 발사 신호를 담당
@@ -107,7 +107,7 @@ private:
 	ATower* ParentTower = nullptr;
 
 	// 적의 목록 : TArray
-	TArray<AEnemyBase*> TargetEnemies;
+	TArray<AEnemy*> TargetEnemies;
 
 	// 발사 타이머 핸들
 	FTimerHandle ShootTimerHandle;	

@@ -7,8 +7,8 @@
 #include "TowerDefence/Enemy/Data/EnemyDataAsset.h"
 #include "TowerDefence/Defines/TowerDefenceEnums.h"
 #include "TowerDefence/Defines/DamageAttribute/TowerDamageType.h"
-#include "TowerDefence/EffectComponent/EffectTargetable.h"
-#include "TowerDefence/EffectComponent/EffectComponent.h"
+#include "TowerDefence/Components/Effect/EffectTargetable.h"
+#include "TowerDefence/Components/Effect/EffectComponent.h"
 #include "Enemy.generated.h"
 
 UCLASS()

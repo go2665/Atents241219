@@ -6,13 +6,13 @@
 #include "GameFramework/Actor.h"
 #include "TowerDefence/Tower/Data/CannonDataAsset.h"
 #include "TowerDefence/Tower/Data/ShotDataAsset.h"
-#include "TowerDefence/EffectComponent/EffectTargetable.h"
+#include "TowerDefence/Components/Effect/EffectTargetable.h"
 #include "Tower.generated.h"
 
 class UTowerUpgradeWidget;
 class ACannon;
 class UWidgetComponent;
-class AEnemyBase;
+class AEnemy;
 class UEffectComponent;
 //class UCannonDataAsset;
 //class UShotDataAsset;
@@ -42,7 +42,7 @@ public:
 
 	// 타워가 공격 할 때 호출되는 함수
 	UFUNCTION(BlueprintCallable, Category = "Tower")
-	void TowerFire(const TArray<AEnemyBase*>& InTargetEnemies);
+	void TowerFire(const TArray<AEnemy*>& InTargetEnemies);
 
 	// 버프 추가 함수
 	UFUNCTION(BlueprintCallable, Category = "Tower")
@@ -94,13 +94,13 @@ private:
 	void UpdateData();
 
 	// 타워가 공격할 때 발사체를 만들어서 쏘는 함수
-	void ShootProjectile(const TArray<AEnemyBase*>& InTargetEnemies);
+	void ShootProjectile(const TArray<AEnemy*>& InTargetEnemies);
 
 	// 타워가 공격할 때 히트스캔으로 처리하는 함수
-	void ShootHitScan(const TArray<AEnemyBase*>& InTargetEnemies);
+	void ShootHitScan(const TArray<AEnemy*>& InTargetEnemies);
 
 	// 실제 라인트레이스를 수행하는 함수(InTarget 공격 대상, OutHitTargets 맞은 적 목록)
-	bool LineTraceToTarget(AActor* InTarget, TArray<AEnemyBase*>& OutHitTargets);
+	bool LineTraceToTarget(AActor* InTarget, TArray<AEnemy*>& OutHitTargets);
 
 	// 타워의 현재 캐논 데이터
 	inline const FCannonLevelData& GetCannonLevelData() const
@@ -115,7 +115,7 @@ private:
 	}
 
 	// 공격하는 적 목록 출력하기
-	void Test_PrintFireTargetList(const TArray<AEnemyBase*>& InTargetEnemies);
+	void Test_PrintFireTargetList(const TArray<AEnemy*>& InTargetEnemies);
 
 	//// 타워의 체력 설정(타워는 체력이 없음. 사용될 일이 없어야 한다.)
 	//inline virtual void SetHealth(float InHealth) override {};

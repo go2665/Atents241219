@@ -4,7 +4,7 @@
 #include "Cannon.h"
 #include "Components/SphereComponent.h"
 #include "TowerDefence/Tower/Tower.h"
-#include "TowerDefence/Enemy/DEPRECATED_Enemy/EnemyBase.h"
+#include "TowerDefence/Enemy/Enemy.h"
 
 // Sets default values
 ACannon::ACannon()
@@ -64,7 +64,7 @@ void ACannon::OnSightOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAct
 {
 	if (OtherActor->ActorHasTag(TEXT("Enemy")))
 	{
-		AEnemyBase* Enemy = Cast<AEnemyBase>(OtherActor); // 적 캐릭터인지 확인
+		AEnemy* Enemy = Cast<AEnemy>(OtherActor); // 적 캐릭터인지 확인
 		if (Enemy)
 		{
 			if (TargetEnemies.IsEmpty())
@@ -82,7 +82,7 @@ void ACannon::OnSightOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor
 {
 	if (OtherActor->ActorHasTag(TEXT("Enemy")))
 	{
-		AEnemyBase* Enemy = Cast<AEnemyBase>(OtherActor); // 적 캐릭터인지 확인
+		AEnemy* Enemy = Cast<AEnemy>(OtherActor); // 적 캐릭터인지 확인
 		if (Enemy)
 		{
 			TargetEnemies.Remove(Enemy); // 적 캐릭터를 목록에서 제거
@@ -115,7 +115,7 @@ void ACannon::Fire()
 	{
 		// 적을 거리의 오름차순으로 정렬하기
 		FVector GunLocation = GetActorLocation();
-		TargetEnemies.Sort([GunLocation](const AEnemyBase& A, const AEnemyBase& B)
+		TargetEnemies.Sort([GunLocation](const AEnemy& A, const AEnemy& B)
 			{
 				float DistanceSquaredA = FVector::DistSquared(GunLocation, A.GetActorLocation());
 				float DistanceSquaredB = FVector::DistSquared(GunLocation, B.GetActorLocation());
@@ -125,7 +125,7 @@ void ACannon::Fire()
 
 	// 공격 대상 결정
 	int32 Count = FMath::Min(ParentTower->GetTargetCount(), TargetEnemies.Num()); // 공격할 적의 수
-	TArray<AEnemyBase*> CurrentTargetEnemies;
+	TArray<AEnemy*> CurrentTargetEnemies;
 	CurrentTargetEnemies.Reserve(Count);
 	for (int32 i = 0; i < Count; i++)
 	{
@@ -196,7 +196,7 @@ void ACannon::LookFirstTarget(float DeltaTime)
 void ACannon::Test_PrintEnemyList()
 {
 	FString EnemyList;
-	for (AEnemyBase* Enemy : TargetEnemies)
+	for (AEnemy* Enemy : TargetEnemies)
 	{
 		if (Enemy)
 		{

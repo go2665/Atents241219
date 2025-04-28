@@ -3,7 +3,7 @@
 
 #include "EffectComponent.h"
 #include "TowerDefence/Tower/Effect/EffectBase.h"
-#include "TowerDefence/EffectComponent/EffectTargetable.h"
+#include "TowerDefence/Components/Effect/EffectTargetable.h"
 
 // Sets default values for this component's properties
 UEffectComponent::UEffectComponent()

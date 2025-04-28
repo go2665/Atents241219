@@ -11,8 +11,8 @@
 #include "TowerDefence/Tower/UI/TowerUpgradeWidget.h"
 #include "TowerDefence/Framework/TowerDefenceGameMode.h"
 #include "TowerDefence/Framework/TowerDefencePlayerController.h"
-#include "TowerDefence/Enemy/DEPRECATED_Enemy/EnemyBase.h"
-#include "TowerDefence/EffectComponent/EffectComponent.h"
+#include "TowerDefence/Enemy/Enemy.h"
+#include "TowerDefence/Components/Effect/EffectComponent.h"
 
 // Sets default values
 ATower::ATower()
@@ -121,7 +121,7 @@ void ATower::TowerSell()
 	//UE_LOG(LogTemp, Warning, TEXT("[%s] : Tower Sell : Tower Destroyed!"), *this->GetActorNameOrLabel());
 }
 
-void ATower::TowerFire(const TArray<AEnemyBase*>& InTargetEnemies)
+void ATower::TowerFire(const TArray<AEnemy*>& InTargetEnemies)
 {
 	//if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] : Tower Fire!"), *this->GetActorNameOrLabel());
 	//Test_PrintFireTargetList(InTargetEnemies);	// 공격하는 적 목록 출력
@@ -207,7 +207,7 @@ void ATower::UpdateData()
 		CannonInstance->ApplyModifierChanges();
 }
 
-void ATower::ShootProjectile(const TArray<AEnemyBase*>& InTargetEnemies)
+void ATower::ShootProjectile(const TArray<AEnemy*>& InTargetEnemies)
 {
 	UWorld* World = GetWorld();
 
@@ -239,12 +239,12 @@ void ATower::ShootProjectile(const TArray<AEnemyBase*>& InTargetEnemies)
 	}
 }
 
-void ATower::ShootHitScan(const TArray<AEnemyBase*>& InTargetEnemies)
+void ATower::ShootHitScan(const TArray<AEnemy*>& InTargetEnemies)
 {
 	int32 Count = FMath::Min(GetCannonLevelData().TargetCount, InTargetEnemies.Num()); // 공격할 적의 수
 	for (int32 i = 0; i < Count; i++)
 	{
-		TArray<AEnemyBase*> HitEnemies; // 맞은 적 캐릭터 배열
+		TArray<AEnemy*> HitEnemies; // 맞은 적 캐릭터 배열
 		bool bHit = LineTraceToTarget(InTargetEnemies[i], HitEnemies);
 		if (bHit)
 		{
@@ -267,7 +267,7 @@ void ATower::ShootHitScan(const TArray<AEnemyBase*>& InTargetEnemies)
 	}
 }
 
-bool ATower::LineTraceToTarget(AActor* InTarget, TArray<AEnemyBase*>& OutHitTargets)
+bool ATower::LineTraceToTarget(AActor* InTarget, TArray<AEnemy*>& OutHitTargets)
 {
 	OutHitTargets.Empty(); // Out파라메터는 초기화하고 사용하기
 	bool bHit = false;
@@ -300,7 +300,7 @@ bool ATower::LineTraceToTarget(AActor* InTarget, TArray<AEnemyBase*>& OutHitTarg
 		{
 			for (const FHitResult& HitResult : HitResults)
 			{
-				AEnemyBase* HitEnemy = Cast<AEnemyBase>(HitResult.GetActor()); // 충돌한 액터가 적 캐릭터인지 확인
+				AEnemy* HitEnemy = Cast<AEnemy>(HitResult.GetActor()); // 충돌한 액터가 적 캐릭터인지 확인
 				if (HitEnemy)
 				{
 					//FString TimeString = FDateTime::FromUnixTimestamp(World->TimeSeconds).ToString(TEXT("%H:%M:%S"));
@@ -329,7 +329,7 @@ bool ATower::LineTraceToTarget(AActor* InTarget, TArray<AEnemyBase*>& OutHitTarg
 
 		if (bHit)	// 맞았으면 맞은 시간과 대상 출력(단순 확인용)
 		{
-			AEnemyBase* HitEnemy = Cast<AEnemyBase>(HitResult.GetActor()); // 충돌한 액터가 적 캐릭터인지 확인
+			AEnemy* HitEnemy = Cast<AEnemy>(HitResult.GetActor()); // 충돌한 액터가 적 캐릭터인지 확인
 			if (HitEnemy)
 			{
 				//FString TimeString = FDateTime::FromUnixTimestamp(World->TimeSeconds).ToString(TEXT("%H:%M:%S"));
@@ -356,10 +356,10 @@ bool ATower::LineTraceToTarget(AActor* InTarget, TArray<AEnemyBase*>& OutHitTarg
 	return bHit;
 }
 
-void ATower::Test_PrintFireTargetList(const TArray<AEnemyBase*>& InTargetEnemies)
+void ATower::Test_PrintFireTargetList(const TArray<AEnemy*>& InTargetEnemies)
 {
 	FString EnemyList;
-	for (AEnemyBase* Enemy : InTargetEnemies)
+	for (AEnemy* Enemy : InTargetEnemies)
 	{
 		if (Enemy)
 		{
