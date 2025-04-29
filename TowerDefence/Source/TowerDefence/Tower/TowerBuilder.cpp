@@ -2,6 +2,7 @@
 
 
 #include "TowerBuilder.h"
+#include "Components/WidgetComponent.h"
 
 // Sets default values
 ATowerBuilder::ATowerBuilder()
@@ -13,6 +14,11 @@ ATowerBuilder::ATowerBuilder()
 
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	MeshComponent->SetupAttachment(Root);
+
+	TowerBuildWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("TowerBuildWidget"));
+	TowerBuildWidget->SetupAttachment(Root);
+	TowerBuildWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	TowerBuildWidget->SetDrawSize(FVector2D(600.0f, 600.0f));	// 위젯 크기 설정
 }
 
 // Called when the game starts or when spawned

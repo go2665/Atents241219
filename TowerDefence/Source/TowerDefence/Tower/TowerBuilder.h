@@ -28,6 +28,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* MeshComponent = nullptr;
 
+	// 업그레이드 UI 위젯
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UWidgetComponent* TowerBuildWidget = nullptr;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "TowerBuilder")
 	TArray<TSubclassOf<ATower>> TowerClasses;
 
