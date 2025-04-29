@@ -12,11 +12,7 @@ USTRUCT(BlueprintType)
 struct FBufferLevelData
 {
 	GENERATED_BODY()
-
-	// 버프 타입
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Buffer|Level Data")
-	EEffectType EffectType = EEffectType::None;
-	
+		
 	// 인터벌 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Buffer|Level Data", meta = (ClampMin = "0"))
 	float Interval = 1.0f;
@@ -29,12 +25,16 @@ struct FBufferLevelData
 /**
  * 버퍼 컴포넌트에서 사용할 데이터
  */
-UCLASS()
+UCLASS(BlueprintType)
 class TOWERDEFENCE_API UBufferDataAsset : public UDataAsset
 {
 	GENERATED_BODY()
 	
 public:
+	// 버프 타입
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Buffer")
+	EEffectType EffectType = EEffectType::None;
+
 	// 레벨별 데이터
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Buffer")
 	TArray<FBufferLevelData> LevelData;

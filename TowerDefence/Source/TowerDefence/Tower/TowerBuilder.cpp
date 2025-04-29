@@ -6,9 +6,13 @@
 // Sets default values
 ATowerBuilder::ATowerBuilder()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
+	USceneComponent* Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	SetRootComponent(Root);
+
+	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+	MeshComponent->SetupAttachment(Root);
 }
 
 // Called when the game starts or when spawned
@@ -18,10 +22,9 @@ void ATowerBuilder::BeginPlay()
 	
 }
 
-// Called every frame
-void ATowerBuilder::Tick(float DeltaTime)
+void ATowerBuilder::Test_BuildTower(int32 TowerIndex)
 {
-	Super::Tick(DeltaTime);
-
+	UWorld* World = GetWorld();
+	Tower = World->SpawnActor<ATower>(
+		TowerClasses[TowerIndex], GetActorLocation(), GetActorRotation());
 }
-

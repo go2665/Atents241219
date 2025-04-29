@@ -39,6 +39,12 @@ void ACannon::Tick(float DeltaTime)
 void ACannon::OnInitialize(ATower* InTower, EFireOrder InOrder)
 {
 	ParentTower = InTower;		// 부모 타워 설정
+	ParentTower->OnTowerLevelUp.AddLambda(
+		[this](int32 _)
+		{			
+			ApplyModifierChanges();	// 레벨업 했을 때 캐논이 수행할 함수
+		}
+	);
 	FireOrder = InOrder;		// 발사 순서 설정
 	ApplyModifierChanges();		// 모디파이어 초기화
 

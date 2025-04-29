@@ -104,6 +104,7 @@ void ATower::TowerLevelUp()
 			UpdateData();	// 타워 데이터 갱신
 
 			// 레벨업 델리게이트 방송. TowerLevel 전달(캐논, 버퍼에 방송)
+			OnTowerLevelUp.Broadcast(TowerLevel);
 		}
 	}
 }
@@ -203,10 +204,6 @@ void ATower::UpdateData()
 
 	// 현재 모디파이어 없음. 생기면 추가
 	TargetCount = GetCannonLevelData().TargetCount; 
-
-	// 캐논에 적용
-	if(CannonInstance)
-		CannonInstance->ApplyModifierChanges();
 }
 
 void ATower::ShootProjectile(const TArray<AEnemy*>& InTargetEnemies)

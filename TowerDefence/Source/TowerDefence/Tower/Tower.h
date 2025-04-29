@@ -17,6 +17,8 @@ class UEffectComponent;
 //class UCannonDataAsset;
 //class UShotDataAsset;
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnTowerLevelUp, int32);
+
 /*
 타워 클래스. 데이터 파일을 기반으로 기능이 변화함.
 */
@@ -80,6 +82,8 @@ public:
 	// 타워의 공격 시 한번에 공격 가능한 타겟 수
 	inline float GetTargetCount() const { return TargetCount; }
 
+	inline bool GetShowDebugInfo() const { return bShowDebugInfo; }
+
 private:
 	// 타워 클릭했을 때 실행(타워 업그레이드 UI 위젯 열기에 사용됨)
 	UFUNCTION()
@@ -113,7 +117,7 @@ private:
 	{
 		return ShotData->LevelData[TowerLevel];
 	}
-
+	
 	// 공격하는 적 목록 출력하기
 	void Test_PrintFireTargetList(const TArray<AEnemy*>& InTargetEnemies);
 
@@ -122,6 +126,10 @@ private:
 
 	//// 타워의 생존 여부(무조건 살아있다. 사용될 일이 없어야 한다.)
 	//inline virtual bool IsAlive() const override { return true; };
+
+public:
+	// 타워가 레벨업을 했을 때 방송하는 델리게이트(파라메터는 레벨업 한 레벨)
+	FOnTowerLevelUp OnTowerLevelUp;
 
 protected:
 	// 타워 메시 

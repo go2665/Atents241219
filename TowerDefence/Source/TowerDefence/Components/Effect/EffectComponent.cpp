@@ -116,13 +116,16 @@ void UEffectComponent::ApplyTotalModifiersToTarget()
 		{
 			EEffectModifier ModifierType = static_cast<EEffectModifier>(i);
 			float ModifierValue = Effect->GetModifierValue(ModifierType);
-			if (TotalModifiers.Contains(ModifierType))
+			if (ModifierValue != 0.0f)	// 모디파이어 값이 0이 아닐 때만 추가하거나 적용한다.
 			{
-				TotalModifiers[ModifierType] *= ModifierValue;	// 서로 다른 이팩트의 모디파이어는 곱연산으로 적용.
-			}
-			else
-			{
-				TotalModifiers.Add(ModifierType, ModifierValue);
+				if (TotalModifiers.Contains(ModifierType))
+				{
+					TotalModifiers[ModifierType] *= ModifierValue;	// 서로 다른 이팩트의 모디파이어는 곱연산으로 적용.
+				}
+				else
+				{
+					TotalModifiers.Add(ModifierType, ModifierValue);
+				}
 			}
 		}
 	}
