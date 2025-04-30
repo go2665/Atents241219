@@ -4,7 +4,7 @@
 #include "TowerBuilderWidget.h"
 #include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
-#include "Components/Button.h"
+#include "Components/SizeBox.h"
 #include "TowerBuildButtonWidget.h"
 
 
@@ -12,20 +12,16 @@ void UTowerBuilderWidget::OnInitialize(const TArray<UTowerDataAsset*>* InTowerDa
 {
 	TowerDatas = InTowerDatas;
 
-	// 반지름은 Canvas 크기의 절반
-	UCanvasPanelSlot* CanvasSlot = Cast<UCanvasPanelSlot>(Canvas->Slot);
-	FVector2D Size = CanvasSlot->GetSize();
-	float Radius = FMath::Min(Size.X, Size.Y) * 0.5f;
+	// 반지름은 크기박스 크기의 절반
+	float Radius = SizeBox->GetWidthOverride() * 0.5f;
 
 	int32 Count = TowerDatas->Num();
 	if (Canvas && Count > 0)
 	{
-		const FVector2D CanvasCenter = Canvas->GetRenderTransform().Translation;
-
 		for (int32 i = 0; i < Count; i++)
 		{
 			// 각도 계산
-			float RadianAngle = FMath::DegreesToRadians(i * (360.0f / Count));
+			float RadianAngle = FMath::DegreesToRadians(i * (360.0f / Count) - 90.0f);
 
 			// 위치 좌표 구하기
 			float X = FMath::Cos(RadianAngle) * Radius;
@@ -34,24 +30,24 @@ void UTowerBuilderWidget::OnInitialize(const TArray<UTowerDataAsset*>* InTowerDa
 			// 버튼 생성
 			UTowerBuildButtonWidget* TowerButtonWidget =
 				CreateWidget<UTowerBuildButtonWidget>(this, TowerButtonButtonWidgetClass);
-			TowerButtonsToIndexMap.Add(TowerButtonWidget, i);
-
+						
 			UCanvasPanelSlot* ChildCanvasSlot = Canvas->AddChildToCanvas(TowerButtonWidget);
-			ChildCanvasSlot->SetPosition(CanvasCenter + FVector2D(X, Y));
+			ChildCanvasSlot->SetAnchors(FAnchors(0.5f, 0.5f));		// 앵커와 피봇을 중앙으로 설정
+			ChildCanvasSlot->SetAlignment(FVector2D(0.5f, 0.5f));
 
-			TowerButtonWidget->OnInitialize((*InTowerDatas)[i]->TowerImage, (*InTowerDatas)[i]->TowerCost);
-			TowerButtonWidget->GetBuildButton()->OnClicked.AddDynamic(
-				this, &UTowerBuilderWidget::OnBuildButtonClicked);
+			ChildCanvasSlot->SetPosition(FVector2D(X, Y));
+			//UE_LOG(LogTemp, Warning, TEXT("ChildCanvasSlot Position : [%.1f, %.1f]"), X, Y);
+
+			ChildCanvasSlot->SetSize(TowerButtonWidget->GetButtonSize());
+
+			TowerButtonWidget->OnInitialize(i, (*InTowerDatas)[i]->TowerImage, (*InTowerDatas)[i]->TowerCost);
+			TowerButtonWidget->OnBuildButtonClicked.BindUFunction(this, FName("OnBuildButtonClicked"));	
 		}
 	}
 }
 
-void UTowerBuilderWidget::OnBuildButtonClicked()
+void UTowerBuilderWidget::OnBuildButtonClicked(int32 InIndex)
 {
-	//UTowerBuildButtonWidget* ButtonWidget = Cast<UTowerBuildButtonWidget>(GetFocusedWidget());
-	//if (ButtonWidget)
-	//{
-	//	int32 Index = TowerButtonsToIndexMap.FindRef(ButtonWidget);
-	//	UE_LOG(LogTemp, Warning, TEXT("Clicked button index: %d"), Index);
-	//}
+	// 버튼이 클릭되면 TowerBuilder에게 요청 전달
+	OnTowerBuildRequest.ExecuteIfBound(InIndex);
 }

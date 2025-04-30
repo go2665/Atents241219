@@ -5,7 +5,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "TowerDefence/Tower/Tower.h"
+#include "TowerDefence/Tower/Data/TowerDataAsset.h"
 #include "TowerBuilder.generated.h"
+
+class UTowerBuilderWidget;
 
 UCLASS()
 class TOWERDEFENCE_API ATowerBuilder : public AActor
@@ -33,10 +36,13 @@ protected:
 	UWidgetComponent* TowerBuildWidget = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "TowerBuilder")
-	TArray<TSubclassOf<ATower>> TowerClasses;
+	TArray<UTowerDataAsset*> TowerDatas;
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "TowerBuilder", meta = (AllowPrivateAccess = "true"))
 	ATower* Tower = nullptr;
 
+	// 타워 빌더 위젯 인스턴스
+	UPROPERTY()
+	UTowerBuilderWidget* TowerBuilderWidgetInstance = nullptr;	
 };

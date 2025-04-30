@@ -3,6 +3,7 @@
 
 #include "TowerBuilder.h"
 #include "Components/WidgetComponent.h"
+#include "TowerDefence/Tower/UI/TowerBuilderWidget.h"
 
 // Sets default values
 ATowerBuilder::ATowerBuilder()
@@ -26,11 +27,23 @@ void ATowerBuilder::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// 타워 업그레이드 UI 위젯 초기화
+	TowerBuilderWidgetInstance = Cast<UTowerBuilderWidget>(TowerBuildWidget->GetUserWidgetObject());
+	if (TowerBuilderWidgetInstance)
+	{
+		TowerBuilderWidgetInstance->OnInitialize(&TowerDatas);
+		TowerBuilderWidgetInstance->OnTowerBuildRequest.BindLambda(
+			[this](int32 InIndex)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Tower Build Request! Index : %d"), InIndex);
+			}
+		);
+	}
 }
 
 void ATowerBuilder::Test_BuildTower(int32 TowerIndex)
 {
 	UWorld* World = GetWorld();
 	Tower = World->SpawnActor<ATower>(
-		TowerClasses[TowerIndex], GetActorLocation(), GetActorRotation());
+		TowerDatas[TowerIndex]->TowerClass, GetActorLocation(), GetActorRotation());
 }

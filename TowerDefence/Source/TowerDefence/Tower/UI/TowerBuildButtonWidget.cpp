@@ -6,8 +6,10 @@
 #include "Components/TextBlock.h"
 
 
-void UTowerBuildButtonWidget::OnInitialize(UTexture* InImage, int32 InCost)
+void UTowerBuildButtonWidget::OnInitialize(int32 InIndex, UTexture* InImage, int32 InCost)
 {
+	Index = InIndex;
+
 	if (BuildButton)
 	{
 		FButtonStyle ButtonStyle = BuildButton->GetStyle();
@@ -18,9 +20,16 @@ void UTowerBuildButtonWidget::OnInitialize(UTexture* InImage, int32 InCost)
 		ButtonStyle.SetPressed(ImageBrush);
 		ButtonStyle.SetDisabled(ImageBrush);
 		BuildButton->SetStyle(ButtonStyle);
+
+		BuildButton->OnClicked.AddDynamic(this, &UTowerBuildButtonWidget::OnButtonClicked);
 	}
 	if (PriceText)
 	{
 		PriceText->SetText(FText::AsNumber(InCost));
 	}
+}
+
+void UTowerBuildButtonWidget::OnButtonClicked()
+{
+	OnBuildButtonClicked.ExecuteIfBound(Index);
 }
