@@ -22,10 +22,10 @@ class TOWERDEFENCE_API UTowerBuildButtonWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	// 버튼 초기화 함수(버튼 인덱스, 버튼 기본 이미지, 가격)
 	void OnInitialize(int32 InIndex, UTexture* InImage, int32 InCost);
 
-	//inline UButton* GetBuildButton() const { return BuildButton; }
-
+	// 버튼의 크기를 리턴하는 함수
 	inline FVector2D GetButtonSize() const
 	{
 		if (SizeBox)
@@ -55,5 +55,6 @@ protected:
 	UTextBlock* PriceText = nullptr;
 
 private:
-	int32 Index = 0;	// 버튼의 인덱스
+	// 버튼의 인덱스
+	int32 Index = 0;	
 };

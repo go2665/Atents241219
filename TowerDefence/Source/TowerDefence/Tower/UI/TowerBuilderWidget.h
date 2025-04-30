@@ -11,7 +11,6 @@
 
 DECLARE_DELEGATE_OneParam(FOnTowerBuildRequest, int32);
 
-//class UTowerBuildButtonWidget;
 class UCanvasPanel;
 class USizeBox;
 
@@ -27,7 +26,10 @@ public:
 	// 타워 빌더 위젯 초기화. TowerBuilder가 실행
 	void OnInitialize(const TArray<UTowerDataAsset*>* InTowerDatas);
 
+	// 위젯을 여는 함수
 	void Open();
+
+	// 위젯을 닫는 함수
 	void Close();
 
 private:
@@ -59,9 +61,4 @@ protected:
 	// 버튼의 위젯 클래스
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "TowerBuilder")
 	TSubclassOf<UTowerBuildButtonWidget> TowerButtonButtonWidgetClass;
-
-private:
-	// 타워 데이터 배열의 주소(초기화 때 전달받음)
-	const TArray<UTowerDataAsset*>* TowerDatas = nullptr;
-
 };

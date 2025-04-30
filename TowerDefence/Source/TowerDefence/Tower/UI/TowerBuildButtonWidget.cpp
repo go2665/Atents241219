@@ -12,6 +12,7 @@ void UTowerBuildButtonWidget::OnInitialize(int32 InIndex, UTexture* InImage, int
 
 	if (BuildButton)
 	{
+		// 버튼 이미지 지정
 		FButtonStyle ButtonStyle = BuildButton->GetStyle();
 		FSlateBrush ImageBrush;
 		ImageBrush.SetResourceObject(InImage);
@@ -21,15 +22,18 @@ void UTowerBuildButtonWidget::OnInitialize(int32 InIndex, UTexture* InImage, int
 		ButtonStyle.SetDisabled(ImageBrush);
 		BuildButton->SetStyle(ButtonStyle);
 
+		// 버튼 클릭시 이벤트 바인딩
 		BuildButton->OnClicked.AddDynamic(this, &UTowerBuildButtonWidget::OnButtonClicked);
 	}
 	if (PriceText)
 	{
+		// 가격 텍스트 지정
 		PriceText->SetText(FText::AsNumber(InCost));
 	}
 }
 
 void UTowerBuildButtonWidget::OnButtonClicked()
 {
+	// 자기 인덱스 알려주는 델리게이트 호출
 	OnBuildButtonClicked.ExecuteIfBound(Index);
 }
