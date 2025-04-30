@@ -19,7 +19,7 @@ public:
 	inline void SetGold(int32 NewGold) { Gold = NewGold; }
 	inline void AddGold(int32 AddedGold) { Gold += AddedGold; }
 	inline bool UseGold(int32 UsedGold) { 
-		if (Gold > UsedGold)
+		if (Gold >= UsedGold)
 		{
 			Gold -= UsedGold; 
 			return true;

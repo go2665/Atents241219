@@ -5,6 +5,7 @@
 #include "Components/WidgetComponent.h"
 #include "TowerDefence/Tower/UI/TowerBuilderWidget.h"
 #include "TowerDefence/Framework/TowerDefencePlayerController.h"
+#include "TowerDefence/Framework/TowerDefenceGameMode.h"
 
 // Sets default values
 ATowerBuilder::ATowerBuilder()
@@ -33,12 +34,16 @@ void ATowerBuilder::BeginPlay()
 	if (TowerBuilderWidgetInstance)
 	{
 		TowerBuilderWidgetInstance->OnInitialize(&TowerDatas);
-		TowerBuilderWidgetInstance->OnTowerBuildRequest.BindLambda(
-			[this](int32 InIndex)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Tower Build Request! Index : %d"), InIndex);
-			}
-		);
+		//TowerBuilderWidgetInstance->OnTowerBuildRequest.BindLambda(
+		//	[this](int32 InIndex)
+		//	{
+		//		//UE_LOG(LogTemp, Warning, TEXT("Tower Build Request! Index : %d"), InIndex);
+		//		BuildTower(InIndex);
+		//	}
+		//);
+
+		// 타워 빌드 요청 시 실행될 함수 바인딩
+		TowerBuilderWidgetInstance->OnTowerBuildRequest.BindUObject(this, &ATowerBuilder::BuildTower);	
 	}
 
 	// 타워 클릭시 실행 함수 연결(타워 업그레이드 UI 위젯 열기)
@@ -56,9 +61,7 @@ void ATowerBuilder::BeginPlay()
 
 void ATowerBuilder::Test_BuildTower(int32 TowerIndex)
 {
-	UWorld* World = GetWorld();
-	Tower = World->SpawnActor<ATower>(
-		TowerDatas[TowerIndex]->TowerClass, GetActorLocation(), GetActorRotation());
+	BuildTower(TowerIndex);	
 }
 
 void ATowerBuilder::OnBuilderClicked(AActor* TouchedActor, FKey ButtonPressed)
@@ -66,7 +69,7 @@ void ATowerBuilder::OnBuilderClicked(AActor* TouchedActor, FKey ButtonPressed)
 	// 타워 클릭 시 업그레이드 UI 위젯 열기
 	if (ButtonPressed == EKeys::LeftMouseButton)
 	{
-		if (TowerBuilderWidgetInstance)
+		if (TowerBuilderWidgetInstance && !Tower)
 		{
 			TowerBuilderWidgetInstance->Open();
 			//if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] : Clicked TowerBuilder!"), *this->GetActorNameOrLabel());
@@ -85,4 +88,34 @@ void ATowerBuilder::OnScreenClicked(AActor* InClickedBuilder)
 	//{
 	//	if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] : Not Close Builder Widget!"), *InClickedBuilder->GetActorNameOrLabel());
 	//}
+}
+
+void ATowerBuilder::BuildTower(int32 InTowerIndex)
+{
+	if (!Tower)
+	{
+		UWorld* World = GetWorld();
+		ATowerDefenceGameMode* GameMode = Cast<ATowerDefenceGameMode>(World->GetAuthGameMode());
+		
+		if (GameMode->UseGold(TowerDatas[InTowerIndex]->TowerCost)) // 골드 사용 시도
+		{
+			Tower = World->SpawnActor<ATower>(
+				TowerDatas[InTowerIndex]->TowerClass, GetActorLocation(), GetActorRotation());
+			Tower->SetInitialSellCost(TowerDatas[InTowerIndex]->TowerCost * 0.5f);	// 판매 가격 초기화
+
+			Tower->OnTowerSell.AddUObject(GameMode, &ATowerDefenceGameMode::AddGold);	// 타워가 팔렸을 때 골드 추가하도록 함수 연결
+			Tower->OnTowerSell.AddLambda(
+				[this](int32 _)
+				{
+					Tower = nullptr;	// 타워가 팔렸을 때 빌더의 Tower를 nullptr로 초기화
+				}
+			);
+
+		}
+		//else
+		//{
+		//	// 골드 부족 시 처리
+		//	UE_LOG(LogTemp, Warning, TEXT("Not enough gold!"));
+		//}
+	}
 }

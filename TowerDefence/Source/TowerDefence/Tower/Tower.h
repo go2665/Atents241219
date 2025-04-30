@@ -18,6 +18,7 @@ class UEffectComponent;
 //class UShotDataAsset;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnTowerLevelUp, int32);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnTowerSell, int32);
 
 /*
 타워 클래스. 데이터 파일을 기반으로 기능이 변화함.
@@ -82,6 +83,9 @@ public:
 	// 타워의 공격 시 한번에 공격 가능한 타겟 수
 	inline float GetTargetCount() const { return TargetCount; }
 
+	// 타워의 판매가격 초기화
+	inline void SetInitialSellCost(int32 InSellCost) { SellCost = InSellCost; }
+
 	inline bool GetShowDebugInfo() const { return bShowDebugInfo; }
 
 private:
@@ -131,6 +135,9 @@ public:
 	// 타워가 레벨업을 했을 때 방송하는 델리게이트(파라메터는 레벨업 한 레벨)
 	FOnTowerLevelUp OnTowerLevelUp;
 
+	// 타워가 판매 되었을 때 방송하는 델리게이트(파라메터는 판매한 금액)
+	FOnTowerSell OnTowerSell;	
+
 protected:
 	// 타워 메시 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -144,10 +151,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower|Base Data", meta = (ClampMin = "0", ClampMax = "2"))
 	int32 TowerLevel = 0; 
 
-	// 타워 설치 비용
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower|Base Data")
-	int32 TowerCost = 100; 	
-
 	// 대포 데이터
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower|Base Data")
 	UCannonDataAsset* CannonData = nullptr;
@@ -156,8 +159,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower|Base Data")
 	UShotDataAsset* ShotData;
 
+	// 타워 판매 비용(판매 비용은 (설치 비용 + 업그레이드 비용)의 절반)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tower|Base Data")
+	int32 SellCost = 0;
+
 	// 스킬 데이터(컴포넌트 추가)
-	// 주변에 버프 제공(컴포넌트 추가?)
 	
 	// 타워가 주는 공격당 데미지(모디파이어 적용된 값. 버프 변경시 재계산되어야 함)
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tower|Effect Modified Value")
@@ -189,9 +195,6 @@ private:
 	
 	// 대포 레벨의 최대 + 1
 	int8 TowerLevelCap = 3;	
-
-	// 타워 판매 비용
-	int32 SellCost = 50;	
 
 	// 이팩트 컴포넌트 인스턴스
 	UPROPERTY()

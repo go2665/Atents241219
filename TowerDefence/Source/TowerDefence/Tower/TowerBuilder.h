@@ -36,6 +36,9 @@ private:
 	UFUNCTION()
 	void OnScreenClicked(AActor* InClickedBuilder);
 
+	UFUNCTION()
+	void BuildTower(int32 InTowerIndex);
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* MeshComponent = nullptr;

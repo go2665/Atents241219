@@ -85,9 +85,6 @@ void ATower::BeginPlay()
 	{
 		PlayerController->OnMouseClickInput.AddDynamic(this, &ATower::OnScreenClicked);
 	}
-
-	// 판매 비용 초기화
-	SellCost = TowerCost * 0.5f;	// 판매 비용은 (설치 비용 + 업그레이드 비용)의 절반
 }
 
 void ATower::TowerLevelUp()
@@ -112,8 +109,9 @@ void ATower::TowerLevelUp()
 void ATower::TowerSell()
 {
 	if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] : Tower Sell!"), *this->GetActorNameOrLabel());
-	ATowerDefenceGameMode* GameMode = Cast<ATowerDefenceGameMode>(GetWorld()->GetAuthGameMode());
-	GameMode->AddGold(SellCost);	// 판매 비용 추가
+	
+	OnTowerSell.Broadcast(SellCost);	// 타워가 팔렸다고 알리기
+
 	if (CannonInstance)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("[%s] : Tower Sell : Cannon Destroyed!"), *CannonInstance->GetActorNameOrLabel());
