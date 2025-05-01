@@ -41,13 +41,6 @@ void UEffectDebuff_DotDamage::OnEnd()
 	}
 }
 
-void UEffectDebuff_DotDamage::OnStack(int32 InLevel)
-{
-	Super::OnStack(InLevel);
-
-	TickDamage = BaseTickDamage * StackCount;	// 스택 수에 따라 틱당 데미지 증가
-}
-
 void UEffectDebuff_DotDamage::DealTarget()
 {
 	UGameplayStatics::ApplyDamage(

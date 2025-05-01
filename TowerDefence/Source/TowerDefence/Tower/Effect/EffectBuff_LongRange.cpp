@@ -5,5 +5,5 @@
 
 void UEffectBuff_LongRange::UpdateModifiers()
 {
-	EffectModifiers.Add(EEffectModifier::FireRange, GetModifier1() * StackCount);	// 사거리 증가
+	EffectModifiers.Add(EEffectModifier::FireRange, GetModifier1());	// 사거리 증가
 }

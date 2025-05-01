@@ -38,12 +38,6 @@ public:
 	// 이팩트가 끝났을 때 할일
 	virtual void OnEnd();	
 
-	// 이팩트가 중첩 되었을 때 할일
-	virtual void OnStack(int InLevel);
-
-	// 이팩트가 연장 되었을 때 할일
-	virtual void OnExtend(int InLevel);
-
 	// 이팩트 타입 반환
 	inline EEffectType GetEffectType() const { return EffectType; }
 
@@ -98,10 +92,6 @@ protected:
 	// 이팩트 지속 시간
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Effect")
 	float RemainingDuration = 0.0f; 
-
-	// 이팩트 스택 수치
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Effect")
-	int32 StackCount = 1; 
 
 	// 이팩트 수치(타입, 수치) (생성자에서 적용할 모디파이어만 타입별로 추가)
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Effect")

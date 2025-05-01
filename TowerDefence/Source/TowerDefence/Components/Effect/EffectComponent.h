@@ -12,6 +12,16 @@
 class UEffectBase;			// 각종 버프/디버프 구현 기본 클래스
 class IEffectTargetable;	// 이팩트가 적용될 타겟을 나타내는 인터페이스
 
+USTRUCT(BlueprintType)
+struct FEffectArray
+{
+	GENERATED_BODY()
+
+	UPROPERTY(VisibleAnywhere)
+	TArray<UEffectBase*> EffectList;	// 이팩트 리스트
+
+};
+
 // 이팩트 변경 델리게이트(전체 이팩트 목록을 전달해야함)
 DECLARE_DYNAMIC_DELEGATE_OneParam(FOnEffectChanged, const TArray<UEffectBase*>&, InEffectList);	
 
@@ -40,9 +50,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Effect")
 	bool AddEffect(EEffectType InType, int32 InLevel);
 
-	// 이팩트 제거 함수
+	// 이팩트 한 종류 제거하는 함수
 	UFUNCTION(BlueprintCallable, Category = "Effect")
 	bool RemoveEffect(EEffectType InType);
+
+	UFUNCTION(BlueprintCallable, Category = "Effect")
+	bool RemoveTargetEffect(UEffectBase* InRemoveEffect);
 
 private:
 	// 버프 인스턴스 생성
@@ -61,9 +74,13 @@ protected:
 	TMap<EEffectType, UEffectDataAsset*> EffectDataMap;	
 
 private:
-	// 현재 적용된 이팩트 리스트(타워에 적용 될 버프 리스트)
+	//// 현재 적용된 이팩트 리스트(타워에 적용 될 버프 리스트)
+	//UPROPERTY(VisibleAnywhere, Category = "Effect")
+	//TArray<UEffectBase*> EffectList;
+	
+	// 이팩트 타입별로 이팩트 배열을 관리하기 위한 맵
 	UPROPERTY(VisibleAnywhere, Category = "Effect")
-	TArray<UEffectBase*> EffectList;
+	TMap<EEffectType, FEffectArray> EffectTypeMap;
 
 	// 모든 이팩트의 모디파이어가 합산된 값
 	UPROPERTY(VisibleAnywhere, Category = "Effect")

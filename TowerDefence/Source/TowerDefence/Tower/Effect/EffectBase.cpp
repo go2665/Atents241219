@@ -23,8 +23,7 @@ void UEffectBase::OnInitialize(EEffectType InType, const UEffectDataAsset* InDat
 	EffectDataAsset = InData;
 	EffectLevel = FMath::Min(InEffectLevel, EffectDataAsset->LevelData.Num() - 1);
 	Target = InTarget;
-	StackCount = 1;
-
+	
 	UpdateModifiers();
 }
 
@@ -45,19 +44,4 @@ void UEffectBase::OnEnd()
 	// 이 이팩트가 끝났을 때 원래대로 되돌리는 로직을 여기에 추가합니다.
 	RemainingDuration = 0.0f;
 	EffectModifiers.Empty();
-}
-
-void UEffectBase::OnStack(int InLevel)
-{
-	EffectLevel = FMath::Min(InLevel, EffectDataAsset->LevelData.Num() - 1);
-	RemainingDuration = GetDuration(); // 이팩트의 지속 시간 초기화
-	StackCount = FMath::Min(StackCount + 1, GetMaxStackCount()); // 스택 수 증가 + 최대 스택 수 제한
-
-	UpdateModifiers();
-}
-
-void UEffectBase::OnExtend(int InLevel)
-{
-	EffectLevel = FMath::Min(InLevel, EffectDataAsset->LevelData.Num() - 1);
-	RemainingDuration += GetDuration(); // 이팩트의 지속 시간 연장
 }
