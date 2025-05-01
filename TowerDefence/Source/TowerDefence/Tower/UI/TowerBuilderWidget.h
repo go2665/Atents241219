@@ -61,4 +61,12 @@ protected:
 	// 버튼의 위젯 클래스
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "TowerBuilder")
 	TSubclassOf<UTowerBuildButtonWidget> TowerButtonButtonWidgetClass;
+
+private:
+	// 버튼 인스턴스 배열
+	UPROPERTY()
+	TArray<UTowerBuildButtonWidget*> BuildButtons;	
+
+	// 현재 골드(게임 모드에서 가져와야 함)
+	int32 CurrentGold = 0;	
 };

@@ -70,6 +70,7 @@ void ATower::BeginPlay()
 	UpgradeWidgetInstance = Cast<UTowerUpgradeWidget>(UpgradeWidget->GetUserWidgetObject());
 	if (UpgradeWidgetInstance)
 	{
+		UpgradeWidgetInstance->OnInitialize();
 		UpgradeWidgetInstance->OnUpgradeClicked.BindUFunction(this, FName("TowerLevelUp"));
 		UpgradeWidgetInstance->OnSellClicked.BindUFunction(this, FName("TowerSell"));
 	}
@@ -118,6 +119,7 @@ void ATower::TowerSell()
 		CannonInstance->Destroy();	// 대포 인스턴스 삭제
 		CannonInstance = nullptr;
 	}
+
 	Destroy();	// 타워 삭제	
 	//UE_LOG(LogTemp, Warning, TEXT("[%s] : Tower Sell : Tower Destroyed!"), *this->GetActorNameOrLabel());
 }

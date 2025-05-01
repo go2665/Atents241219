@@ -6,6 +6,7 @@
 #include "Components/CanvasPanelSlot.h"
 #include "Components/SizeBox.h"
 #include "TowerBuildButtonWidget.h"
+#include "TowerDefence/Framework/TowerDefenceGameMode.h"
 
 
 void UTowerBuilderWidget::OnInitialize(const TArray<UTowerDataAsset*>* InTowerDatas)
@@ -42,6 +43,8 @@ void UTowerBuilderWidget::OnInitialize(const TArray<UTowerDataAsset*>* InTowerDa
 			// 버튼의 인덱스와 표시될 이미지와 비용 설정
 			TowerButtonWidget->OnInitialize(i, (*InTowerDatas)[i]->TowerImage, (*InTowerDatas)[i]->TowerCost);
 			TowerButtonWidget->OnBuildButtonClicked.BindUFunction(this, FName("OnBuildButtonClicked"));	
+
+			BuildButtons.Add(TowerButtonWidget);	// 버튼을 배열에 추가
 		}
 	}
 
@@ -50,6 +53,20 @@ void UTowerBuilderWidget::OnInitialize(const TArray<UTowerDataAsset*>* InTowerDa
 	CloseEvent.BindUFunction(this, FName("OnCloseAnimationFinished"));
 	BindToAnimationFinished(CloseAnimation, CloseEvent);
 
+	// 게임 모드에서 골드가 변경될 때 현재 골드 저장
+	UWorld* World = GetWorld();
+	ATowerDefenceGameMode* GameMode = Cast<ATowerDefenceGameMode>(World->GetAuthGameMode());
+	if (GameMode)
+	{
+		CurrentGold = GameMode->GetGold();		// 현재 골드 초기화
+		GameMode->OnGoldChanged.AddLambda(		// 람다식으로 골드 변경 시 현재 골드 저장
+			[this](int32 InCurrentGold)
+			{
+				CurrentGold = InCurrentGold;	// 현재 골드 저장
+			}
+		);
+	}
+
 	// 시작할 때는 안보이게 하기(이 함수가 ATowerBuilder::BeginPlay에서 실행됨)
 	SetVisibility(ESlateVisibility::Hidden);
 }
@@ -57,6 +74,12 @@ void UTowerBuilderWidget::OnInitialize(const TArray<UTowerDataAsset*>* InTowerDa
 void UTowerBuilderWidget::Open()
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Open Builder Widget"));
+
+	// 버튼의 상태를 현재 골드에 맞게 업데이트
+	for (UTowerBuildButtonWidget* Button : BuildButtons)
+	{
+		Button->UpdateButtonState(CurrentGold);
+	}	
 
 	SetRenderScale(FVector2D(0.0f, 0.0f));		// 크기 초기화
 	SetVisibility(ESlateVisibility::Visible);	// 보이게 만들기

@@ -9,6 +9,7 @@
 void UTowerBuildButtonWidget::OnInitialize(int32 InIndex, UTexture* InImage, int32 InCost)
 {
 	Index = InIndex;
+	Cost = InCost;
 
 	if (BuildButton)
 	{
@@ -28,7 +29,21 @@ void UTowerBuildButtonWidget::OnInitialize(int32 InIndex, UTexture* InImage, int
 	if (PriceText)
 	{
 		// 가격 텍스트 지정
-		PriceText->SetText(FText::AsNumber(InCost));
+		PriceText->SetText(FText::AsNumber(Cost));
+	}
+}
+
+void UTowerBuildButtonWidget::UpdateButtonState(int32 InGold)
+{
+	if (InGold >= Cost)
+	{
+		BuildButton->SetIsEnabled(true);
+		PriceText->SetColorAndOpacity(BuildEnableColor);
+	}
+	else
+	{
+		BuildButton->SetIsEnabled(false);
+		PriceText->SetColorAndOpacity(BuildDisableColor);
 	}
 }
 

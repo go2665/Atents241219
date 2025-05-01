@@ -25,6 +25,9 @@ public:
 	// 버튼 초기화 함수(버튼 인덱스, 버튼 기본 이미지, 가격)
 	void OnInitialize(int32 InIndex, UTexture* InImage, int32 InCost);
 
+	void UpdateButtonState(int32 InGold);
+
+
 	// 버튼의 크기를 리턴하는 함수
 	inline FVector2D GetButtonSize() const
 	{
@@ -54,7 +57,16 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* PriceText = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "TowerBuilder")
+	FLinearColor BuildEnableColor = FLinearColor(1.0f, 1.0f, 1.0f, 1.0f);		// 타워건설 가능 색상
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "TowerBuilder")
+	FLinearColor BuildDisableColor = FLinearColor(1.0f, 0.0f, 0.0f, 1.0f);		// 타워건설 불가능 색상
+
 private:
 	// 버튼의 인덱스
 	int32 Index = 0;	
+
+	// 이 버튼 사용에 필요한 금액
+	int32 Cost = 0;	
 };
