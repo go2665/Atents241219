@@ -19,14 +19,14 @@ void UEffectComponent::BeginPlay()
 	EffectTarget = TScriptInterface<IEffectTargetable>(GetOwner());	
 }
 
-bool UEffectComponent::AddEffect(EEffectType InType)
+bool UEffectComponent::AddEffect(EEffectType InType, int32 InLevel)
 {
 	// 이미 존재하는 이팩트는 중첩시킨다.
 	for (auto& Effect : EffectList)
 	{
 		if (Effect->GetEffectType() == InType)
 		{
-			Effect->OnStack();
+			Effect->OnStack(InLevel);
 			//OnEffectChanged.ExecuteIfBound(EffectList);	// 이팩트 변경 델리게이트 호출
 			ApplyTotalModifiersToTarget(); // 모디파이어 다시 합산하고 대상에 적용
 			
@@ -46,7 +46,7 @@ bool UEffectComponent::AddEffect(EEffectType InType)
 		{
 			EffectData = EffectDataMap[InType];	// 이팩트 데이터 에셋을 찾는다.
 
-			NewEffect->OnInitialize(InType, EffectData, GetOwner());	// 이팩트 데이터 에셋 설정하면서 초기화
+			NewEffect->OnInitialize(InType, EffectData, InLevel, GetOwner());	// 이팩트 데이터 에셋 설정하면서 초기화
 			EffectList.AddUnique(NewEffect);	// 이팩트 리스트에 추가
 			NewEffect->OnEffectExpire.BindLambda([this](UEffectBase* ExpiredEffect)
 				{

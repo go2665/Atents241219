@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/OverlapResult.h" 
 #include "TowerBaseActor.h"
-#include "TowerDefence/Tower/DEPRECATED_Tower/Data/SkillData/SkillDataAsset.h"
+#include "TowerDefence/Tower/DEPRECATED_Tower/Data/SkillData/DEPRECATED_SkillDataAsset.h"
 #include "HeroTowerActor.generated.h"
 
 class AEnemyBase;
@@ -93,7 +93,7 @@ protected:
 	UTowerBuffComponent* HeroBuffComponent = nullptr;	// 버프 컴포넌트 저장할 변수
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower|Hero")
-	TArray<USkillDataAsset*> SkillDataAssets;
+	TArray<U_DEPRECATED_SkillDataAsset*> SkillDataAssets;
 
 private:
 	bool bIsSelectingSkillLocation = false;	// 스킬 사용 위치 선택 중인지를 표시하는 변수

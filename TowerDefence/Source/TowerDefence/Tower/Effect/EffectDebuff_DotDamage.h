@@ -15,10 +15,10 @@ class TOWERDEFENCE_API UEffectDebuff_DotDamage : public UEffectBase
 	GENERATED_BODY()
 
 public:
-	virtual void OnInitialize(EEffectType InType, const UEffectDataAsset* InData, AActor* InTarget) override;
+	virtual void OnInitialize(EEffectType InType, const UEffectDataAsset* InData, int32 InLevel, AActor* InTarget) override;
 	virtual void OnBegin() override;
 	virtual void OnEnd() override;
-	virtual void OnStack() override;
+	virtual void OnStack(int32 InLevel) override;
 
 	// 데미지 타입을 설정합니다.
 	inline void SetDamageType(TSubclassOf<UDamageType> InDamageType) { DamageTypeClass = InDamageType; }

@@ -5,7 +5,7 @@
 
 void UEffectBuff_Hero::UpdateModifiers()
 {
-	EffectModifiers.Add(EEffectModifier::Attack, EffectDataAsset->Modifier1 * StackCount);	// 공격력 증가
-	EffectModifiers.Add(EEffectModifier::FireRate, EffectDataAsset->Modifier2 * StackCount);		// 공격 속도 증가
-	EffectModifiers.Add(EEffectModifier::FireRange, EffectDataAsset->Modifier3 * StackCount);	// 사거리 증가
+	EffectModifiers.Add(EEffectModifier::Attack, GetModifier1() * StackCount);	// 공격력 증가
+	EffectModifiers.Add(EEffectModifier::FireRate, GetModifier2() * StackCount);		// 공격 속도 증가
+	EffectModifiers.Add(EEffectModifier::FireRange, GetModifier3() * StackCount);	// 사거리 증가
 }

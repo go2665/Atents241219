@@ -17,10 +17,11 @@ void UEffectBase::Tick(float DeltaTime)
 	}
 }
 
-void UEffectBase::OnInitialize(EEffectType InType, const UEffectDataAsset* InData, AActor* InTarget)
+void UEffectBase::OnInitialize(EEffectType InType, const UEffectDataAsset* InData, int32 InEffectLevel, AActor* InTarget)
 {
 	EffectType = InType;
 	EffectDataAsset = InData;
+	EffectLevel = FMath::Min(InEffectLevel, EffectDataAsset->LevelData.Num() - 1);
 	Target = InTarget;
 	StackCount = 1;
 
@@ -30,7 +31,7 @@ void UEffectBase::OnInitialize(EEffectType InType, const UEffectDataAsset* InDat
 void UEffectBase::OnBegin()
 {
 	// 버프가 시작 되었을 때 할일
-	RemainingDuration = EffectDataAsset->Duration;
+	RemainingDuration = GetDuration();
 	// 이 이팩트가 처음 적용될 때 일어나야 하는 로직을 여기에 추가합니다.
 }
 
@@ -46,15 +47,17 @@ void UEffectBase::OnEnd()
 	EffectModifiers.Empty();
 }
 
-void UEffectBase::OnStack()
+void UEffectBase::OnStack(int InLevel)
 {
-	RemainingDuration = EffectDataAsset->Duration; // 이팩트의 지속 시간 초기화
-	StackCount = FMath::Min(StackCount + 1, EffectDataAsset->MaxStackCount); // 스택 수 증가 + 최대 스택 수 제한
+	EffectLevel = FMath::Min(InLevel, EffectDataAsset->LevelData.Num() - 1);
+	RemainingDuration = GetDuration(); // 이팩트의 지속 시간 초기화
+	StackCount = FMath::Min(StackCount + 1, GetMaxStackCount()); // 스택 수 증가 + 최대 스택 수 제한
 
 	UpdateModifiers();
 }
 
-void UEffectBase::OnExtend()
+void UEffectBase::OnExtend(int InLevel)
 {
-	RemainingDuration += EffectDataAsset->Duration; // 이팩트의 지속 시간 연장
+	EffectLevel = FMath::Min(InLevel, EffectDataAsset->LevelData.Num() - 1);
+	RemainingDuration += GetDuration(); // 이팩트의 지속 시간 연장
 }

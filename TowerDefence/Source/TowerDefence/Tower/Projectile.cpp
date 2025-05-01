@@ -175,7 +175,7 @@ void AProjectile::DamageToEnemy(AEnemy* HitEnemy)
 		ShotData->DamageType);
 
 	// 맞은 적에게 이팩트 주기
-	HitEnemy->AddEffect(GetShotLevelData().EffectType);
+	HitEnemy->AddEffect(GetShotLevelData().EffectType, ShotLevel);
 }
 
 void AProjectile::DamageToArea(AActor* InIgnore)
@@ -208,7 +208,7 @@ void AProjectile::DamageToArea(AActor* InIgnore)
 			AEnemy* Enemy = Cast<AEnemy>(Target);
 			if (Enemy)
 			{
-				Enemy->AddEffect(GetShotLevelData().EffectType);
+				Enemy->AddEffect(GetShotLevelData().EffectType, ShotLevel);
 			}
 		}
 	}

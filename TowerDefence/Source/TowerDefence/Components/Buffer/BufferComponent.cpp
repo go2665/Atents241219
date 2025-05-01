@@ -22,7 +22,7 @@ void UBufferComponent::BeginPlay()
 	if (BufferDataAsset)
 	{
 		// 타워 레벨업 델리게이트에 람다함수 추가
-		ATower* Tower = Cast<ATower>(GetOwner()); // 소유자(타워) 가져오기
+		Tower = Cast<ATower>(GetOwner()); // 소유자(타워) 가져오기
 		ensure(Tower != nullptr);
 		bShowDebugInfo = Tower->GetShowDebugInfo();
 		if (Tower)
@@ -79,13 +79,15 @@ void UBufferComponent::AddBuffToAround()
 	// 주변에 있는 타워 배치 가능한 액터(ATowerBuilderActor)를 순회하면서 버프를 건다.
 	for (ATowerBuilder* TowerBuilder : TowerBuilderList)
 	{
-		if (TowerBuilder && TowerBuilder->GetTower()) // 주변에 있는 TowerBuilder에 타워가 있을 때
+		if (TowerBuilder 
+			&& TowerBuilder->GetTower()				// 주변에 있는 TowerBuilder에 타워가 있고
+			&& TowerBuilder->GetTower() != Tower)	// 내 타워가 아닌 경우에만 버프를 건다.
 		{			
 			//FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
 			//UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] is add buff to [%s]"),
 			//	*TimeString, *GetOwner()->GetActorNameOrLabel(), *TowerBuilder->GetTower()->GetActorNameOrLabel());
 
-			TowerBuilder->GetTower()->AddEffect(GetBuffType());
+			TowerBuilder->GetTower()->AddEffect(GetBuffType(), Level);
 		}
 	}
 

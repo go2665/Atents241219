@@ -5,5 +5,5 @@
 
 void UEffectBuff_RapidFire::UpdateModifiers()
 {
-	EffectModifiers.Add(EEffectModifier::FireRate, EffectDataAsset->Modifier1 * StackCount);	// 공격 속도 증가
+	EffectModifiers.Add(EEffectModifier::FireRate, GetModifier1() * StackCount);	// 공격 속도 증가
 }

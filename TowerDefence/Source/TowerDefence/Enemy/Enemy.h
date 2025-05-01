@@ -27,7 +27,7 @@ public:
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override; // 데미지 처리 함수
 
 	UFUNCTION(BlueprintCallable, Category = "Enemy")
-	bool AddEffect(EEffectType InType) override;
+	bool AddEffect(EEffectType InType, int32 InLevel) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Enemy")
 	bool RemoveEffect(EEffectType InType) override;

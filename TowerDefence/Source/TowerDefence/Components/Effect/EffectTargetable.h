@@ -24,8 +24,8 @@ class TOWERDEFENCE_API IEffectTargetable
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	// 버프 추가 함수
-	virtual bool AddEffect(EEffectType InType) = 0;
+	// 버프 추가 함수(이팩트 타입, 이팩트를 거는 대상의 레벨)
+	virtual bool AddEffect(EEffectType InType, int32 InLevel) = 0;
 
 	// 버프 제거 함수
 	virtual bool RemoveEffect(EEffectType InType) = 0;

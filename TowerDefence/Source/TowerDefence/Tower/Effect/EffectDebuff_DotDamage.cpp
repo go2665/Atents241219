@@ -4,13 +4,13 @@
 #include "EffectDebuff_DotDamage.h"
 #include "Kismet/GameplayStatics.h"
 
-void UEffectDebuff_DotDamage::OnInitialize(EEffectType InType, const UEffectDataAsset* InData, AActor* InTarget)
+void UEffectDebuff_DotDamage::OnInitialize(EEffectType InType, const UEffectDataAsset* InData, int32 InLevel, AActor* InTarget)
 {
-	Super::OnInitialize(InType, InData, InTarget);
+	Super::OnInitialize(InType, InData, InLevel, InTarget);
 
 	//InData->Modifier1;	// 총 데미지
-	Interval = InData->Modifier2;	// 인터벌
-	BaseTickDamage = InData->Modifier1 / (InData->Duration / Interval);	// 틱당 데미지 결정
+	Interval = GetModifier2();	// 인터벌
+	BaseTickDamage = GetModifier1() / (GetDuration() / Interval);	// 틱당 데미지 결정
 	TickDamage = BaseTickDamage;	// 틱당 데미지 적용
 }
 
@@ -41,9 +41,9 @@ void UEffectDebuff_DotDamage::OnEnd()
 	}
 }
 
-void UEffectDebuff_DotDamage::OnStack()
+void UEffectDebuff_DotDamage::OnStack(int32 InLevel)
 {
-	Super::OnStack();
+	Super::OnStack(InLevel);
 
 	TickDamage = BaseTickDamage * StackCount;	// 스택 수에 따라 틱당 데미지 증가
 }

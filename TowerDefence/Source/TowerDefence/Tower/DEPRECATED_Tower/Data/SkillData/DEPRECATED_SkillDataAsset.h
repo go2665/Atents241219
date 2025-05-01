@@ -8,13 +8,13 @@
 #include "TowerDefence/Tower/DEPRECATED_Tower/Data/BuffData/TowerBuffDataAsset.h"
 #include "TowerDefence/Tower/DEPRECATED_Tower/Defines/DebuffEnums.h"
 #include "TowerDefence/Defines/DamageAttribute/TowerDamageType.h"
-#include "SkillDataAsset.generated.h"
+#include "DEPRECATED_SkillDataAsset.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class TOWERDEFENCE_API USkillDataAsset : public UDataAsset
+class TOWERDEFENCE_API U_DEPRECATED_SkillDataAsset : public UDataAsset
 {
 	GENERATED_BODY()
 	

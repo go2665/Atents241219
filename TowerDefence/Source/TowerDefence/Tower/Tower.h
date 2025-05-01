@@ -49,7 +49,7 @@ public:
 
 	// 버프 추가 함수
 	UFUNCTION(BlueprintCallable, Category = "Tower")
-	virtual bool AddEffect(EEffectType InType) override;
+	virtual bool AddEffect(EEffectType InType, int32 InLevel) override;
 	
 	// 버프 제거 함수
 	UFUNCTION(BlueprintCallable, Category = "Tower")

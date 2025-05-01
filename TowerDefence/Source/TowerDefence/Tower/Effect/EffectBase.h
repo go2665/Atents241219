@@ -26,7 +26,8 @@ public:
 	void Tick(float DeltaTime);
 
 	// 이팩트가 생성 되었을 때 할일
-	virtual void OnInitialize(EEffectType InType, const UEffectDataAsset* InData, AActor* InTarget);
+	virtual void OnInitialize(
+		EEffectType InType, const UEffectDataAsset* InData, int32 InEffectLevel, AActor* InTarget);
 
 	// 이팩트가 시작 되었을 때 할일
 	virtual void OnBegin();						
@@ -38,10 +39,10 @@ public:
 	virtual void OnEnd();	
 
 	// 이팩트가 중첩 되었을 때 할일
-	virtual void OnStack();
+	virtual void OnStack(int InLevel);
 
 	// 이팩트가 연장 되었을 때 할일
-	virtual void OnExtend();
+	virtual void OnExtend(int InLevel);
 
 	// 이팩트 타입 반환
 	inline EEffectType GetEffectType() const { return EffectType; }
@@ -60,6 +61,22 @@ public:
 protected:
 	// 모디파이어 업데이트 하는 함수(초기화 할 때와 스택 될 때 실행)
 	virtual void UpdateModifiers() {}
+
+	// 이팩트의 현재 지속 시간
+	inline float GetDuration() const { return EffectDataAsset->LevelData[EffectLevel].Duration; }	
+	
+	// 이팩트의 최대 스택 수
+	inline int32 GetMaxStackCount() const { return EffectDataAsset->LevelData[EffectLevel].MaxStackCount; }
+	
+	// 이팩트의 모디파이어1
+	inline float GetModifier1() const { return EffectDataAsset->LevelData[EffectLevel].Modifier1; }
+
+	// 이팩트의 모디파이어2
+	inline float GetModifier2() const { return EffectDataAsset->LevelData[EffectLevel].Modifier2; }
+
+	// 이팩트의 모디파이어3
+	inline float GetModifier3() const { return EffectDataAsset->LevelData[EffectLevel].Modifier3; }
+	
 
 public:
 	// 이팩트 만료 델리게이트(이팩트가 만료 되었을 때 호출됨)
@@ -89,5 +106,9 @@ protected:
 	// 이팩트 수치(타입, 수치) (생성자에서 적용할 모디파이어만 타입별로 추가)
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Effect")
 	TMap<EEffectModifier, float> EffectModifiers;	
+
+	// 이팩트 레벨
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Effect")
+	int32 EffectLevel = 0;	// (0에서 시작)
 	
 };

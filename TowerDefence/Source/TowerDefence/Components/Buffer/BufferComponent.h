@@ -8,6 +8,7 @@
 #include "TowerDefence/Components/Buffer/BufferDataAsset.h"
 #include "BufferComponent.generated.h"
 
+class ATower;			// 전방 선언(타워)
 class ATowerBuilder;	// 전방 선언(타워 배치 가능한 액터)
 //class UBufferDataAsset;	// 버퍼 데이터 파일
 
@@ -68,6 +69,9 @@ protected:
 private:
 	// 버프 타이머 핸들
 	FTimerHandle BufferTimerHandle;
+
+	UPROPERTY()
+	ATower* Tower = nullptr;	// 소유자(타워) 가져오기
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Debug", meta = (AllowPrivateAccess = "true"))
 	bool bShowDebugInfo = false;

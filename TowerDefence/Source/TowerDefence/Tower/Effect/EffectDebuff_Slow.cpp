@@ -5,5 +5,5 @@
 
 void UEffectDebuff_Slow::UpdateModifiers()
 {
-	EffectModifiers.Add(EEffectModifier::MoveSpeed, EffectDataAsset->Modifier1 * StackCount);	// 이동 속도 감소
+	EffectModifiers.Add(EEffectModifier::MoveSpeed, GetModifier1() * StackCount);	// 이동 속도 감소
 }

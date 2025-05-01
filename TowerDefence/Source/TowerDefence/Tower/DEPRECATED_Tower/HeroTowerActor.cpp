@@ -25,7 +25,7 @@ void AHeroTowerActor::SelectingSkillLocation()
 void AHeroTowerActor::UseSkill(FVector InLocation)
 {  
    // 스킬 사용  
-   USkillDataAsset* SkillDataAsset = SkillDataAssets[GunLevel - 1]; // 스킬 데이터 에셋을 가져온다.  
+   U_DEPRECATED_SkillDataAsset* SkillDataAsset = SkillDataAssets[GunLevel - 1]; // 스킬 데이터 에셋을 가져온다.  
      
    //UE_LOG(LogTemp, Warning, TEXT("[%s] : Skill Radius %.1f"), *GetActorNameOrLabel(), SkillDataAsset->Radius);
 

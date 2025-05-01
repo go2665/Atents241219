@@ -141,12 +141,12 @@ void ATower::TowerFire(const TArray<AEnemy*>& InTargetEnemies)
 	}
 }
 
-bool ATower::AddEffect(EEffectType InType)
+bool ATower::AddEffect(EEffectType InType, int32 InLevel)
 {
 	if (EffectComponent)
 	{
 		// EffectComponent에 이팩트 추가
-		return EffectComponent->AddEffect(InType);
+		return EffectComponent->AddEffect(InType, InLevel);
 	}
 	return false;
 }

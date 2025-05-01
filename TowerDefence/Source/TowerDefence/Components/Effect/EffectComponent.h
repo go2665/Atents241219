@@ -38,7 +38,7 @@ public:
 
 	// 이팩트 추가 함수
 	UFUNCTION(BlueprintCallable, Category = "Effect")
-	bool AddEffect(EEffectType InType);
+	bool AddEffect(EEffectType InType, int32 InLevel);
 
 	// 이팩트 제거 함수
 	UFUNCTION(BlueprintCallable, Category = "Effect")
@@ -72,5 +72,8 @@ private:
 	// 이팩트의 효과가 적용될 대상
 	UPROPERTY(VisibleAnywhere, Category = "Effect")
 	TScriptInterface<IEffectTargetable> EffectTarget = nullptr;
+
+	// 이팩트의 레벨
+	int32 EffectLevel = 0;
 
 };
