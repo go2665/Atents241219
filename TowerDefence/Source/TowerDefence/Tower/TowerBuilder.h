@@ -50,6 +50,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "TowerBuilder")
 	TArray<UTowerDataAsset*> TowerDatas;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug")
+	bool bShowDebugInfo = false;
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "TowerBuilder", meta = (AllowPrivateAccess = "true"))
 	ATower* Tower = nullptr;

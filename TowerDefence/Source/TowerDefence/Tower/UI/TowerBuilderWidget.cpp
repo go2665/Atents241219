@@ -69,6 +69,7 @@ void UTowerBuilderWidget::OnInitialize(const TArray<UTowerDataAsset*>* InTowerDa
 
 	// 시작할 때는 안보이게 하기(이 함수가 ATowerBuilder::BeginPlay에서 실행됨)
 	SetVisibility(ESlateVisibility::Hidden);
+	SetRenderScale(FVector2D(0.0f, 0.0f));		// Close 테스트 때문에 무조건 0으로 시작
 }
 
 void UTowerBuilderWidget::Open()

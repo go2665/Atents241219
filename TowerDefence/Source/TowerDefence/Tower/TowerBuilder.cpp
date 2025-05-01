@@ -72,7 +72,7 @@ void ATowerBuilder::OnBuilderClicked(AActor* TouchedActor, FKey ButtonPressed)
 		if (TowerBuilderWidgetInstance && !Tower)
 		{
 			TowerBuilderWidgetInstance->Open();
-			//if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] : Clicked TowerBuilder!"), *this->GetActorNameOrLabel());
+			if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] : Clicked TowerBuilder!"), *this->GetActorNameOrLabel());
 		}
 	}
 }
@@ -82,7 +82,7 @@ void ATowerBuilder::OnScreenClicked(AActor* InClickedBuilder)
 	if (TowerBuilderWidgetInstance && InClickedBuilder != this)
 	{
 		TowerBuilderWidgetInstance->Close();
-		//if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] : Close Builder Widget!"), *this->GetActorNameOrLabel());
+		if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] : Close Builder Widget!"), *this->GetActorNameOrLabel());
 	}
 	//else
 	//{
