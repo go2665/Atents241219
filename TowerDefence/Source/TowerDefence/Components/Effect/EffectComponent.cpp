@@ -46,18 +46,26 @@ bool UEffectComponent::AddEffect(EEffectType InType, int32 InLevel)
 				EffectTypeMap.Add(InType, NewEffectArray);	// 맵에 이팩트 리스트 추가
 			}
 
+			// 필요한 경우 디버그 정보 출력
+			if (bShowDebugInfo)
+			{
+				int Minutes = FMath::FloorToInt(GetWorld()->TimeSeconds / 60);
+				float Seconds = FMath::Fmod(GetWorld()->TimeSeconds, 60.0f);
+				FString TimeString = FString::Printf(TEXT("%02d:%05.2f"), Minutes, Seconds);
+				UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Get New Effect => [%s]"),
+					*TimeString,
+					*GetOwner()->GetActorNameOrLabel(), 
+					*NewEffect->GetName());
+			}
+
 			NewEffect->OnEffectExpire.BindLambda([this](UEffectBase* ExpiredEffect)
 				{
 					RemoveTargetEffect(ExpiredEffect);
 				}
 			);	// 이팩트 만료 델리게이트 바인딩
 			NewEffect->OnBegin();				// 버프 시작
-			//FString TimeString = FDateTime::FromUnixTimestamp(GetWorld()->TimeSeconds).ToString(TEXT("%H:%M:%S"));
-			//UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Create New Effect => [%s]"),
-			//	*TimeString, *GetOwner()->GetActorNameOrLabel(), *UEnum::GetValueAsString(NewEffect->GetBuffType()));
 
-			//OnEffectChanged.ExecuteIfBound(EffectList);	// 이팩트 변경 델리게이트 호출
-			ApplyTotalModifiersToTarget(); // 모디파이어 다시 합산하고 대상에 적용
+			ApplyTotalModifiersToTarget();		// 모디파이어 다시 합산하고 대상에 적용
 			return true;
 		}
 	}
@@ -87,8 +95,20 @@ bool UEffectComponent::RemoveTargetEffect(UEffectBase* InRemoveEffect)
 	{
 		if (EffectArray->EffectList.Contains(InRemoveEffect))
 		{
-			InRemoveEffect->OnEnd();
-			EffectArray->EffectList.Remove(InRemoveEffect);	// 이팩트 리스트에서 제거
+			EffectArray->EffectList.RemoveSingle(InRemoveEffect);	// 이팩트 리스트에서 제거
+
+			// 필요한 경우 디버그 정보 출력
+			if (bShowDebugInfo)
+			{
+				int Minutes = FMath::FloorToInt(GetWorld()->TimeSeconds / 60);
+				float Seconds = FMath::Fmod(GetWorld()->TimeSeconds, 60.0f);
+				FString TimeString = FString::Printf(TEXT("%02d:%05.2f"), Minutes, Seconds);
+				UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Remove Effect => [%s]"),
+					*TimeString,
+					*GetOwner()->GetActorNameOrLabel(),
+					*InRemoveEffect->GetName());
+			}
+
 			ApplyTotalModifiersToTarget();		// 모디파이어 다시 합산하고 대상에 적용
 
 			return true;
@@ -106,8 +126,10 @@ UEffectBase* UEffectComponent::CreateEffect(EEffectType InType)
 		const UEffectDataAsset* EffectData = EffectDataMap[InType];	// 이팩트 데이터 에셋을 찾는다.
 
 		// 버프 타입에 따라 적절한 버프 클래스를 생성한다.(버프가 걸린쪽에서 생성)
-		FName EnumFName = FName(*UEnum::GetValueAsString(InType));
-		NewEffect = NewObject<UEffectBase>(this, EffectData->EffectClass, EnumFName);
+		// 이팩트 타입을 문자열로 변환하고 시리얼 넘버를 붙여서 이름을 만든다.
+		FName EffectName = FName(FString::Printf(TEXT("%s_%d"), *UEnum::GetValueAsString(InType), SerialNumber));
+		NewEffect = NewObject<UEffectBase>(this, EffectData->EffectClass, EffectName);
+		SerialNumber++;
 	}
 
 	return NewEffect;
@@ -153,7 +175,7 @@ void UEffectComponent::ApplyTotalModifiersToTarget()
 				if (TotalModifiers.Contains(ModifierType))
 				{
 					// TotalModifiers에 다른 이팩트가 추가된 적이 있으면 곱연산으로 추가 적용
-					TotalModifiers[ModifierType] *= EffectModifiers[ModifierType];
+					TotalModifiers[ModifierType] += EffectModifiers[ModifierType];
 				}
 				else
 				{

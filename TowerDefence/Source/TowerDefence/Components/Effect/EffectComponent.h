@@ -73,6 +73,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effect")
 	TMap<EEffectType, UEffectDataAsset*> EffectDataMap;	
 
+	// 디버그 정보 표시 여부
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Debug")
+	bool bShowDebugInfo = false;
+
 private:
 	//// 현재 적용된 이팩트 리스트(타워에 적용 될 버프 리스트)
 	//UPROPERTY(VisibleAnywhere, Category = "Effect")
@@ -93,4 +97,6 @@ private:
 	// 이팩트의 레벨
 	int32 EffectLevel = 0;
 
+	// 이팩트의 시리얼 넘버(이팩트가 생성될 때마다 증가함)
+	int32 SerialNumber = 0;	
 };
