@@ -23,10 +23,6 @@ struct FSkillLevelData
 	// 반지름
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill|Level Data", meta = (ClampMin = "0"))
 	float Radius = 100.0f;
-
-	// 스킬 데미지
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill|Level Data", meta = (ClampMin = "0"))
-	float Damage = 0.0f;
 };
 
 /**
@@ -45,10 +41,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	UNiagaraSystem* SkillEffect = nullptr;
 
-	// 데미지 타입
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
-	TSubclassOf<UTowerDamageType> DamageType = nullptr;	
-
 	// 스킬이 다른 타워에게 제공할 버프 종류(None일 경우, 타워에게 버프를 제공하지 않음)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	EEffectType BuffType = EEffectType::None;
@@ -56,5 +48,9 @@ public:
 	// 스킬이 적에게 제공할 디버프 종류(None일 경우, 적에게 디버프를 제공하지 않음)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	EEffectType DebuffType = EEffectType::None;
+
+	// 레벨별 데이터(쿨타임, 반지름, 데미지)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+	TArray<FSkillLevelData> LevelData;	
 
 };

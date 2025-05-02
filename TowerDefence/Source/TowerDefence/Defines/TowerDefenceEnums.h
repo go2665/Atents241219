@@ -24,12 +24,13 @@ enum class EDamageType : uint8
 
 // 이펙트 종류를 나타내는 타입 enum	
 UENUM(BlueprintType)
-enum class EEffectCategoryType : uint8
+enum class EEffectTarget : uint8
 {
-	Buff		UMETA(DisplayName = "Buff"),
-	Debuff		UMETA(DisplayName = "Debuff"),
+	Friendly	UMETA(DisplayName = "Friendly"),
+	Hostile		UMETA(DisplayName = "Hostile"),
 };
 
+// 버프/디버프 종류를 나타내는 타입 enum
 UENUM(BlueprintType)
 enum class EEffectType : uint8
 {
@@ -53,6 +54,7 @@ enum class EEffectType : uint8
 	DebuffEnd			UMETA(Hidden),
 };
 
+// 이펙트가 주는 모디파이어 타입 enum
 UENUM(BlueprintType)
 enum class EEffectModifier : uint8
 {

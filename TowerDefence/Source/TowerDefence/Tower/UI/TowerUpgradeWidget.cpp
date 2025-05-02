@@ -53,7 +53,7 @@ void UTowerUpgradeWidget::OnCloseAnimationFinished()
 void UTowerUpgradeWidget::UpdateCurrentGold(int32 InCurrentGold)
 {
 	CurruntGold = InCurrentGold;	// 게임 모드에 골드 변화가 있으면 기록해 놓기
-	UE_LOG(LogTemp, Warning, TEXT("Current Gold : %d"), CurruntGold);
+	//UE_LOG(LogTemp, Warning, TEXT("Current Gold : %d"), CurruntGold);
 }
 
 void UTowerUpgradeWidget::UpgradeTower()

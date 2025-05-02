@@ -86,18 +86,21 @@ public:
 	// 타워의 판매가격 초기화
 	inline void SetInitialSellCost(int32 InSellCost) { SellCost = InSellCost; }
 
+	inline virtual EEffectTarget GetEffectTarget() const override { return EEffectTarget::Friendly; }
+
 	inline bool GetShowDebugInfo() const { return bShowDebugInfo; }
+
+protected:
+	// 업그레이드 UI 닫기 or 스킬 사용에 사용됨(DEPRECATE된 OnCancelClicked)
+	// InClickedTower : 클릭한 타워(nullptr일 수 있다.)
+	UFUNCTION()
+	virtual void OnScreenClicked(AActor* InClickedTower);
 
 private:
 	// 타워 클릭했을 때 실행(타워 업그레이드 UI 위젯 열기에 사용됨)
 	UFUNCTION()
 	void OnTowerClicked(AActor* TouchedActor, FKey ButtonPressed);
-
-	// 업그레이드 UI 닫기 or 스킬 사용에 사용됨(DEPRECATE된 OnCancelClicked)
-	// InClickedTower : 클릭한 타워(nullptr일 수 있다.)
-	UFUNCTION()
-	void OnScreenClicked(AActor* InClickedTower);
-
+	
 	// 타워 데이터를 전체 갱신하는 함수
 	void UpdateData();
 

@@ -50,6 +50,8 @@ public:
 		return 0.0f;
 	}
 
+	inline virtual EEffectTarget GetEffectTarget() const override { return EEffectTarget::Hostile; }
+
 private:
 	// 적의 체력 설정
 	void SetHealth(float InHealth);

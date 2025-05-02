@@ -90,12 +90,9 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Effect")
 	TMap<EEffectModifier, float> TotalModifiers;
 
-	// 이팩트의 효과가 적용될 대상
+	// 이팩트의 효과가 적용될 대상(이 컴포넌트를 가지고 있는 타워)
 	UPROPERTY(VisibleAnywhere, Category = "Effect")
 	TScriptInterface<IEffectTargetable> EffectTarget = nullptr;
-
-	// 이팩트의 레벨
-	int32 EffectLevel = 0;
 
 	// 이팩트의 시리얼 넘버(이팩트가 생성될 때마다 증가함)
 	int32 SerialNumber = 0;	
