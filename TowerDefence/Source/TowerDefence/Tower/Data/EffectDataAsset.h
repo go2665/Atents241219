@@ -20,7 +20,7 @@ public:
 	float Duration = 1.0f;
 
 	// 이팩트 기본 스택 회수
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect|Level Data")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect|Level Data", meta = (ClampMin = "1"))
 	int32 MaxStackCount = 1;
 
 	// 이팩트 수치 1(변화 비율. 예) 0.5면 50% 증가, -0.3이면 30% 감소)

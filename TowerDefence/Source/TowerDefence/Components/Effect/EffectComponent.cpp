@@ -22,30 +22,38 @@ void UEffectComponent::BeginPlay()
 bool UEffectComponent::AddEffect(EEffectType InType, int32 InLevel)
 {
 	// 버프를 생성하고 리스트에 추가한다.
-	UEffectBase* NewEffect = CreateEffect(InType);
-	if (NewEffect)
+	
+	const UEffectDataAsset* EffectData = nullptr;
+	if (EffectDataMap.Contains(InType))		// InType이 DataMap에 설정되어 있어야 동작
 	{
-		const UEffectDataAsset* EffectData = nullptr;
-		if (EffectDataMap.Contains(InType))		// InType이 Map에 설정되어 있어야 동작
+		EffectData = EffectDataMap[InType];	// 이팩트 데이터 에셋을 찾는다.
+
+		// 최대 스택 회수 구하기
+		int32 Level = FMath::Min(InLevel, EffectData->LevelData.Num() - 1); // 안전한 레벨 찾기
+		int32 MaxStackCount = EffectData->LevelData[Level].MaxStackCount;	// 최대 스택 회수 가져오기
+
+		// 이팩트가 들어갈 배열 구하기
+		if (!EffectTypeMap.Contains(InType))			
 		{
-			EffectData = EffectDataMap[InType];	// 이팩트 데이터 에셋을 찾는다.
+			// 이팩트 타입에 해당하는 이팩트 배열 없으면 새로 생성
+			FEffectArray NewEffectArray;
+			EffectTypeMap.Add(InType, NewEffectArray);
+		}
+		FEffectArray* EffectArray = EffectTypeMap.Find(InType);	// EffectArray 가져오기
+				
+		// 최대 스택 회수보다 많으면 가장 먼저 들어와 있던 이팩트를 제거
+		if (EffectArray->EffectList.Num() >= MaxStackCount)
+		{
+			UEffectBase* OldEffect = EffectArray->EffectList[0];	// 가장 먼저 들어온 이팩트 가져오기
+			RemoveTargetEffect(OldEffect);							// 이팩트 제거
+		}
 
-			NewEffect->OnInitialize(InType, EffectData, InLevel, GetOwner());	// 이팩트 데이터 에셋 설정하면서 초기화
-
-			// Effect맵에 이팩트 추가
-			if (FEffectArray* EffectArray = EffectTypeMap.Find(InType))
-			{
-				// 이팩트 타입에 해당하는 이팩트 리스트가 있으면 추가
-				EffectArray->EffectList.Add(NewEffect);	// 이팩트 리스트에 추가
-			}
-			else
-			{
-				// 이팩트 타입에 해당하는 이팩트 리스트가 없으면 새로 생성
-				FEffectArray NewEffectArray;				// 이팩트 리스트 만들고
-				NewEffectArray.EffectList.Add(NewEffect);	// 이팩트 리스트에 이팩트 추가
-				EffectTypeMap.Add(InType, NewEffectArray);	// 맵에 이팩트 리스트 추가
-			}
-
+		// 이팩트 새로 추가
+		UEffectBase* NewEffect = CreateEffect(InType);	// 이팩트 생성
+		if (NewEffect)
+		{
+			NewEffect->OnInitialize(InType, EffectData, Level, GetOwner());	// 이팩트 데이터 에셋 설정하면서 초기화
+				
 			// 필요한 경우 디버그 정보 출력
 			if (bShowDebugInfo)
 			{
@@ -54,21 +62,31 @@ bool UEffectComponent::AddEffect(EEffectType InType, int32 InLevel)
 				FString TimeString = FString::Printf(TEXT("%02d:%05.2f"), Minutes, Seconds);
 				UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Get New Effect => [%s]"),
 					*TimeString,
-					*GetOwner()->GetActorNameOrLabel(), 
+					*GetOwner()->GetActorNameOrLabel(),
 					*NewEffect->GetName());
 			}
 
+			// 이팩트 만료 델리게이트 바인딩
 			NewEffect->OnEffectExpire.BindLambda([this](UEffectBase* ExpiredEffect)
 				{
 					RemoveTargetEffect(ExpiredEffect);
 				}
-			);	// 이팩트 만료 델리게이트 바인딩
-			NewEffect->OnBegin();				// 버프 시작
+			);	
 
-			ApplyTotalModifiersToTarget();		// 모디파이어 다시 합산하고 대상에 적용
+			// 버프 시작
+			NewEffect->OnBegin();				
+
+			// 이팩트 배열에 추가
+			EffectArray->EffectList.Add(NewEffect);			
+
+			// 모디파이어 다시 합산하고 대상에 적용
+			ApplyTotalModifiersToTarget();
+
 			return true;
 		}
+		
 	}
+
 	return false;
 }
 
