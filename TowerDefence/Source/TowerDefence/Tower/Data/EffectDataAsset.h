@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "NiagaraSystem.h"
 #include "EffectDataAsset.generated.h"
 
 class UEffectBase;
@@ -48,6 +49,10 @@ public:
 	// 이팩트 이름
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
 	FText BuffName;	
+
+	// 이팩트 특수효과
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
+	UNiagaraSystem* EffectVFX = nullptr;
 
 	// 이팩트 클래스
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")

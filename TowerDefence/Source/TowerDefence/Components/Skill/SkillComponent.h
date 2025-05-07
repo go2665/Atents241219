@@ -44,7 +44,7 @@ private:
 	void OnSkillAreaClicked(AActor* _);	// 스킬 사용 위치 클릭 시 호출되는 함수
 
 	void FindActorsInRadius(FVector Center, float Radius,
-		TArray<IEffectTargetable*>& OutEffectTargets);
+		TArray<TScriptInterface<IEffectTargetable>>& OutEffectTargets);
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")

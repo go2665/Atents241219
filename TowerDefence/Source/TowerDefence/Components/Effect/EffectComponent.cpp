@@ -2,6 +2,8 @@
 
 
 #include "EffectComponent.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 #include "TowerDefence/Tower/Effect/EffectBase.h"
 #include "TowerDefence/Components/Effect/EffectTargetable.h"
 
@@ -76,6 +78,21 @@ bool UEffectComponent::AddEffect(EEffectType InType, int32 InLevel)
 			// 버프 시작
 			NewEffect->OnBegin();				
 
+			// 재생중인 특수효과가 없고, 특수효과 데이터가 준비되어 있다면 특수효과 시작
+			if (!EffectArray->EffectVFX && EffectData->EffectVFX)
+			{	
+				EffectArray->EffectVFX = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+					GetWorld(),
+					EffectData->EffectVFX,
+					EffectTarget->GetEffectLocation(),
+					FRotator::ZeroRotator,
+					FVector(1.0f),
+					true,
+					true,
+					ENCPoolMethod::None,
+					true);
+			}
+
 			// 이팩트 배열에 추가
 			EffectArray->EffectList.Add(NewEffect);			
 
@@ -99,6 +116,11 @@ bool UEffectComponent::RemoveEffect(EEffectType InType)
 			Effect->OnEnd();	// 이팩트 종료
 		}
 		EffectArray->EffectList.Empty();	// 이팩트 리스트 비우기
+		if (EffectArray->EffectVFX)			// 특수효과가 있으면 특수효과도 지우기
+		{
+			EffectArray->EffectVFX->Deactivate();		// 이팩트 비활성화
+			EffectArray->EffectVFX = nullptr;	// 특수효과 비우기
+		}
 		ApplyTotalModifiersToTarget();		// 모디파이어 다시 합산하고 대상에 적용
 
 		return true;
@@ -114,6 +136,13 @@ bool UEffectComponent::RemoveTargetEffect(UEffectBase* InRemoveEffect)
 		if (EffectArray->EffectList.Contains(InRemoveEffect))
 		{
 			EffectArray->EffectList.RemoveSingle(InRemoveEffect);	// 이팩트 리스트에서 제거
+
+			// 이팩트가 모두 끝났고 특수효과가 있으면 특수효과도 지우기
+			if (EffectArray->EffectList.IsEmpty() && EffectArray->EffectVFX)
+			{
+				EffectArray->EffectVFX->Deactivate();		// 이팩트 비활성화
+				EffectArray->EffectVFX = nullptr;
+			}
 
 			// 필요한 경우 디버그 정보 출력
 			if (bShowDebugInfo)
@@ -218,6 +247,11 @@ void UEffectComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 		for (int32 i = 0; i < EffectArray.EffectList.Num(); i++) // 이팩트 리스트를 순회해서
 		{
 			EffectArray.EffectList[i]->Tick(DeltaTime);	// 이팩트 틱 진행
+		}
+
+		if (EffectArray.EffectVFX) // 특수효과가 재생 중이면
+		{
+			EffectArray.EffectVFX->SetWorldLocation(EffectTarget->GetEffectLocation());	// 이팩트 위치 업데이트
 		}
 	}
 }

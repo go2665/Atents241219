@@ -99,6 +99,5 @@ protected:
 
 	// 이팩트 레벨
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Effect")
-	int32 EffectLevel = 0;	// (0에서 시작)
-	
+	int32 EffectLevel = 0;	// (0에서 시작)	
 };

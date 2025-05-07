@@ -40,7 +40,8 @@ public:
 	inline virtual float GetModifier(EEffectModifier ModifierType) const = 0;
 
 	// 아군용 이팩트인지, 적군용 이팩트인지를 알려주는 함수
-	inline virtual EEffectTarget GetEffectTarget() const = 0;
-	
+	inline virtual EEffectTarget GetEffectTarget() const = 0;	
 
+	// 이팩트의 특수효과가 보일 위치를 가져오는 함수
+	inline virtual FVector GetEffectLocation() const = 0;
 };

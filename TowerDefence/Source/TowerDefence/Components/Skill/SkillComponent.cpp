@@ -7,6 +7,7 @@
 #include "TowerDefence/Player/PlayerSpectatorPawn.h"
 #include "TowerDefence/Tower/Tower.h"
 #include "TowerDefence/Framework/TowerDefencePlayerController.h"
+#include "NiagaraFunctionLibrary.h"
 
 USkillComponent::USkillComponent()
 {
@@ -62,17 +63,17 @@ void USkillComponent::UseSkill(FVector InLocation)
 		*SkillData->SkillName,
         SkillLevelData.Radius);
 
-	TArray<IEffectTargetable*> EffectTargets;
+	TArray<TScriptInterface<IEffectTargetable>> EffectTargets;	// 스킬 적용 대상 배열
     FindActorsInRadius(InLocation, SkillLevelData.Radius, EffectTargets);
 
-	for (IEffectTargetable* Target : EffectTargets)
+	for (TScriptInterface<IEffectTargetable> Target : EffectTargets)
 	{
 		if (Target->GetEffectTarget() == EEffectTarget::Hostile)		// 적대적인 대상이고
 		{
 			// 디버프 적용
 			if (SkillData->DebuffType != EEffectType::None)				// 디버프가 있으면
 			{
-				Target->AddEffect(SkillData->DebuffType, TowerLevel); 	// 디버프 적용
+				Target->AddEffect(SkillData->DebuffType, TowerLevel); 	// 디버프 적용					
 			}
 		}
 		else if (Target->GetEffectTarget() == EEffectTarget::Friendly)	// 아군 대상이고
@@ -98,45 +99,46 @@ void USkillComponent::OnSkillAreaClicked(AActor* _)
 	}
 }
 
-void USkillComponent::FindActorsInRadius(FVector Center, float Radius, 
-    TArray<IEffectTargetable*>& OutEffectTargets)
-{
-	// 출력 파라메터 초기화
-	OutEffectTargets.Empty();
+void USkillComponent::FindActorsInRadius(FVector Center, float Radius,  
+   TArray<TScriptInterface<IEffectTargetable>>& OutEffectTargets)  
+{  
+   // 출력 파라메터 초기화  
+   OutEffectTargets.Empty();  
 
-	// 결과를 저장할 배열  
-	TArray<FOverlapResult> OverlapResults;
+   // 결과를 저장할 배열    
+   TArray<FOverlapResult> OverlapResults;  
 
-	// 적과 타워의 충돌 채널을 설정
-	FCollisionObjectQueryParams ObjectQueryParams;
-	ObjectQueryParams.AddObjectTypesToQuery(ECollisionChannel::ECC_GameTraceChannel1);  // 적
-	ObjectQueryParams.AddObjectTypesToQuery(ECollisionChannel::ECC_GameTraceChannel2);  // 타워
+   // 적과 타워의 충돌 채널을 설정  
+   FCollisionObjectQueryParams ObjectQueryParams;  
+   ObjectQueryParams.AddObjectTypesToQuery(ECollisionChannel::ECC_GameTraceChannel1);  // 적  
+   ObjectQueryParams.AddObjectTypesToQuery(ECollisionChannel::ECC_GameTraceChannel2);  // 타워  
 
-	// 월드에서 Overlap 검사  
-	bool bHasOverlaps = GetWorld()->OverlapMultiByObjectType(
-		OverlapResults,
-		Center,
-		FQuat::Identity,
-        ObjectQueryParams,
-		FCollisionShape::MakeCapsule(Radius, 200.0f) // 200.0f은 타워 높이가 150 정도이므로 여유분을 주기 위해 설정
-	);
+   // 월드에서 Overlap 검사    
+   bool bHasOverlaps = GetWorld()->OverlapMultiByObjectType(  
+       OverlapResults,  
+       Center,  
+       FQuat::Identity,  
+       ObjectQueryParams,  
+       FCollisionShape::MakeCapsule(Radius, 200.0f) // 200.0f은 타워 높이가 150 정도이므로 여유분을 주기 위해 설정  
+   );  
 
-    // 오버랩된 결과가 있으면 OutEffectTargets에 저장
-	if (bHasOverlaps)
-	{
-		for (const FOverlapResult& Result : OverlapResults)
-		{
-			if (AActor* Actor = Result.GetActor())
-			{
-				if (IEffectTargetable* EffectTarget = Cast<IEffectTargetable>(Actor))
-				{
-                    OutEffectTargets.Add(EffectTarget);
-				}
-			}
-		}
-	}
+   // 오버랩된 결과가 있으면 OutEffectTargets에 저장  
+   if (bHasOverlaps)  
+   {  
+       for (const FOverlapResult& Result : OverlapResults)  
+       {  
+           if (AActor* Actor = Result.GetActor())  
+           {                  
+               if (Actor->GetClass()->ImplementsInterface(UEffectTargetable::StaticClass()))  
+               {  
+                   TScriptInterface<IEffectTargetable> EffectTarget(Actor);
+                   OutEffectTargets.Add(EffectTarget);  
+               }  
+           }  
+       }  
+   }  
 
-	// 디버그용으로 구체를 그려줌 (선택 사항)  
-	DrawDebugCapsule(GetWorld(), Center, 200.0f, Radius, FQuat::Identity, FColor::Green, false, 2.0f);
+   // 디버그용으로 구체를 그려줌 (선택 사항)    
+   DrawDebugCapsule(GetWorld(), Center, 200.0f, Radius, FQuat::Identity, FColor::Green, false, 2.0f);  
 }
 

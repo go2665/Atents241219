@@ -30,7 +30,7 @@ void UEffectBase::OnInitialize(EEffectType InType, const UEffectDataAsset* InDat
 void UEffectBase::OnBegin()
 {
 	// 버프가 시작 되었을 때 할일
-	RemainingDuration = GetDuration();
+	RemainingDuration = GetDuration();	
 	// 이 이팩트가 처음 적용될 때 일어나야 하는 로직을 여기에 추가합니다.
 }
 

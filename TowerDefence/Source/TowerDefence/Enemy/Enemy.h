@@ -38,10 +38,10 @@ public:
 	//inline virtual bool IsAlive() const override;
 
 	// 모디파이어 맵을 가져오는 함수
-	inline virtual const TMap<EEffectModifier, float>* GetModifiersMap() const override { return EffectModifiers; }
+	inline const TMap<EEffectModifier, float>* GetModifiersMap() const override { return EffectModifiers; }
 
 	// 특정 모디파이어를 가져오는 함수
-	inline virtual float GetModifier(EEffectModifier ModifierType) const override
+	inline float GetModifier(EEffectModifier ModifierType) const override
 	{
 		if (EffectModifiers && EffectModifiers->Contains(ModifierType))
 		{
@@ -50,7 +50,21 @@ public:
 		return 0.0f;
 	}
 
+	// 이팩트를 받는 아군인지 적군인지 알려주는 함수
 	inline virtual EEffectTarget GetEffectTarget() const override { return EEffectTarget::Hostile; }
+
+	// 이팩트의 특수효과가 보일 위치를 가져오는 함수
+	inline FVector GetEffectLocation() const override
+	{
+		if (EnemyMesh)
+		{
+			return EnemyMesh->GetSocketLocation(FName("EffectTarget"));
+		}
+		else
+		{
+			return GetActorLocation();
+		}
+	};
 
 private:
 	// 적의 체력 설정

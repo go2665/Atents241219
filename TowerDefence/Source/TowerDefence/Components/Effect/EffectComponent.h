@@ -17,9 +17,13 @@ struct FEffectArray
 {
 	GENERATED_BODY()
 
+	// 이팩트 리스트
 	UPROPERTY(VisibleAnywhere)
-	TArray<UEffectBase*> EffectList;	// 이팩트 리스트
+	TArray<UEffectBase*> EffectList;	
 
+	// 이팩트 비주얼 이펙트 컴포넌트
+	UPROPERTY()
+	UNiagaraComponent* EffectVFX = nullptr;
 };
 
 // 이팩트 변경 델리게이트(전체 이팩트 목록을 전달해야함)

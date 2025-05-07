@@ -49,20 +49,20 @@ public:
 
 	// 버프 추가 함수
 	UFUNCTION(BlueprintCallable, Category = "Tower")
-	virtual bool AddEffect(EEffectType InType, int32 InLevel) override;
+	bool AddEffect(EEffectType InType, int32 InLevel) override;
 	
 	// 버프 제거 함수
 	UFUNCTION(BlueprintCallable, Category = "Tower")
-	virtual bool RemoveEffect(EEffectType InType) override;
+	bool RemoveEffect(EEffectType InType) override;
 
 	// 받아온 모디파이어를 자신에게 적용해서 최종 값을 만드는 함수
-	virtual void ApplyModifiers(const TMap<EEffectModifier, float>* InModifierMap) override;
+	void ApplyModifiers(const TMap<EEffectModifier, float>* InModifierMap) override;
 
 	// 모디파이어 맵을 가져오는 함수
-	inline virtual const TMap<EEffectModifier, float>* GetModifiersMap() const override { return EffectModifiers; }	
+	inline const TMap<EEffectModifier, float>* GetModifiersMap() const override { return EffectModifiers; }	
 
 	// 특정 모디파이어 값을 가져오는 함수
-	inline virtual float GetModifier(EEffectModifier ModifierType) const override
+	inline float GetModifier(EEffectModifier ModifierType) const override
 	{
 		if (EffectModifiers && EffectModifiers->Contains(ModifierType))
 		{
@@ -70,6 +70,21 @@ public:
 		}
 		return 0.0f;
 	}
+	// 이팩트를 받는 아군인지 적군인지 알려주는 함수
+	inline EEffectTarget GetEffectTarget() const override { return EEffectTarget::Friendly; }
+
+	// 이팩트의 특수효과가 보일 위치를 가져오는 함수
+	inline FVector GetEffectLocation() const override 
+	{
+		if (TowerBodyMesh)
+		{
+			return TowerBodyMesh->GetSocketLocation(FName("TowerRoof"));
+		}
+		else
+		{
+			return GetActorLocation();
+		}
+	};
 
 	// 타워의 공격당 데미지
 	inline float GetDamage() const { return Damage; }
@@ -84,9 +99,7 @@ public:
 	inline float GetTargetCount() const { return TargetCount; }
 
 	// 타워의 판매가격 초기화
-	inline void SetInitialSellCost(int32 InSellCost) { SellCost = InSellCost; }
-
-	inline virtual EEffectTarget GetEffectTarget() const override { return EEffectTarget::Friendly; }
+	inline void SetInitialSellCost(int32 InSellCost) { SellCost = InSellCost; }	
 
 	inline bool GetShowDebugInfo() const { return bShowDebugInfo; }
 
