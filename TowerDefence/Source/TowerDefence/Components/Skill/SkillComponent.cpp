@@ -55,8 +55,8 @@ void USkillComponent::ActivateSkill()
 void USkillComponent::UseSkill(FVector InLocation)
 {
     // 스킬 사용  
-
-    const FSkillLevelData& SkillLevelData = SkillData->LevelData[TowerLevel];
+	int32 SkillLevel = FMath::Min(TowerLevel, SkillData->LevelData.Num() - 1);
+    const FSkillLevelData& SkillLevelData = SkillData->LevelData[SkillLevel];
 
     UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Skill (Radius %.1f)"), 
         *GetOwner()->GetActorNameOrLabel(), 
@@ -66,6 +66,16 @@ void USkillComponent::UseSkill(FVector InLocation)
 	TArray<TScriptInterface<IEffectTargetable>> EffectTargets;	// 스킬 적용 대상 배열
     FindActorsInRadius(InLocation, SkillLevelData.Radius, EffectTargets);
 
+	if (SkillData->AoeData)
+	{
+		// SkillData->AoeData->AoeClass 스폰
+		UWorld* World = GetWorld();
+		AAreaOfEffect* AoeActor = World->SpawnActor<AAreaOfEffect>(
+			SkillData->AoeData->AoeClass, InLocation, FRotator::ZeroRotator);
+
+		AoeActor->OnInitialize(*SkillData, TowerLevel); // AOE 초기화		
+	}
+
 	for (TScriptInterface<IEffectTargetable> Target : EffectTargets)
 	{
 		if (Target->GetEffectTarget() == EEffectTarget::Hostile)		// 적대적인 대상이고
@@ -73,7 +83,7 @@ void USkillComponent::UseSkill(FVector InLocation)
 			// 디버프 적용
 			if (SkillData->DebuffType != EEffectType::None)				// 디버프가 있으면
 			{
-				Target->AddEffect(SkillData->DebuffType, TowerLevel); 	// 디버프 적용					
+				Target->AddEffect(SkillData->DebuffType, SkillLevel); 	// 디버프 적용					
 			}
 		}
 		else if (Target->GetEffectTarget() == EEffectTarget::Friendly)	// 아군 대상이고
@@ -81,7 +91,7 @@ void USkillComponent::UseSkill(FVector InLocation)
 			// 버프 적용
 			if (SkillData->BuffType != EEffectType::None)				// 버프가 있으면 
 			{
-				Target->AddEffect(SkillData->BuffType, TowerLevel);		// 버프 적용
+				Target->AddEffect(SkillData->BuffType, SkillLevel);		// 버프 적용
 			}
 		}		
 	}

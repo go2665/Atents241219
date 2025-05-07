@@ -62,7 +62,7 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 	// 데미지 처리
 	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	ActualDamage *= GetModifier(EEffectModifier::TakeDamage);	// 데미지 받는 배율 적용
+	ActualDamage *= (1 + GetModifier(EEffectModifier::TakeDamage));	// 데미지 받는 배율 적용
 	if (DamageEvent.DamageTypeClass == GetEnemyData()->WeakType)
 	{
 		ActualDamage *= 2.0f;			// 약점 속성에 대한 데미지 배가

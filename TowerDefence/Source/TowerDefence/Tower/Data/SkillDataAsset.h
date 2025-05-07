@@ -7,6 +7,7 @@
 #include "NiagaraSystem.h"
 #include "TowerDefence/Defines/DamageAttribute/TowerDamageType.h"
 #include "TowerDefence/Defines/TowerDefenceEnums.h"
+#include "AoeDataAsset.h"
 #include "SkillDataAsset.generated.h"
 
 
@@ -49,7 +50,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	EEffectType DebuffType = EEffectType::None;
 
-	// 레벨별 데이터(쿨타임, 반지름, 데미지)
+	// 스킬의 AOE 데이터(null이 아니면 AOE가 설치된다.)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+	UAoeDataAsset* AoeData = nullptr;
+
+	// 레벨별 데이터(쿨타임, 반지름)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	TArray<FSkillLevelData> LevelData;	
 
