@@ -8,6 +8,7 @@
 #include "TowerDefence/Defines/DamageAttribute/TowerDamageType.h"
 #include "TowerDefence/Tower/Data/SkillDataAsset.h"
 #include "TowerDefence/Tower/Data/AoeDataAsset.h"
+#include "TowerDefence/Enemy/Enemy.h"
 
 // Sets default values
 AAreaOfEffect::AAreaOfEffect()
@@ -52,13 +53,15 @@ void AAreaOfEffect::OnInitialize(const USkillDataAsset& InSkillData, int32 InTow
 	const FAoeLevelData& AoeLevelData = InSkillData.AoeData->LevelData[AoELevel];
 
 	DamageType = InSkillData.AoeData->DamageType;	// 데미지 타입 설정
-	VFX->SetAsset(InSkillData.SkillEffect);			// 파티클 에셋 설정
-	VFX->SetWorldLocation(GetActorLocation());		// 파티클 위치 설정
-	VFX->Activate();								// 파티클 활성화
-
+	
 	Radius = SkillLevelData.Radius;					// 반지름 설정
 	Sensor->SetCapsuleHalfHeight(Radius * 2.0f);
 	Sensor->SetCapsuleRadius(Radius);
+
+	VFX->SetAsset(InSkillData.SkillEffect);			// 파티클 에셋 설정
+	VFX->SetWorldLocation(GetActorLocation());		// 파티클 위치 설정
+	VFX->SetVariableFloat(TEXT("Scale"), Radius * 0.01f);	// 파티클 크기 설정(100cm가 스케일 1.0f로 설정되어있음)	
+	VFX->Activate();								// 파티클 활성화
 
 	SetLifeSpan(AoeLevelData.Duration);				// 지속시간 설정	
 	Damage = AoeLevelData.Damage;					// 즉시 데미지
@@ -67,8 +70,25 @@ void AAreaOfEffect::OnInitialize(const USkillDataAsset& InSkillData, int32 InTow
 
 	Sensor->SetCollisionProfileName(TEXT("OverlapEnemyOnly"));	// 센서 켜기
 
-	// 즉석 데미지 적용하기
-
+	// 즉석 데미지 적용하기(캡슐 범위 안에 있는 액터 감지하기)
+	TArray<AActor*> OverlappingActors;
+	Sensor->GetOverlappingActors(OverlappingActors, AEnemy::StaticClass() );
+	for (AActor* Target : OverlappingActors)
+	{
+		if (bShowDebugInfo)
+		{
+			int Minutes = FMath::FloorToInt(GetWorld()->TimeSeconds / 60);
+			float Seconds = FMath::Fmod(GetWorld()->TimeSeconds, 60.0f);
+			FString TimeString = FString::Printf(TEXT("%02d:%05.2f"), Minutes, Seconds);
+			UE_LOG(LogTemp, Warning, TEXT("[%s] Overlap Instance Target: %s"), *TimeString, *Target->GetActorNameOrLabel());
+		}
+		UGameplayStatics::ApplyDamage(
+			Target,
+			Damage,
+			nullptr,
+			this,
+			DamageType); // 데미지 적용
+	}
 }
 
 void AAreaOfEffect::OnTargetOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
