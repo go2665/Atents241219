@@ -32,14 +32,15 @@ public:
 	// 위젯을 닫는 함수
 	void Close();
 
+protected:
+	// 닫는 애니메이션이 끝난 후 실행될 함수
+	UFUNCTION()
+	virtual void OnCloseAnimationFinished();
+
 private:
 	// 이 위젯이 가지고 있는 버튼들이 클릭 시 호출되는 함수
 	UFUNCTION()
 	void OnBuildButtonClicked(int32 InIndex);
-
-	// 닫는 애니메이션이 끝난 후 실행될 함수
-	UFUNCTION()
-	void OnCloseAnimationFinished();
 
 public:
 	// 타워 건설 요청을 보내는 델리게이트
@@ -62,7 +63,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "TowerBuilder")
 	TSubclassOf<UTowerBuildButtonWidget> TowerButtonButtonWidgetClass;
 
-private:
 	// 버튼 인스턴스 배열
 	UPROPERTY()
 	TArray<UTowerBuildButtonWidget*> BuildButtons;	

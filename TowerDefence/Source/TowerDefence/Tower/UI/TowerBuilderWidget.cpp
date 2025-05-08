@@ -42,7 +42,7 @@ void UTowerBuilderWidget::OnInitialize(const TArray<UTowerDataAsset*>* InTowerDa
 
 			// 버튼의 인덱스와 표시될 이미지와 비용 설정
 			TowerButtonWidget->OnInitialize(i, (*InTowerDatas)[i]->TowerImage, (*InTowerDatas)[i]->TowerCost);
-			TowerButtonWidget->OnBuildButtonClicked.BindUFunction(this, FName("OnBuildButtonClicked"));	
+			TowerButtonWidget->OnBuildButtonClicked.BindUObject(this, &UTowerBuilderWidget::OnBuildButtonClicked);
 
 			BuildButtons.Add(TowerButtonWidget);	// 버튼을 배열에 추가
 		}
@@ -96,6 +96,13 @@ void UTowerBuilderWidget::Close()
 	}
 }
 
+void UTowerBuilderWidget::OnCloseAnimationFinished()
+{
+	// 다 작아지면 안보이게 설정
+	SetVisibility(ESlateVisibility::Hidden);
+	//UE_LOG(LogTemp, Warning, TEXT("Close Animation Finished"));
+}
+
 void UTowerBuilderWidget::OnBuildButtonClicked(int32 InIndex)
 {
 	// 버튼이 클릭되면 닫고
@@ -105,9 +112,3 @@ void UTowerBuilderWidget::OnBuildButtonClicked(int32 InIndex)
 	OnTowerBuildRequest.ExecuteIfBound(InIndex);
 }
 
-void UTowerBuilderWidget::OnCloseAnimationFinished()
-{
-	// 다 작아지면 안보이게 설정
-	SetVisibility(ESlateVisibility::Hidden);
-	//UE_LOG(LogTemp, Warning, TEXT("Close Animation Finished"));
-}
