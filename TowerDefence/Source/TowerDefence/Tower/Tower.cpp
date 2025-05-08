@@ -260,7 +260,9 @@ void ATower::ShootHitScan(const TArray<AEnemy*>& InTargetEnemies)
 					ShotData->DamageType // 총알의 속성 타입
 				);
 
-				// 디버프 처리(나중에 추가할 것)
+				// 디버프 처리
+				int ShotLevel = ShotData->GetSafeLevel(TowerLevel); // 안전한 레벨 구하기
+				HitEnemy->AddEffect(ShotData->GetLevelData(ShotLevel).EffectType, ShotLevel);
 			}
 		}
 	}

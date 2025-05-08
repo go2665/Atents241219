@@ -64,4 +64,16 @@ public:
 	// 이 Shot이 HitScan인지 확인하는 함수(true면 히트스캔)
 	UFUNCTION()
 	inline bool IsHitScan() const { return ProjectileClass == nullptr; }
+
+	// 안전한 레벨 구하는 함수
+	inline int32 GetSafeLevel(int32 InLevel) const
+	{
+		return FMath::Clamp(InLevel, 0, LevelData.Num() - 1);
+	}
+
+	// 레벨별 데이터 가져오는 함수
+	inline const FShotLevelData& GetLevelData(int32 InLevel) const
+	{
+		return LevelData[GetSafeLevel(InLevel)];
+	}
 };

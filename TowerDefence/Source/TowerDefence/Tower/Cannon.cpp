@@ -68,6 +68,7 @@ void ACannon::ApplyModifierChanges()
 
 void ACannon::OnSightOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	//UE_LOG(LogTemp, Warning, TEXT("[ %s ] Overlap Begin: %s"), *GetName(), *OtherActor->GetName());
 	if (OtherActor->ActorHasTag(TEXT("Enemy")))
 	{
 		AEnemy* Enemy = Cast<AEnemy>(OtherActor); // 적 캐릭터인지 확인
