@@ -37,7 +37,6 @@ void AAreaIndicator::BeginPlay()
 	Deactivate(); // 시작 시 AreaIndicator 비활성화
 }
 
-// Called every frame
 void AAreaIndicator::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

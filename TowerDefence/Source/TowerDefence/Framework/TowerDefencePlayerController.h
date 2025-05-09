@@ -37,4 +37,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	class UInputAction* ClickAction = nullptr;	// 클릭 액션
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	class UInputAction* MoveAction = nullptr;	// 무브 액션
+
 };

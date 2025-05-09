@@ -33,5 +33,4 @@ void ATowerDefencePlayerController::SetupInputComponent()
 void ATowerDefencePlayerController::OnMouseClick(const FInputActionValue& Value)
 {	
 	OnMouseClickInput.Broadcast();	// 마우스 클릭 델리게이트 호출
-
 }

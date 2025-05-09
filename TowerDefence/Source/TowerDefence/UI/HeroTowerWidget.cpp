@@ -6,6 +6,7 @@
 #include "TowerDefence/Framework/TowerDefencePlayerController.h"
 #include "TowerDefence/Framework/TowerDefenceGameMode.h"
 #include "TowerDefence/Tower/Tower.h"
+#include "TowerDefence/Player/PlayerSpectatorPawn.h"
 
 void UHeroTowerWidget::OnSetup()
 {
@@ -50,27 +51,31 @@ void UHeroTowerWidget::BuildHeroTower(int32 InIndex)
 	ATowerDefenceGameMode* GameMode = Cast<ATowerDefenceGameMode>(World->GetAuthGameMode());
 	ATowerDefencePlayerController* PlayerController =
 		Cast<ATowerDefencePlayerController>(World->GetFirstPlayerController());	
+	APlayerSpectatorPawn* PlayerPawn = Cast<APlayerSpectatorPawn>(PlayerController->GetPawn());
 
-	if (GameMode->UseGold(HeroTowerDatas[InIndex]->TowerCost)) // 골드 사용 시도
+	if (GameMode && PlayerController && PlayerPawn)
 	{
-		FVector SpawnLocation = FVector::ZeroVector;
-		FHitResult HitResult;
-		if (PlayerController->GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, HitResult))
+		if (GameMode->UseGold(HeroTowerDatas[InIndex]->TowerCost)) // 골드 사용 시도
 		{
-			SpawnLocation = HitResult.Location;
-		}
-
-		ATower* Tower = World->SpawnActor<ATower>(
-			HeroTowerDatas[InIndex]->TowerClass, SpawnLocation, FRotator::ZeroRotator);
-		Tower->SetInitialSellCost(HeroTowerDatas[InIndex]->TowerCost * 0.5f);	// 판매 가격 초기화
-
-		Tower->OnTowerSell.AddUObject(GameMode, &ATowerDefenceGameMode::AddGold);	// 타워가 팔렸을 때 골드 추가하도록 함수 연결
-		Tower->OnTowerSell.AddLambda(
-			[this](int32 _)
+			FVector SpawnLocation = FVector::ZeroVector;
+			FHitResult HitResult;
+			if (PlayerController->GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, HitResult))
 			{
-				//Tower = nullptr;	// 타워가 팔렸을 때 빌더의 Tower를 nullptr로 초기화
+				SpawnLocation = HitResult.Location;
 			}
-		);
 
+			ATower* Tower = World->SpawnActor<ATower>(
+				HeroTowerDatas[InIndex]->TowerClass, SpawnLocation, FRotator::ZeroRotator);
+			Tower->SetInitialSellCost(HeroTowerDatas[InIndex]->TowerCost * 0.5f);	// 판매 가격 초기화
+
+			Tower->OnTowerSell.AddUObject(GameMode, &ATowerDefenceGameMode::AddGold);	// 타워가 팔렸을 때 골드 추가하도록 함수 연결
+			Tower->OnTowerSell.AddLambda(
+				[this](int32 _)
+				{
+					//Tower = nullptr;	// 타워가 팔렸을 때 빌더의 Tower를 nullptr로 초기화
+				}
+			);
+			PlayerPawn->SetTemporaryHero(Tower);	// 플레이어의 임시 영웅 타워 설정
+		}
 	}
 }
