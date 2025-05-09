@@ -103,6 +103,8 @@ public:
 
 	inline bool GetShowDebugInfo() const { return bShowDebugInfo; }
 
+	inline void ActivateTower()	{ bIsActivated = true; }
+
 protected:
 	// 업그레이드 UI 닫기 or 스킬 사용에 사용됨(DEPRECATE된 OnCancelClicked)
 	UFUNCTION()
@@ -177,6 +179,10 @@ protected:
 	// 타워 판매 비용(판매 비용은 (설치 비용 + 업그레이드 비용)의 절반)
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tower|Base Data")
 	int32 SellCost = 0;
+
+	// 타워가 활성화 되었는지 여부
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tower|Base Data")
+	bool bIsActivated = false;	
 
 	// 스킬 데이터(컴포넌트 추가)
 	

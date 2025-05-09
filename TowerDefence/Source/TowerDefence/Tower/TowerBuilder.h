@@ -18,7 +18,9 @@ class TOWERDEFENCE_API ATowerBuilder : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ATowerBuilder();
+
 	inline ATower* GetTower() const { return Tower; }
+	bool SetTowerOnce(ATower* InTower);
 
 protected:
 	virtual void BeginPlay() override;

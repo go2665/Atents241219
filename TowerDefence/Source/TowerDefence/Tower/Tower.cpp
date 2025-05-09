@@ -172,7 +172,7 @@ void ATower::OnTowerClicked(AActor* TouchedActor, FKey ButtonPressed)
 	// 타워 클릭 시 업그레이드 UI 위젯 열기
 	if (ButtonPressed == EKeys::LeftMouseButton)
 	{
-		if (UpgradeWidgetInstance)
+		if (UpgradeWidgetInstance && bIsActivated)
 		{
 			UpgradeWidgetInstance->OpenUpgradeWidget(GetCannonLevelData().UpgradeCost);
 			//if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] : Clicked Tower!"), *this->GetActorNameOrLabel());

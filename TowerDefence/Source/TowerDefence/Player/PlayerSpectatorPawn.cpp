@@ -6,6 +6,7 @@
 #include "AreaIndicator.h"
 #include "TowerDefence/Framework/TowerDefencePlayerController.h"
 #include "TowerDefence/Tower/Tower.h"
+#include "TowerDefence/Tower/TowerBuilder.h"
 
 
 APlayerSpectatorPawn::APlayerSpectatorPawn()
@@ -45,7 +46,38 @@ void APlayerSpectatorPawn::BeginPlay()
 
 void APlayerSpectatorPawn::OnMouseClick()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Clicked!"));
+	//UE_LOG(LogTemp, Warning, TEXT("Clicked!"));
+	if (TemporaryHero)
+	{
+		ATowerBuilder* HitBuilder = nullptr;	// 클릭한 액터를 저장할 변수
+		FHitResult HitResult;
+		//FVector2D MousePosition;
+		//FCollisionQueryParams CollisionParams;
+		//CollisionParams.AddIgnoredActor(this);
+		//PlayerController->GetMousePosition(MousePosition.X, MousePosition.Y);
+		//PlayerController->GetHitResultAtScreenPosition(
+		//	MousePosition,
+		//	ECC_GameTraceChannel3,
+		//	CollisionParams,
+		//	HitResult);	// 마우스 위치에서 히트 결과 가져오기
+
+		if (PlayerController->GetHitResultUnderCursor(ECC_GameTraceChannel3, false, HitResult))	// ECC_GameTraceChannel3(TowerBuilder)로 트레이스
+		{
+			AActor* HitActor = HitResult.GetActor();	// 클릭한 액터 저장
+			UE_LOG(LogTemp, Warning, TEXT("Clicked on: %s"), *HitActor->GetActorNameOrLabel());
+			HitBuilder = Cast<ATowerBuilder>(HitResult.GetActor());
+			if (HitBuilder)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("FindBuilder!"));
+				bool bResult = HitBuilder->SetTowerOnce(TemporaryHero);	// 타워 빌더에 타워 설정
+				if(bResult)
+				{
+					TemporaryHero = nullptr;
+				}
+			}
+		}
+
+	}
 }
 
 void APlayerSpectatorPawn::OnTemporaryHeroUpdata()

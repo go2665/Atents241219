@@ -24,6 +24,28 @@ ATowerBuilder::ATowerBuilder()
 	TowerBuildWidget->SetDrawSize(FVector2D(600.0f, 600.0f));	// 위젯 크기 설정
 }
 
+bool ATowerBuilder::SetTowerOnce(ATower* InTower)
+{
+	bool bResult = false;	// 타워 설정 성공 여부
+	if (!Tower)
+	{
+		Tower = InTower; 
+		Tower->SetActorLocation(GetActorLocation());	// 타워 위치 설정
+				
+		Tower->OnTowerSell.AddLambda(
+			[this](int32 _)
+			{
+				Tower = nullptr;	// 타워가 팔렸을 때 빌더의 Tower를 nullptr로 초기화
+			}
+		);
+
+		Tower->ActivateTower();
+		bResult = true;	// 타워 설정 성공
+	}
+
+	return bResult;
+}
+
 // Called when the game starts or when spawned
 void ATowerBuilder::BeginPlay()
 {
@@ -114,18 +136,12 @@ void ATowerBuilder::BuildTower(int32 InTowerIndex)
 		
 		if (GameMode->UseGold(TowerDatas[InTowerIndex]->TowerCost)) // 골드 사용 시도
 		{
-			Tower = World->SpawnActor<ATower>(
+			ATower* NewTower = World->SpawnActor<ATower>(
 				TowerDatas[InTowerIndex]->TowerClass, GetActorLocation(), GetActorRotation());
-			Tower->SetInitialSellCost(TowerDatas[InTowerIndex]->TowerCost * 0.5f);	// 판매 가격 초기화
+			NewTower->SetInitialSellCost(TowerDatas[InTowerIndex]->TowerCost * 0.5f);	// 판매 가격 초기화			
+			NewTower->OnTowerSell.AddUObject(GameMode, &ATowerDefenceGameMode::AddGold);	// 타워가 팔렸을 때 골드 추가하도록 함수 연결
 
-			Tower->OnTowerSell.AddUObject(GameMode, &ATowerDefenceGameMode::AddGold);	// 타워가 팔렸을 때 골드 추가하도록 함수 연결
-			Tower->OnTowerSell.AddLambda(
-				[this](int32 _)
-				{
-					Tower = nullptr;	// 타워가 팔렸을 때 빌더의 Tower를 nullptr로 초기화
-				}
-			);
-
+			SetTowerOnce(NewTower);		// 타워를 빌더에 설정
 		}
 		//else
 		//{
