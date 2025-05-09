@@ -31,7 +31,7 @@ void AAreaIndicator::BeginPlay()
 	ATowerDefencePlayerController* TowerDefenceController = Cast<ATowerDefencePlayerController>(PlayerController);
 	if (TowerDefenceController)
 	{
-		TowerDefenceController->OnMouseClickInput.AddDynamic(this, &AAreaIndicator::OnMouseClick); // 마우스 클릭 이벤트 바인딩
+		TowerDefenceController->OnMouseClickInput.AddUObject(this, &AAreaIndicator::OnMouseClick); // 마우스 클릭 이벤트 바인딩
 	}
 
 	Deactivate(); // 시작 시 AreaIndicator 비활성화
@@ -67,7 +67,7 @@ void AAreaIndicator::Deactivate()
 	SetActorTickEnabled(false); // Tick 비활성화
 }
 
-void AAreaIndicator::OnMouseClick(AActor* HitActor)
+void AAreaIndicator::OnMouseClick()
 {
 	Deactivate();
 	//UE_LOG(LogTemp, Warning, TEXT("AAreaIndicator::OnMouseClick"));

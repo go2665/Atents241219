@@ -24,7 +24,7 @@ void USkillComponent::BeginPlay()
 	PlayerPawn = Cast<APlayerSpectatorPawn>(Pawn);
 
 	ATowerDefencePlayerController* TowerDefencePlayerController = Cast<ATowerDefencePlayerController>(PlayerController); // 플레이어 컨트롤러를 ATowerDefencePlayerController로 캐스팅
-	TowerDefencePlayerController->OnMouseClickInput.AddDynamic(this, &USkillComponent::OnSkillAreaClicked); // 마우스 클릭 이벤트 바인딩
+	TowerDefencePlayerController->OnMouseClickInput.AddUObject(this, &USkillComponent::OnSkillAreaClicked); // 마우스 클릭 이벤트 바인딩
 
 	ensure(PlayerPawn);	// 플레이어 폰이 nullptr이 아닌지 확인
 	ensure(SkillData);	// 스킬 데이터가 nullptr이 아닌지 확인
@@ -100,7 +100,7 @@ void USkillComponent::UseSkill(FVector InLocation)
     bIsSkillActivated = false;						// 스킬 사용 후 위치 선택 종료
 }
 
-void USkillComponent::OnSkillAreaClicked(AActor* _)
+void USkillComponent::OnSkillAreaClicked()
 {
 	// 스킬 사용 중일 때 클릭이 일어났으면 그 위치(AreaIndicator 위치)에 스킬 사용
 	if (bIsSkillActivated)

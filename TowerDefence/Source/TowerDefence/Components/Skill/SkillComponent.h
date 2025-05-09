@@ -41,7 +41,7 @@ protected:
 
 private:
 	UFUNCTION()
-	void OnSkillAreaClicked(AActor* _);	// 스킬 사용 위치 클릭 시 호출되는 함수
+	void OnSkillAreaClicked();	// 스킬 사용 위치 클릭 시 호출되는 함수
 
 	void FindActorsInRadius(FVector Center, float Radius,
 		TArray<TScriptInterface<IEffectTargetable>>& OutEffectTargets);

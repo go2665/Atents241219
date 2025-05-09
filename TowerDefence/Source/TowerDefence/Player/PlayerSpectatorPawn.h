@@ -8,6 +8,7 @@
 #include "PlayerSpectatorPawn.generated.h"
 
 class AAreaIndicator;
+class ATower;
 /**
  * 
  */
@@ -26,6 +27,16 @@ public:
 		return AreaIndicator ? AreaIndicator->GetActorLocation() : FVector::ZeroVector;
 	}
 
+	inline const ATower* GetTemporaryHero() const
+	{
+		return TemporaryHero;
+	}
+
+	inline void SetTemporaryHero(ATower* InTemporaryHero)
+	{
+		TemporaryHero = InTemporaryHero;
+	}
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -36,4 +47,7 @@ protected:
 private:
 	UPROPERTY()
 	AAreaIndicator* AreaIndicator = nullptr;	// AreaIndicator를 저장할 변수
+
+	UPROPERTY()
+	ATower* TemporaryHero = nullptr;
 };

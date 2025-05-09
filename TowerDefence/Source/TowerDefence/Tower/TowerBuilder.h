@@ -31,10 +31,9 @@ private:
 	// 타워 클릭했을 때 실행(타워 업그레이드 UI 위젯 열기에 사용됨)
 	UFUNCTION()
 	void OnBuilderClicked(AActor* TouchedActor, FKey ButtonPressed);
-
-	// InClickedTower : 클릭한 타워(nullptr일 수 있다.)
+		
 	UFUNCTION()
-	void OnScreenClicked(AActor* InClickedBuilder);
+	void OnScreenClicked();
 
 	UFUNCTION()
 	void BuildTower(int32 InTowerIndex);

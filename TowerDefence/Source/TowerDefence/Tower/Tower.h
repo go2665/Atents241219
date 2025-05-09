@@ -105,9 +105,8 @@ public:
 
 protected:
 	// 업그레이드 UI 닫기 or 스킬 사용에 사용됨(DEPRECATE된 OnCancelClicked)
-	// InClickedTower : 클릭한 타워(nullptr일 수 있다.)
 	UFUNCTION()
-	virtual void OnScreenClicked(AActor* InClickedTower);
+	virtual void OnScreenClicked();
 
 private:
 	// 타워 클릭했을 때 실행(타워 업그레이드 UI 위젯 열기에 사용됨)

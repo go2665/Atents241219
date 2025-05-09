@@ -36,11 +36,10 @@ protected:
 	// 닫는 애니메이션이 끝난 후 실행될 함수
 	UFUNCTION()
 	virtual void OnCloseAnimationFinished();
-
-private:
+	
 	// 이 위젯이 가지고 있는 버튼들이 클릭 시 호출되는 함수
 	UFUNCTION()
-	void OnBuildButtonClicked(int32 InIndex);
+	virtual void OnBuildButtonClicked(int32 InIndex);
 
 public:
 	// 타워 건설 요청을 보내는 델리게이트

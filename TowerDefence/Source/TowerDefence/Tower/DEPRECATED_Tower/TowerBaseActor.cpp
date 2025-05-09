@@ -78,7 +78,7 @@ void ATowerBaseActor::BeginPlay()
 		Cast<ATowerDefencePlayerController>(World->GetFirstPlayerController());
 	if (PlayerController)
 	{
-		PlayerController->OnMouseClickInput.AddDynamic(this, &ATowerBaseActor::OnCancelClicked);
+		PlayerController->OnMouseClickInput.AddUObject(this, &ATowerBaseActor::OnCancelClicked);
 	}
 
 	SellCost = TowerCost * 0.5f;	// 판매 비용은 (설치 비용 + 업그레이드 비용)의 절반
@@ -147,12 +147,27 @@ void ATowerBaseActor::OnTowerClicked(AActor* TouchedActor, FKey ButtonPressed)
 	}
 }
 
-void ATowerBaseActor::OnCancelClicked(AActor* InClickedTower)
+void ATowerBaseActor::OnCancelClicked()
 {
-	if (UpgradeWidgetInstance && InClickedTower != this)
+	if (UpgradeWidgetInstance)
 	{
-		UpgradeWidgetInstance->CloseUpgradeWidget();
-		//UE_LOG(LogTemp, Warning, TEXT("[%s] : Close Upgrade Widget!"), *this->GetActorNameOrLabel());
+		APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+		AActor* HitActor = nullptr;	// 클릭한 액터를 저장할 변수
+		FHitResult HitResult;
+		if (PlayerController->GetHitResultUnderCursor(ECC_GameTraceChannel2, false, HitResult))	// ECC_GameTraceChannel2(Tower)로 트레이스
+		{
+			HitActor = HitResult.GetActor();
+		}
+		//if (HitActor)
+		//{
+		//	UE_LOG(LogTemp, Warning, TEXT("Clicked on: %s"), *HitActor->GetActorNameOrLabel());
+		//}
+
+		if (HitActor != this)
+		{
+			UpgradeWidgetInstance->CloseUpgradeWidget();
+			//UE_LOG(LogTemp, Warning, TEXT("[%s] : Close Upgrade Widget!"), *this->GetActorNameOrLabel());
+		}
 	}
 	//else
 	//{

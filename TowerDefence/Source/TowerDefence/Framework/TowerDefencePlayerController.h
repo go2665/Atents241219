@@ -7,7 +7,7 @@
 #include "InputActionValue.h"
 #include "TowerDefencePlayerController.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMouseClickDelegate, AActor*, InHitTower);	// 마우스 클릭 델리게이트
+DECLARE_MULTICAST_DELEGATE(FOnMouseClickDelegate);	// 마우스 클릭 델리게이트
 
 /**
  * 

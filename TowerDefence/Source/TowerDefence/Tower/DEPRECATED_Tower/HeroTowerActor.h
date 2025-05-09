@@ -31,7 +31,7 @@ public:
 
 protected:	
 	virtual void BeginPlay() override;
-	virtual void OnCancelClicked(AActor* InClickedTower) override;
+	virtual void OnCancelClicked() override;
 	inline virtual UTowerBuffComponent* GetBuffComponent() const override { return HeroBuffComponent; }	// 버프 컴포넌트 반환
 
 private:

@@ -31,7 +31,7 @@ public:
 
 private:
 	UFUNCTION()
-	void OnMouseClick(AActor* HitActor);	// 마우스 클릭 이벤트 처리
+	void OnMouseClick();	// 마우스 클릭 이벤트 처리
 
 	void UpdateLocation();
 

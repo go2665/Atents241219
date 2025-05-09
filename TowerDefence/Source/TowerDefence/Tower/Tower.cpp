@@ -84,7 +84,7 @@ void ATower::BeginPlay()
 		Cast<ATowerDefencePlayerController>(World->GetFirstPlayerController());
 	if (PlayerController)
 	{
-		PlayerController->OnMouseClickInput.AddDynamic(this, &ATower::OnScreenClicked);
+		PlayerController->OnMouseClickInput.AddUObject(this, &ATower::OnScreenClicked);
 	}
 }
 
@@ -180,12 +180,28 @@ void ATower::OnTowerClicked(AActor* TouchedActor, FKey ButtonPressed)
 	}
 }
 
-void ATower::OnScreenClicked(AActor* InClickedTower)
+void ATower::OnScreenClicked()
 {
-	if (UpgradeWidgetInstance && InClickedTower != this)
+	if (UpgradeWidgetInstance)
 	{
-		UpgradeWidgetInstance->CloseUpgradeWidget();
-		//if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] : Close Upgrade Widget!"), *this->GetActorNameOrLabel());
+		APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+		AActor* HitActor = nullptr;	// 클릭한 액터를 저장할 변수
+		FHitResult HitResult;
+		if (PlayerController->GetHitResultUnderCursor(ECC_GameTraceChannel2, false, HitResult))	// ECC_GameTraceChannel2(Tower)로 트레이스
+		{
+			HitActor = HitResult.GetActor();
+		}
+		//if (HitActor)
+		//{
+		//	UE_LOG(LogTemp, Warning, TEXT("Clicked on: %s"), *HitActor->GetActorNameOrLabel());
+		//}
+
+		if (HitActor != this)
+		{
+			// 타워가 아닌 다른 액터 클릭 시 업그레이드 UI 위젯 닫기
+			UpgradeWidgetInstance->CloseUpgradeWidget();
+			//if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] : Close Upgrade Widget!"), *this->GetActorNameOrLabel());
+		}
 	}
 	//else
 	//{

@@ -16,13 +16,13 @@ void ATowerDefenceHUD::BeginPlay()
 			MainWidget->AddToViewport();
 			HeroTowerBuilder = MainWidget->GetHeroTowerBuilder();
 			HeroTowerBuilder->OnSetup();
-			HeroTowerBuilder->OnTowerBuildRequest.BindLambda(
-				[this](int32 InIndex)
-				{
-					UE_LOG(LogTemp, Warning, TEXT("Hero Tower Build Request! Index : %d"), InIndex);
-					LastClickedTowerIndex = InIndex;	// 클릭한 타워 인덱스 저장
-				}
-			);
+			//HeroTowerBuilder->OnTowerBuildRequest.BindLambda(
+			//	[this](int32 InIndex)
+			//	{
+			//		UE_LOG(LogTemp, Warning, TEXT("Hero Tower Build Request! Index : %d"), InIndex);
+			//		LastClickedTowerIndex = InIndex;	// 클릭한 타워 인덱스 저장
+			//	}
+			//);
 		}
 	}
 }

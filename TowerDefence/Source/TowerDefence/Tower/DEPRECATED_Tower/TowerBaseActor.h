@@ -27,7 +27,7 @@ protected:
 
 
 	UFUNCTION()
-	virtual void OnCancelClicked(AActor* InClickedTower);
+	virtual void OnCancelClicked();
 
 	// 버프 컴포넌트 반환
 	inline virtual UTowerBuffComponent* GetBuffComponent() const { return BuffComponent; }	

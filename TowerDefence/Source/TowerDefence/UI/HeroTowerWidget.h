@@ -18,14 +18,19 @@ class TOWERDEFENCE_API UHeroTowerWidget : public UTowerBuilderWidget
 	
 public:
 	// 영웅타워 위젯 초기화.
-	void OnSetup();
+	void OnSetup();		
+
+protected:
+	virtual void OnBuildButtonClicked(int32 InIndex) override;
 
 private:
 	UFUNCTION()
 	void OnMainButtonClicked();
 
 	UFUNCTION()
-	void OnScreenClicked(AActor* InClickedBuilder);
+	void OnScreenClicked();
+
+	void BuildHeroTower(int32 InIndex);
 
 protected:
 	// 영웅타워 건축 시작 버튼

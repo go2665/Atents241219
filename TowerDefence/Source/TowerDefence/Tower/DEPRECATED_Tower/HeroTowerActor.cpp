@@ -104,7 +104,7 @@ void AHeroTowerActor::BeginPlay()
     Player = Cast<APlayerSpectatorPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 }
 
-void AHeroTowerActor::OnCancelClicked(AActor* InClickedTower)
+void AHeroTowerActor::OnCancelClicked()
 {
 	// 스킬 사용 중일 때 클릭이 일어났으면 그 위치(AreaIndicator 위치)에 스킬 사용
 	if (bIsSelectingSkillLocation)
@@ -114,7 +114,7 @@ void AHeroTowerActor::OnCancelClicked(AActor* InClickedTower)
 	else
 	{
 		// 스킬 사용 중이 아닐 때는 기본 클릭 처리
-		Super::OnCancelClicked(InClickedTower);
+		Super::OnCancelClicked();
 	}
 }
 

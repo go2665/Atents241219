@@ -55,7 +55,7 @@ void ATowerBuilder::BeginPlay()
 		Cast<ATowerDefencePlayerController>(World->GetFirstPlayerController());
 	if (PlayerController)
 	{
-		PlayerController->OnMouseClickInput.AddDynamic(this, &ATowerBuilder::OnScreenClicked);
+		PlayerController->OnMouseClickInput.AddUObject(this, &ATowerBuilder::OnScreenClicked);
 	}
 }
 
@@ -77,12 +77,27 @@ void ATowerBuilder::OnBuilderClicked(AActor* TouchedActor, FKey ButtonPressed)
 	}
 }
 
-void ATowerBuilder::OnScreenClicked(AActor* InClickedBuilder)
+void ATowerBuilder::OnScreenClicked()
 {
-	if (TowerBuilderWidgetInstance && InClickedBuilder != this)
+	if (TowerBuilderWidgetInstance)
 	{
-		TowerBuilderWidgetInstance->Close();
-		if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] : Close Builder Widget!"), *this->GetActorNameOrLabel());
+		APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+		AActor* HitActor = nullptr;	// 클릭한 액터를 저장할 변수
+		FHitResult HitResult;
+		if (PlayerController->GetHitResultUnderCursor(ECC_GameTraceChannel2, false, HitResult))	// ECC_GameTraceChannel2(Tower)로 트레이스
+		{
+			HitActor = HitResult.GetActor();
+		}
+		//if (HitActor)
+		//{
+		//	UE_LOG(LogTemp, Warning, TEXT("Clicked on: %s"), *HitActor->GetActorNameOrLabel());
+		//}
+
+		if (HitActor != this)
+		{
+			TowerBuilderWidgetInstance->Close();
+			if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] : Close Builder Widget!"), *this->GetActorNameOrLabel());
+		}
 	}
 	//else
 	//{
