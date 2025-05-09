@@ -20,9 +20,6 @@ public:
 	// 영웅타워 위젯 초기화.
 	void OnSetup();
 
-protected:
-	virtual void OnCloseAnimationFinished() override;
-
 private:
 	UFUNCTION()
 	void OnMainButtonClicked();

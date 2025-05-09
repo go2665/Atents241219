@@ -68,13 +68,13 @@ void UTowerBuilderWidget::OnInitialize(const TArray<UTowerDataAsset*>* InTowerDa
 	}
 
 	// 시작할 때는 안보이게 하기(이 함수가 ATowerBuilder::BeginPlay에서 실행됨)
-	SetVisibility(ESlateVisibility::Hidden);
-	SetRenderScale(FVector2D(0.0f, 0.0f));		// Close 테스트 때문에 무조건 0으로 시작
+	Canvas->SetVisibility(ESlateVisibility::Hidden);	// 캔버스 숨기기
+	Canvas->SetRenderScale(FVector2D(0.0f, 0.0f));		// Close 테스트 때문에 무조건 0으로 시작
 }
 
 void UTowerBuilderWidget::Open()
 {
-	//UE_LOG(LogTemp, Warning, TEXT("Open Builder Widget"));
+	UE_LOG(LogTemp, Warning, TEXT("[%s] : Open Builder Widget"), *this->GetName());
 
 	// 버튼의 상태를 현재 골드에 맞게 업데이트
 	for (UTowerBuildButtonWidget* Button : BuildButtons)
@@ -82,14 +82,16 @@ void UTowerBuilderWidget::Open()
 		Button->UpdateButtonState(CurrentGold);
 	}	
 
-	SetRenderScale(FVector2D(0.0f, 0.0f));		// 크기 초기화
-	SetVisibility(ESlateVisibility::Visible);	// 보이게 만들기
+	Canvas->SetRenderScale(FVector2D(0.0f, 0.0f));		// 크기 초기화
+	Canvas->SetVisibility(ESlateVisibility::Visible);	// 보이게 만들기
 	PlayAnimation(OpenAnimation);				// 확대 애니메이션 재생
 }
 
 void UTowerBuilderWidget::Close()
 {
-	if (GetRenderTransform().Scale.X > 0)	// 열려있으면
+	//UE_LOG(LogTemp, Warning, TEXT("[%s] : Close Builder Widget"), *this->GetName());
+
+	if (Canvas->GetRenderTransform().Scale.X > 0)	// 열려있으면
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("Close Builder Widget"));
 		PlayAnimation(CloseAnimation);	// 닫는 애니메이션 실행
@@ -99,8 +101,8 @@ void UTowerBuilderWidget::Close()
 void UTowerBuilderWidget::OnCloseAnimationFinished()
 {
 	// 다 작아지면 안보이게 설정
-	SetVisibility(ESlateVisibility::Hidden);
-	//UE_LOG(LogTemp, Warning, TEXT("Close Animation Finished"));
+	Canvas->SetVisibility(ESlateVisibility::Hidden);
+	//UE_LOG(LogTemp, Warning, TEXT("Close Animation Finished : %s"), *Canvas->GetRenderTransform().Scale.ToString());
 }
 
 void UTowerBuilderWidget::OnBuildButtonClicked(int32 InIndex)

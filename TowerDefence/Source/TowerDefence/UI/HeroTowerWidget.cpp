@@ -21,28 +21,17 @@ void UHeroTowerWidget::OnSetup()
 	{
 		PlayerController->OnMouseClickInput.AddDynamic(this, &UHeroTowerWidget::OnScreenClicked);
 	}
-
-	// 부모에서 꺼 놓았던 것을 켜기
-	SetVisibility(ESlateVisibility::Visible);
-	SetRenderScale(FVector2D(1.0f, 1.0f));
 }
 
-void UHeroTowerWidget::OnCloseAnimationFinished()
-{
-	for (const auto& ChildButton : BuildButtons)
-	{
-		ChildButton->SetVisibility(ESlateVisibility::Hidden);	// 동적으로 생성한 버튼만 숨김
-	}
-}
 
 void UHeroTowerWidget::OnMainButtonClicked()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Main Build Button Clicked!"));	// 버튼 클릭 시 로그 출력
+	//UE_LOG(LogTemp, Warning, TEXT("Main Build Button Clicked!"));	// 버튼 클릭 시 로그 출력
 	Open();
 }
 
 void UHeroTowerWidget::OnScreenClicked(AActor* InClickedBuilder)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Screen Clicked!"));	// 화면 클릭 시 로그 출력
+	//UE_LOG(LogTemp, Warning, TEXT("Screen Clicked!"));	// 화면 클릭 시 로그 출력
 	Close();	// 화면 클릭 시 위젯 닫기
 }
