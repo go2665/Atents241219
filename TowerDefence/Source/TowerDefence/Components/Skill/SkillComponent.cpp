@@ -3,7 +3,6 @@
 
 #include "SkillComponent.h"
 #include "Engine/OverlapResult.h" 
-#include "TowerDefence/Tower/Data/SkillDataAsset.h"
 #include "TowerDefence/Player/PlayerSpectatorPawn.h"
 #include "TowerDefence/Tower/Tower.h"
 #include "TowerDefence/Framework/TowerDefencePlayerController.h"
@@ -34,7 +33,10 @@ void USkillComponent::BeginPlay()
 		{
 			// 타워 레벨 업데이트
 			TowerLevel = FMath::Min(InLevel, SkillData->LevelData.Num() - 1);				
+			SkillLevelData = &SkillData->LevelData[TowerLevel];
 		});
+	TowerLevel = 0;	// 타워 레벨 초기화
+	SkillLevelData = &SkillData->LevelData[TowerLevel]; 
 }
 
 void USkillComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -54,17 +56,14 @@ void USkillComponent::ActivateSkill()
 
 void USkillComponent::UseSkill(FVector InLocation)
 {
-    // 스킬 사용  
-	int32 SkillLevel = FMath::Min(TowerLevel, SkillData->LevelData.Num() - 1);
-    const FSkillLevelData& SkillLevelData = SkillData->LevelData[SkillLevel];
-
+    // 스킬 사용
     UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] Skill (Radius %.1f)"), 
         *GetOwner()->GetActorNameOrLabel(), 
 		*SkillData->SkillName,
-        SkillLevelData.Radius);
+        SkillLevelData->Radius);
 
 	TArray<TScriptInterface<IEffectTargetable>> EffectTargets;	// 스킬 적용 대상 배열
-    FindActorsInRadius(InLocation, SkillLevelData.Radius, EffectTargets);
+    FindActorsInRadius(InLocation, SkillLevelData->Radius, EffectTargets);
 
 	if (SkillData->AoeData)
 	{
@@ -83,7 +82,7 @@ void USkillComponent::UseSkill(FVector InLocation)
 			// 디버프 적용
 			if (SkillData->DebuffType != EEffectType::None)				// 디버프가 있으면
 			{
-				Target->AddEffect(SkillData->DebuffType, SkillLevel); 	// 디버프 적용					
+				Target->AddEffect(SkillData->DebuffType, TowerLevel); 	// 디버프 적용					
 			}
 		}
 		else if (Target->GetEffectTarget() == EEffectTarget::Friendly)	// 아군 대상이고
@@ -91,12 +90,12 @@ void USkillComponent::UseSkill(FVector InLocation)
 			// 버프 적용
 			if (SkillData->BuffType != EEffectType::None)				// 버프가 있으면 
 			{
-				Target->AddEffect(SkillData->BuffType, SkillLevel);		// 버프 적용
+				Target->AddEffect(SkillData->BuffType, TowerLevel);		// 버프 적용
 			}
 		}		
 	}
 
-    SkillCoolTime = SkillLevelData.CooldownTime;	// 쿨타임 초기화
+    SkillCoolTime = SkillLevelData->CooldownTime;	// 쿨타임 초기화
     bIsSkillActivated = false;						// 스킬 사용 후 위치 선택 종료
 }
 

@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "TowerDefence/Tower/Data/SkillDataAsset.h"
 #include "TowerDefence/Components/Effect/EffectTargetable.h"
 #include "SkillComponent.generated.h"
 
-class USkillDataAsset;		// 스킬 데이터 에셋
 class APlayerSpectatorPawn;	// 플레이어 폰
 
 /*
@@ -37,6 +37,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Hero|Skill")
 	void UseSkill(FVector InLocation);
 
+	// 스킬의 현재 쿨타임 비율을 리턴하는 함수
+	inline float GetCoolTimeRatio() const { 
+		return (SkillLevelData->CooldownTime - SkillCoolTime) / SkillLevelData->CooldownTime; 
+	}
+
 protected:
 
 private:
@@ -54,6 +59,9 @@ private:
 	// 플레이어 폰
 	UPROPERTY()
 	APlayerSpectatorPawn* PlayerPawn = nullptr;	
+
+	// 스킬 레벨 데이터
+	FSkillLevelData* SkillLevelData = nullptr;	
 
 	// 스킬 사용 위치 선택을 위해 활성화 중인지를 표시하는 변수
 	bool bIsSkillActivated = false;	

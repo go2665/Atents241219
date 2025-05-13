@@ -138,7 +138,7 @@ void ATowerBuilder::BuildTower(int32 InTowerIndex)
 		{
 			ATower* NewTower = World->SpawnActor<ATower>(
 				TowerDatas[InTowerIndex]->TowerClass, GetActorLocation(), GetActorRotation());
-			NewTower->SetInitialSellCost(TowerDatas[InTowerIndex]->TowerCost * 0.5f);	// 판매 가격 초기화			
+			NewTower->SetInitialTowerData(TowerDatas[InTowerIndex]);	// 타워 데이터 초기화
 			NewTower->OnTowerSell.AddUObject(GameMode, &ATowerDefenceGameMode::AddGold);	// 타워가 팔렸을 때 골드 추가하도록 함수 연결
 
 			SetTowerOnce(NewTower);		// 타워를 빌더에 설정

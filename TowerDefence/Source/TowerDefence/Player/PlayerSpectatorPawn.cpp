@@ -5,6 +5,7 @@
 #include "Components/ChildActorComponent.h"
 #include "AreaIndicator.h"
 #include "TowerDefence/Framework/TowerDefencePlayerController.h"
+#include "TowerDefence/Framework/TowerDefenceHUD.h"
 #include "TowerDefence/Tower/Tower.h"
 #include "TowerDefence/Tower/TowerBuilder.h"
 
@@ -64,19 +65,19 @@ void APlayerSpectatorPawn::OnMouseClick()
 		if (PlayerController->GetHitResultUnderCursor(ECC_GameTraceChannel3, false, HitResult))	// ECC_GameTraceChannel3(TowerBuilder)로 트레이스
 		{
 			AActor* HitActor = HitResult.GetActor();	// 클릭한 액터 저장
-			UE_LOG(LogTemp, Warning, TEXT("Clicked on: %s"), *HitActor->GetActorNameOrLabel());
+			//UE_LOG(LogTemp, Warning, TEXT("Clicked on: %s"), *HitActor->GetActorNameOrLabel());
 			HitBuilder = Cast<ATowerBuilder>(HitResult.GetActor());
 			if (HitBuilder)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("FindBuilder!"));
+				//UE_LOG(LogTemp, Warning, TEXT("FindBuilder!"));
 				bool bResult = HitBuilder->SetTowerOnce(TemporaryHero);	// 타워 빌더에 타워 설정
 				if(bResult)
 				{
+					OnHeroTowerBuildComplete.ExecuteIfBound(TemporaryHero);	// 타워 건축 완료 델리게이트 호출
 					TemporaryHero = nullptr;
 				}
 			}
 		}
-
 	}
 }
 

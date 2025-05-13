@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "TowerDefence/Tower/Data/TowerDataAsset.h"
 #include "TowerDefence/Tower/Data/CannonDataAsset.h"
 #include "TowerDefence/Tower/Data/ShotDataAsset.h"
 #include "TowerDefence/Components/Effect/EffectTargetable.h"
@@ -98,8 +99,18 @@ public:
 	// 타워의 공격 시 한번에 공격 가능한 타겟 수
 	inline float GetTargetCount() const { return TargetCount; }
 
-	// 타워의 판매가격 초기화
-	inline void SetInitialSellCost(int32 InSellCost) { SellCost = InSellCost; }	
+	// 타워 데이터 에셋을 읽기 전용으로 가져오는 함수
+	inline const UTowerDataAsset* GetTowerData() const { return TowerData; }
+
+	// 타워 데이터 에셋을 설정하고 초기화 하는 함수
+	inline void SetInitialTowerData(UTowerDataAsset* InTowerData)
+	{
+		TowerData = InTowerData;
+		if (TowerData)
+		{
+			SellCost = TowerData->TowerCost * 0.5f; // 판매 가격 초기화
+		}
+	}
 
 	inline bool GetShowDebugInfo() const { return bShowDebugInfo; }
 
@@ -167,6 +178,10 @@ protected:
 	// 타워 레벨(0~2, 표시할 때는 +1)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower|Base Data", meta = (ClampMin = "0", ClampMax = "2"))
 	int32 TowerLevel = 0; 
+	
+	// 타워 데이터(읽기 전용)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tower|Base Data")
+	UTowerDataAsset* TowerData = nullptr;
 
 	// 대포 데이터
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower|Base Data")

@@ -11,6 +11,8 @@ class AAreaIndicator;
 class ATower;
 class ATowerDefencePlayerController;
 
+DECLARE_DELEGATE_OneParam(FOnHeroTowerBuildComplete, ATower*);
+
 /**
  * 
  */
@@ -53,6 +55,10 @@ private:
 
 	// 임시 영웅타워의 위치를 업데이트
 	void OnTemporaryHeroUpdata();
+
+public:
+	// 영웅 타워 건축 완료 델리게이트
+	FOnHeroTowerBuildComplete OnHeroTowerBuildComplete;	
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AreaIndicator")
