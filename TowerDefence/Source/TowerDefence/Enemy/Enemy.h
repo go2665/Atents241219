@@ -11,6 +11,14 @@
 #include "TowerDefence/Components/Effect/EffectComponent.h"
 #include "Enemy.generated.h"
 
+class USplineComponent;
+
+// 타워가 적을 죽였을 때 호출되는 델리게이트(파라메터는 플레이어가 획득할 골드)
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnEnemyKilled, int32); 
+
+// 적이 골인 지점에 도착해서 플레이어에게 데미지를 줄 때 호출되는 델리게이트(파라메터는 적이 주는 데미지)
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnEnemyAttack, int32);
+
 UCLASS()
 class TOWERDEFENCE_API AEnemy : public AActor, public IEffectTargetable
 {
@@ -25,6 +33,10 @@ protected:
 public:	
 	virtual void Tick(float DeltaTime) override;
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override; // 데미지 처리 함수
+
+	// 적 초기화 함수
+	UFUNCTION(BlueprintCallable, Category = "Enemy")
+	void InitializeEnemy(USplineComponent* InSpline);
 
 	UFUNCTION(BlueprintCallable, Category = "Enemy")
 	bool AddEffect(EEffectType InType, int32 InLevel) override;
@@ -75,6 +87,10 @@ private:
 		return EnemyData;
 	};
 
+public:
+	FOnEnemyKilled OnEnemyKilled;	// 적이 죽었을 때 호출되는 델리게이트
+	FOnEnemyAttack OnEnemyAttack;	// 적이 골인 지점에 도착했을 때 호출되는 델리게이트
+
 protected:
 	// 적의 메쉬 컴포넌트
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -105,7 +121,13 @@ private:
 	UPROPERTY()
 	UEffectComponent* EffectComponent = nullptr;
 
+	// 스포너의 스플라인 컴포넌트
+	USplineComponent* SpawnerSpline = nullptr;
+
 	// 모디파이어 맵의 주소(EffectComponent가 전달해준다)
 	const TMap<EEffectModifier, float>* EffectModifiers = nullptr;
+
+	// 현재 스플라인을 따라 이동한 거리
+	float CurrentDistance = 0.0f;
 
 };

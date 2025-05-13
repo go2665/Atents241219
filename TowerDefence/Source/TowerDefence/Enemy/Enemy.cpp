@@ -8,6 +8,7 @@
 #include "TowerDefence/Defines/DamageAttribute/LightningDamageType.h"
 #include "TowerDefence/Defines/DamageAttribute/PoisonDamageType.h"
 #include "TowerDefence/Tower/Projectile.h"
+#include "Components/SplineComponent.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -45,8 +46,6 @@ void AEnemy::BeginPlay()
 
 		// 속성과 골드는 데이터에서 직접 확인
 	}	
-
-	
 }
 
 // Called every frame
@@ -54,7 +53,25 @@ void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//DeltaTime * Speed * GetActorForwardVector();
+	CurrentDistance += DeltaTime * Speed; // 스플라인을 따라 이동한 거리 계산
+
+	if (SpawnerSpline)
+	{
+		// 스플라인을 따라 이동
+		FVector NewLocation = SpawnerSpline->GetLocationAtDistanceAlongSpline(CurrentDistance, ESplineCoordinateSpace::World);
+		FRotator NewRotation = SpawnerSpline->GetRotationAtDistanceAlongSpline(CurrentDistance, ESplineCoordinateSpace::World);
+		SetActorLocationAndRotation(NewLocation, NewRotation); // 위치와 회전 설정
+
+		// 스플라인의 끝에 도달했는지 확인
+		if (CurrentDistance > SpawnerSpline->GetSplineLength())
+		{
+			// 스플라인의 끝에 도달했을 때의 처리
+			if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] Reached the end of the spline!"), *this->GetActorLabel());
+			
+			OnEnemyAttack.Broadcast(GetEnemyData()->Damage); // 골인 지점에 도달했을 때 호출되는 델리게이트 호출			
+			Destroy(); // 적 캐릭터 삭제
+		}
+	}
 }
 
 float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -83,6 +100,12 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 	}
 
 	return ActualDamage;
+}
+
+void AEnemy::InitializeEnemy(USplineComponent* InSpline)
+{
+	SpawnerSpline = InSpline; // 스플라인 저장
+	CurrentDistance = 0.0f;
 }
 
 bool AEnemy::AddEffect(EEffectType InType, int32 InLevel)
@@ -130,6 +153,8 @@ void AEnemy::SetHealth(float InHealth)
 	if (CurrentHealth <= 0.0f)
 	{
 		// 적 캐릭터가 죽었을 때의 처리
+		OnEnemyKilled.Broadcast(GetEnemyData()->Gold);
+
 		//Destroy(); // 적 캐릭터 삭제
 
 		if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] is dead!"), *this->GetActorLabel());

@@ -36,4 +36,8 @@ public:
 	// 골드
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy|Data")
 	int32 Gold = 10;
+
+	// 적이 골인 지점에 도착했을 때 플레이어에게 주는 데미지
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy|Data")
+	int32 Damage = 1;
 };
