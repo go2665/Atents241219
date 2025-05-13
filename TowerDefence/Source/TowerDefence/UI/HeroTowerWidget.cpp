@@ -45,6 +45,9 @@ void UHeroTowerWidget::OnSetup()
 	ButtonStyle.SetPressed(ImageBrush);
 	ButtonStyle.SetDisabled(ImageBrush);
 	BuildButton->SetStyle(ButtonStyle);
+
+	// 게임모드 찾아놓기
+	GameMode = Cast<ATowerDefenceGameMode>(World->GetAuthGameMode());
 }
 
 void UHeroTowerWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -66,12 +69,15 @@ void UHeroTowerWidget::OnBuildButtonClicked(int32 InIndex)
 
 void UHeroTowerWidget::OnMainButtonClicked()  
 {  
-	UE_LOG(LogTemp, Warning, TEXT("Main Build Button Clicked! : [%d]"), static_cast<int32>(State)); // 버튼 클릭 시 로그 출력  
+	//UE_LOG(LogTemp, Warning, TEXT("Main Build Button Clicked! : [%d]"), static_cast<int32>(State)); // 버튼 클릭 시 로그 출력  
 
 	switch (State)  
 	{  
 	case UHeroTowerWidget::EBuilderState::Ready:  
-		Open();  
+		if (GameMode->IsAnyEmptyTowerBuilder())
+		{
+			Open();  
+		}
 		break;  
 	case UHeroTowerWidget::EBuilderState::Build:  
 		// 스킬 사용 모드로 진입  
@@ -119,7 +125,6 @@ void UHeroTowerWidget::OnHeroTowerBuildComplete(ATower* InTower)
 void UHeroTowerWidget::BuildHeroTower(int32 InIndex)
 {
 	UWorld* World = GetWorld();
-	ATowerDefenceGameMode* GameMode = Cast<ATowerDefenceGameMode>(World->GetAuthGameMode());
 	ATowerDefencePlayerController* PlayerController =
 		Cast<ATowerDefencePlayerController>(World->GetFirstPlayerController());	
 	APlayerSpectatorPawn* PlayerPawn = Cast<APlayerSpectatorPawn>(PlayerController->GetPawn());

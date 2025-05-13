@@ -15,6 +15,9 @@ UCLASS()
 class TOWERDEFENCE_API ATowerDefenceGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
+
+protected:
+	virtual void BeginPlay() override;
 	
 public:
 	inline int32 GetGold() const { return Gold; }
@@ -30,10 +33,17 @@ public:
 		return false;
 	}
 
+	// 비어있는 타워빌더가 있는지 확인하는 함수(true면 비어있는 타워빌더가 있음)
+	inline bool IsAnyEmptyTowerBuilder() const { return EmptyTowerBuilderCount > 0; }
+
 public:
 	FOnGoldChanged OnGoldChanged;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "StageData")
 	int32 Gold = 0;
+
+	// 비어있는 타워 빌더의 갯수
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "StageData")
+	int32 EmptyTowerBuilderCount = 0;	
 };

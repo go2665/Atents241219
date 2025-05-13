@@ -35,11 +35,13 @@ bool ATowerBuilder::SetTowerOnce(ATower* InTower)
 		Tower->OnTowerSell.AddLambda(
 			[this](int32 _)
 			{
+				OnTowerBuildStateChange.ExecuteIfBound(false);
 				Tower = nullptr;	// 타워가 팔렸을 때 빌더의 Tower를 nullptr로 초기화
 			}
 		);
 
 		Tower->ActivateTower();
+		OnTowerBuildStateChange.ExecuteIfBound(true);	// 타워가 설정되었음을 알림
 		bResult = true;	// 타워 설정 성공
 	}
 

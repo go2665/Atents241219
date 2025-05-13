@@ -10,6 +10,9 @@
 
 class UTowerBuilderWidget;
 
+// 타워빌더에 타워가 생기거나 사라졌을 때 호출될 델리게이트(true면 타워가 생김, false면 타워가 사라짐)
+DECLARE_DELEGATE_OneParam(FOnTowerBuildStateChange, bool);
+
 UCLASS()
 class TOWERDEFENCE_API ATowerBuilder : public AActor
 {
@@ -39,6 +42,9 @@ private:
 
 	UFUNCTION()
 	void BuildTower(int32 InTowerIndex);
+
+public:
+	FOnTowerBuildStateChange OnTowerBuildStateChange;
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")

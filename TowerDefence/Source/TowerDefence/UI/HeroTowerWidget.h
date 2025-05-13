@@ -8,6 +8,7 @@
 #include "HeroTowerWidget.generated.h"
 
 class USkillComponent;
+class ATowerDefenceGameMode;
 
 /**
  * 
@@ -61,8 +62,12 @@ private:
 	// 버튼이 건설한 영웅타워의 스킬 컴포넌트
 	USkillComponent* TowerSkillComponent = nullptr;
 
+	// 게임모드
+	ATowerDefenceGameMode* GameMode = nullptr;
+
 	enum class EBuilderState
 	{
+		NoPlace,
 		Ready,
 		Build
 	};
