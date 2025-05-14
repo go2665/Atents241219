@@ -130,4 +130,7 @@ private:
 	// 현재 스플라인을 따라 이동한 거리
 	float CurrentDistance = 0.0f;
 
+	// 위치 오프셋
+	FVector Offset = FVector::ZeroVector;
+
 };

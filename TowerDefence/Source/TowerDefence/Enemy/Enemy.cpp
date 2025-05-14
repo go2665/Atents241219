@@ -36,6 +36,9 @@ void AEnemy::BeginPlay()
 	// UEffectComponent를 찾아서 EffectComponent에 저장
 	EffectComponent = FindComponentByClass<UEffectComponent>();
 
+	Offset = FMath::RandRange(-100.0f, 100.0f) * FVector::RightVector + FMath::RandRange(-50.0f, 50.0f) * FVector::ForwardVector;
+	//UE_LOG(LogTemp, Warning, TEXT("[%s] Offset: %s"), *this->GetActorLabel(), *Offset.ToString());
+
 	ensure(GetEnemyData() != nullptr); // EnemyData가 nullptr이 아닌지 확인
 
 	if (GetEnemyData())
@@ -60,7 +63,7 @@ void AEnemy::Tick(float DeltaTime)
 		// 스플라인을 따라 이동
 		FVector NewLocation = SpawnerSpline->GetLocationAtDistanceAlongSpline(CurrentDistance, ESplineCoordinateSpace::World);
 		FRotator NewRotation = SpawnerSpline->GetRotationAtDistanceAlongSpline(CurrentDistance, ESplineCoordinateSpace::World);
-		SetActorLocationAndRotation(NewLocation, NewRotation); // 위치와 회전 설정
+		SetActorLocationAndRotation(NewLocation + Offset, NewRotation); // 위치와 회전 설정
 
 		// 스플라인의 끝에 도달했는지 확인
 		if (CurrentDistance > SpawnerSpline->GetSplineLength())
