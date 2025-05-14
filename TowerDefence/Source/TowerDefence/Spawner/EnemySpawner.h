@@ -8,6 +8,7 @@
 #include "EnemySpawner.generated.h"
 
 class USplineComponent;
+class ATowerDefenceGameMode;
 
 UCLASS()
 class TOWERDEFENCE_API AEnemySpawner : public AActor
@@ -24,6 +25,8 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	int32 GetTotalEnemyDamage();
 
 private:
 	void StartWave(int32 InWaveIndex);
@@ -53,5 +56,8 @@ private:
 
 	// 타이머 핸들을 기록할 맵
 	TMap<const FEnemyGroupData*, FTimerHandle> SpawnTimerMap;
+
+	UPROPERTY()
+	ATowerDefenceGameMode* GameMode = nullptr; // 게임 모드 인스턴스
 	
 };

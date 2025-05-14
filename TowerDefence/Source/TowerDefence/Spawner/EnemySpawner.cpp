@@ -4,6 +4,7 @@
 #include "EnemySpawner.h"
 #include "Components/SplineComponent.h"
 #include "TowerDefence/Enemy/Enemy.h"
+#include "TowerDefence/Framework/TowerDefenceGameMode.h"
 
 // Sets default values
 AEnemySpawner::AEnemySpawner()
@@ -27,6 +28,8 @@ void AEnemySpawner::BeginPlay()
 	ElapsedTime = 0.0f;
 	NextWaveIndex = 0;
 	bFinalWave = false;
+
+	GameMode = GetWorld()->GetAuthGameMode<ATowerDefenceGameMode>();
 }
 
 // Called every frame
@@ -45,6 +48,26 @@ void AEnemySpawner::Tick(float DeltaTime)
 			bFinalWave = true;
 		}
 	}
+}
+
+int32 AEnemySpawner::GetTotalEnemyDamage()
+{
+	int32 TotalDamage = 0;
+	for (const FWaveData& WaveData : WaveDataAsset->WaveDatas)
+	{
+		for (const FEnemyGroupData& GroupData : WaveData.EnemyGroups)
+		{
+			if (GroupData.EnemyClass)
+			{
+				AEnemy* Enemy = GroupData.EnemyClass.GetDefaultObject();
+				if (Enemy)
+				{
+					TotalDamage += (Enemy->GetDamage() * GroupData.SpawnCount);
+				}
+			}
+		}
+	}
+	return TotalDamage;
 }
 
 void AEnemySpawner::StartWave(int32 InWaveIndex)
@@ -97,6 +120,7 @@ void AEnemySpawner::SpawnEnemy(TSubclassOf<AEnemy> InEnemyClass)
 			SplineComponent->GetRotationAtSplinePoint(0, ESplineCoordinateSpace::World));
 
 		Enemy->InitializeEnemy(SplineComponent);
+		Enemy->OnEnemyAttack.AddUObject(GameMode, &ATowerDefenceGameMode::SubtractHealth);
 	}
 }
 

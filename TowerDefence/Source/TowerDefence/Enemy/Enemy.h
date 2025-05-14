@@ -78,6 +78,11 @@ public:
 		}
 	};
 
+	inline int32 GetDamage() const
+	{
+		return EnemyData ? EnemyData->Damage : 0;
+	}
+
 private:
 	// 적의 체력 설정
 	void SetHealth(float InHealth);

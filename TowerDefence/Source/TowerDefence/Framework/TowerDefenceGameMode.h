@@ -33,8 +33,22 @@ public:
 		return false;
 	}
 
+	inline void SubtractHealth(int32 InValue) 
+	{ 
+		Health -= InValue; 
+		if (bIsGamePlay && Health < 0)
+		{
+			Health = 0;
+			GameOver();
+		}
+	}
+
 	// 비어있는 타워빌더가 있는지 확인하는 함수(true면 비어있는 타워빌더가 있음)
 	inline bool IsAnyEmptyTowerBuilder() const { return EmptyTowerBuilderCount > 0; }
+
+private:
+	void GameClear();
+	void GameOver();
 
 public:
 	FOnGoldChanged OnGoldChanged;
@@ -43,7 +57,13 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "StageData")
 	int32 Gold = 0;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "StageData")
+	int32 Health = 100;
+
 	// 비어있는 타워 빌더의 갯수
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "StageData")
 	int32 EmptyTowerBuilderCount = 0;	
+
+private:
+	bool bIsGamePlay = true;
 };
