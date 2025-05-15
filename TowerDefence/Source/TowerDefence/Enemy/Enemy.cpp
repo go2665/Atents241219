@@ -158,7 +158,7 @@ void AEnemy::SetHealth(float InHealth)
 		// 적 캐릭터가 죽었을 때의 처리
 		OnEnemyKilled.Broadcast(GetEnemyData()->Gold);
 
-		//Destroy(); // 적 캐릭터 삭제
+		Destroy(); // 적 캐릭터 삭제
 
 		if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] is dead!"), *this->GetActorLabel());
 	}

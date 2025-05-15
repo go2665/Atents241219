@@ -46,10 +46,18 @@ void ATowerDefenceGameMode::BeginPlay()
 		{
 			AEnemySpawner* Spawner = *Iter;
 			TotalEnemyDamage += Spawner->GetTotalEnemyDamage();
+			RemainingEnemyCount += Spawner->GetTotalEnemyCount();
 		}
 		Health = FMath::Max(1, static_cast<int32>(TotalEnemyDamage * 0.7f));
 		//UE_LOG(LogTemp, Warning, TEXT("Total Enemy Damage: %d"), TotalEnemyDamage);
+		//UE_LOG(LogTemp, Warning, TEXT("Total Enemy Count: %d"), RemainingEnemyCount);
 	}
+}
+
+void ATowerDefenceGameMode::OnEnemyKilled(int32 InGold)
+{
+	AddGold(InGold); // 적이 죽었을 때 골드 증가
+	DecreaseRemainingEnemyCount(); // 남은 적 수 감소
 }
 
 void ATowerDefenceGameMode::GameClear()

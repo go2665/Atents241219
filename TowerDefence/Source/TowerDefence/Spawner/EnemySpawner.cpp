@@ -50,7 +50,7 @@ void AEnemySpawner::Tick(float DeltaTime)
 	}
 }
 
-int32 AEnemySpawner::GetTotalEnemyDamage()
+int32 AEnemySpawner::GetTotalEnemyDamage() const
 {
 	int32 TotalDamage = 0;
 	for (const FWaveData& WaveData : WaveDataAsset->WaveDatas)
@@ -68,6 +68,19 @@ int32 AEnemySpawner::GetTotalEnemyDamage()
 		}
 	}
 	return TotalDamage;
+}
+
+int32 AEnemySpawner::GetTotalEnemyCount() const
+{
+	int32 TotalCount = 0;
+	for (const FWaveData& WaveData : WaveDataAsset->WaveDatas)
+	{
+		for (const FEnemyGroupData& GroupData : WaveData.EnemyGroups)
+		{
+			TotalCount += GroupData.SpawnCount;
+		}
+	}
+	return TotalCount;
 }
 
 void AEnemySpawner::StartWave(int32 InWaveIndex)
@@ -121,6 +134,7 @@ void AEnemySpawner::SpawnEnemy(TSubclassOf<AEnemy> InEnemyClass)
 
 		Enemy->InitializeEnemy(SplineComponent);
 		Enemy->OnEnemyAttack.AddUObject(GameMode, &ATowerDefenceGameMode::SubtractHealth);
+		Enemy->OnEnemyKilled.AddUObject(GameMode, &ATowerDefenceGameMode::OnEnemyKilled);
 	}
 }
 

@@ -26,7 +26,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	int32 GetTotalEnemyDamage();
+	int32 GetTotalEnemyDamage() const;
+	int32 GetTotalEnemyCount() const;	
 
 private:
 	void StartWave(int32 InWaveIndex);
