@@ -19,6 +19,8 @@ void ATowerDefenceHUD::BeginPlay()
 			{
 				GameMode->OnGoldChanged.AddUObject(MainWidget, &UMainWidget::SetGoldText);
 				GameMode->OnHealthChanged.AddUObject(MainWidget, &UMainWidget::SetHealthRatio);
+				GameMode->OnGameClear.AddUObject(MainWidget, &UMainWidget::OnGameClear);
+				GameMode->OnGameOver.AddUObject(MainWidget, &UMainWidget::OnGameOver);
 
 				MainWidget->SetGoldText(GameMode->GetGold());
 				MainWidget->SetHealthRatio(1.0f);

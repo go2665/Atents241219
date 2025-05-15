@@ -8,6 +8,8 @@
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnGoldChanged, int32 /*InCurrentGold*/);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float /*InCurrentHealthRatio*/);
+DECLARE_MULTICAST_DELEGATE(FOnGameClear);
+DECLARE_MULTICAST_DELEGATE(FOnGameOver);
 
 /**
  * 
@@ -74,6 +76,8 @@ private:
 public:
 	FOnGoldChanged OnGoldChanged;
 	FOnHealthChanged OnHealthChanged;
+	FOnGameClear OnGameClear;
+	FOnGameOver OnGameOver;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "StageData")

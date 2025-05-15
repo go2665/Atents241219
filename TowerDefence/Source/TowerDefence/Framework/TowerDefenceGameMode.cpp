@@ -64,11 +64,13 @@ void ATowerDefenceGameMode::OnEnemyKilled(int32 InGold)
 void ATowerDefenceGameMode::GameClear()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Game Clear!"));
+	OnGameClear.Broadcast(); // 게임 클리어 델리게이트 호출
 	bIsGamePlay = false;
 }
 
 void ATowerDefenceGameMode::GameOver()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Game Over!"));
+	OnGameOver.Broadcast(); // 게임 오버 델리게이트 호출
 	bIsGamePlay = false;
 }

@@ -7,6 +7,7 @@
 #include "Components/ProgressBar.h"
 #include "TowerDefence/UI/GoldText.h"
 #include "TowerDefence/UI/HealthRatioBar.h"
+#include "TowerDefence/UI/GameEnd.h"
 #include "MainWidget.generated.h"
 
 class UHeroTowerWidget;
@@ -34,6 +35,20 @@ public:
 			GoldText->SetGold(InGold);
 		}
 	}
+	inline void OnGameClear()
+	{
+		if (GameClearPanel)
+		{
+			GameClearPanel->Open();
+		}
+	}
+	inline void OnGameOver()
+	{
+		if (GameOverPanel)
+		{
+			GameOverPanel->Open();
+		}
+	}
 
 protected:
 	UPROPERTY(meta = (BindWidget))
@@ -44,4 +59,10 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	UGoldText* GoldText = nullptr;
+
+	UPROPERTY(meta = (BindWidget))
+	UGameEnd* GameClearPanel = nullptr;
+
+	UPROPERTY(meta = (BindWidget))
+	UGameEnd* GameOverPanel = nullptr;
 };
