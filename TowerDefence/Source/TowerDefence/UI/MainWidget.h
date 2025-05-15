@@ -5,7 +5,8 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/ProgressBar.h"
-#include "Components/TextBlock.h"
+#include "TowerDefence/UI/GoldText.h"
+#include "TowerDefence/UI/HealthRatioBar.h"
 #include "MainWidget.generated.h"
 
 class UHeroTowerWidget;
@@ -23,14 +24,14 @@ public:
 	{
 		if (HealthBar)
 		{
-			HealthBar->SetPercent(InHealthRatio);
+			HealthBar->SetRatio(InHealthRatio);
 		}
 	}
 	inline void SetGoldText(int32 InGold)
 	{
 		if (GoldText)
 		{
-			GoldText->SetText(FText::AsNumber(InGold));
+			GoldText->SetGold(InGold);
 		}
 	}
 
@@ -39,8 +40,8 @@ protected:
 	UHeroTowerWidget* HeroTowerBuilder = nullptr;
 
 	UPROPERTY(meta = (BindWidget))
-	UProgressBar* HealthBar = nullptr;
+	UHealthRatioBar* HealthBar = nullptr;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* GoldText = nullptr;
+	UGoldText* GoldText = nullptr;
 };
