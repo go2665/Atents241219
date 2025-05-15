@@ -4,6 +4,7 @@
 #include "TowerDefenceHUD.h"
 #include "TowerDefence/UI/HeroTowerWidget.h"
 #include "TowerDefence/UI/MainWidget.h"
+#include "TowerDefence/Framework/TowerDefenceGameMode.h"
 
 void ATowerDefenceHUD::BeginPlay()
 {
@@ -13,16 +14,19 @@ void ATowerDefenceHUD::BeginPlay()
 		UMainWidget* MainWidget = CreateWidget<UMainWidget>(GetWorld(), MainWidgetClass);
 		if (MainWidget)
 		{
+			ATowerDefenceGameMode* GameMode = Cast<ATowerDefenceGameMode>(GetWorld()->GetAuthGameMode());
+			if (GameMode)
+			{
+				GameMode->OnGoldChanged.AddUObject(MainWidget, &UMainWidget::SetGoldText);
+				GameMode->OnHealthChanged.AddUObject(MainWidget, &UMainWidget::SetHealthRatio);
+
+				MainWidget->SetGoldText(GameMode->GetGold());
+				MainWidget->SetHealthRatio(1.0f);
+			}
+
 			MainWidget->AddToViewport();
 			HeroTowerBuilder = MainWidget->GetHeroTowerBuilder();
 			HeroTowerBuilder->OnSetup();
-			//HeroTowerBuilder->OnTowerBuildRequest.BindLambda(
-			//	[this](int32 InIndex)
-			//	{
-			//		UE_LOG(LogTemp, Warning, TEXT("Hero Tower Build Request! Index : %d"), InIndex);
-			//		LastClickedTowerIndex = InIndex;	// 클릭한 타워 인덱스 저장
-			//	}
-			//);
 		}
 	}
 }

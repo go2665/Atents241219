@@ -48,7 +48,8 @@ void ATowerDefenceGameMode::BeginPlay()
 			TotalEnemyDamage += Spawner->GetTotalEnemyDamage();
 			RemainingEnemyCount += Spawner->GetTotalEnemyCount();
 		}
-		Health = FMath::Max(1, static_cast<int32>(TotalEnemyDamage * 0.7f));
+		StartHealth = FMath::Max(1, static_cast<int32>(TotalEnemyDamage * 0.7f));
+		SetHealth(StartHealth); // 시작 체력 설정
 		//UE_LOG(LogTemp, Warning, TEXT("Total Enemy Damage: %d"), TotalEnemyDamage);
 		//UE_LOG(LogTemp, Warning, TEXT("Total Enemy Count: %d"), RemainingEnemyCount);
 	}

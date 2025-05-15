@@ -7,6 +7,7 @@
 #include "TowerDefenceGameMode.generated.h"
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnGoldChanged, int32 /*InCurrentGold*/);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float /*InCurrentHealthRatio*/);
 
 /**
  * 
@@ -39,7 +40,7 @@ public:
 
 	inline void SubtractHealth(int32 InValue) 
 	{ 
-		Health -= InValue; 
+		SetHealth(Health - InValue);
 		if (bIsGamePlay && Health < 0)
 		{
 			Health = 0;
@@ -64,8 +65,15 @@ private:
 		}
 	}
 
+	inline void SetHealth(int32 InNewHealth)
+	{
+		Health = InNewHealth;
+		OnHealthChanged.Broadcast(static_cast<float>(Health) / static_cast<float>(StartHealth)); // HealthBar에 현재 체력 비율 전달
+	}
+
 public:
 	FOnGoldChanged OnGoldChanged;
+	FOnHealthChanged OnHealthChanged;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "StageData")
@@ -84,4 +92,5 @@ protected:
 
 private:
 	bool bIsGamePlay = true;
+	int32 StartHealth = 100;
 };
