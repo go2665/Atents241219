@@ -27,7 +27,10 @@ void UHeroTowerWidget::OnSetup()
 
 		// 영웅 타워 건축 완료 시 실행될 함수 바인딩
 		APlayerSpectatorPawn* PlayerPawn = Cast<APlayerSpectatorPawn>(PlayerController->GetPawn());
-		PlayerPawn->OnHeroTowerBuildComplete.BindUObject(this, &UHeroTowerWidget::OnHeroTowerBuildComplete);
+		if (PlayerPawn)
+		{
+			PlayerPawn->OnHeroTowerBuildComplete.BindUObject(this, &UHeroTowerWidget::OnHeroTowerBuildComplete);
+		}
 	}
 
 	// 버튼의 머티리얼 가져오기

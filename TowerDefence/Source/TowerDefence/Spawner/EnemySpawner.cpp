@@ -16,6 +16,11 @@ AEnemySpawner::AEnemySpawner()
 	Root->SetMobility(EComponentMobility::Static);
 	SplineComponent = CreateDefaultSubobject<USplineComponent>(TEXT("Spline"));
 	SplineComponent->SetupAttachment(Root);
+
+	StartVFX = CreateDefaultSubobject<UNiagaraComponent>(TEXT("StartVFX"));
+	StartVFX->SetupAttachment(Root);
+	EndVFX = CreateDefaultSubobject<UNiagaraComponent>(TEXT("EndVFX"));
+	EndVFX->SetupAttachment(Root);
 }
 
 // Called when the game starts or when spawned
@@ -30,6 +35,10 @@ void AEnemySpawner::BeginPlay()
 	bFinalWave = false;
 
 	GameMode = GetWorld()->GetAuthGameMode<ATowerDefenceGameMode>();
+
+	int32 LastIndex = SplineComponent->GetNumberOfSplinePoints() - 1;
+	FVector EndLocation = SplineComponent->GetLocationAtSplinePoint(LastIndex, ESplineCoordinateSpace::Local);
+	EndVFX->SetRelativeLocation(EndLocation);
 }
 
 // Called every frame
@@ -112,17 +121,22 @@ void AEnemySpawner::StartWave(int32 InWaveIndex)
 		}
 		else
 		{
-			// SpawnCount 만큼 한번에 스폰
+			// SpawnCount 만큼 한번에 스폰			
+			float StartAngle = FMath::RandRange(0.0f, 360.0f);
+			float AngleStep = 360.0f / GroupData.SpawnCount;
+			float Radius = 50.0f;
+			FVector BaseLocation = FVector::ForwardVector * Radius;
 			for (int i = 0; i < GroupData.SpawnCount; i++)
 			{
-				SpawnEnemy(GroupData.EnemyClass);
+				FVector CircleLineLocation = BaseLocation.RotateAngleAxis(StartAngle + AngleStep * i, FVector::UpVector);
+				SpawnEnemy(GroupData.EnemyClass, CircleLineLocation);
 			}
 		}
 	}
 	
 }
 
-void AEnemySpawner::SpawnEnemy(TSubclassOf<AEnemy> InEnemyClass)
+void AEnemySpawner::SpawnEnemy(TSubclassOf<AEnemy> InEnemyClass, const FVector& InOffset)
 {
 	UWorld* World = GetWorld();
 	if (World)
@@ -132,7 +146,7 @@ void AEnemySpawner::SpawnEnemy(TSubclassOf<AEnemy> InEnemyClass)
 			SplineComponent->GetLocationAtSplinePoint(0, ESplineCoordinateSpace::World),
 			SplineComponent->GetRotationAtSplinePoint(0, ESplineCoordinateSpace::World));
 
-		Enemy->InitializeEnemy(SplineComponent);
+		Enemy->InitializeEnemy(SplineComponent, InOffset);
 		Enemy->OnEnemyAttack.AddUObject(GameMode, &ATowerDefenceGameMode::SubtractHealth);
 		Enemy->OnEnemyKilled.AddUObject(GameMode, &ATowerDefenceGameMode::OnEnemyKilled);
 	}
@@ -153,7 +167,8 @@ void AEnemySpawner::RepeatSpawnEnemy(const FEnemyGroupData* InGroupData)
 	if (Count < InGroupData->SpawnCount)
 	{
 		Count++;
-		SpawnEnemy(InGroupData->EnemyClass);
+		FVector Offset = FMath::RandRange(-25.0f, 25.0f) * FVector::RightVector;
+		SpawnEnemy(InGroupData->EnemyClass, Offset);
 	}
 	else
 	{

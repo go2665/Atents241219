@@ -36,9 +36,6 @@ void AEnemy::BeginPlay()
 	// UEffectComponent를 찾아서 EffectComponent에 저장
 	EffectComponent = FindComponentByClass<UEffectComponent>();
 
-	Offset = FMath::RandRange(-100.0f, 100.0f) * FVector::RightVector + FMath::RandRange(-50.0f, 50.0f) * FVector::ForwardVector;
-	//UE_LOG(LogTemp, Warning, TEXT("[%s] Offset: %s"), *this->GetActorLabel(), *Offset.ToString());
-
 	ensure(GetEnemyData() != nullptr); // EnemyData가 nullptr이 아닌지 확인
 
 	if (GetEnemyData())
@@ -71,8 +68,7 @@ void AEnemy::Tick(float DeltaTime)
 			// 스플라인의 끝에 도달했을 때의 처리
 			if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] Reached the end of the spline!"), *this->GetActorLabel());
 			
-			OnEnemyAttack.Broadcast(GetEnemyData()->Damage); // 골인 지점에 도달했을 때 호출되는 델리게이트 호출			
-			Destroy(); // 적 캐릭터 삭제
+			Die();
 		}
 	}
 }
@@ -105,10 +101,12 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 	return ActualDamage;
 }
 
-void AEnemy::InitializeEnemy(USplineComponent* InSpline)
+void AEnemy::InitializeEnemy(USplineComponent* InSpline, const FVector& InOffset)
 {
 	SpawnerSpline = InSpline; // 스플라인 저장
-	CurrentDistance = 0.0f;
+	CurrentDistance = 0.0f;			
+	Offset = InOffset;
+	//UE_LOG(LogTemp, Warning, TEXT("[%s] Offset: %s"), *this->GetActorLabel(), *Offset.ToString());
 }
 
 bool AEnemy::AddEffect(EEffectType InType, int32 InLevel)
@@ -148,6 +146,12 @@ void AEnemy::ApplyModifiers(const TMap<EEffectModifier, float>* InModifierMap)
 			GetEnemyData()->Speed, GetModifier(EEffectModifier::MoveSpeed),
 			GetEnemyData()->Defence, GetModifier(EEffectModifier::Defence));
 	}
+}
+
+void AEnemy::Die()
+{
+	OnEnemyAttack.Broadcast(GetEnemyData()->Damage); // 골인 지점에 도달했을 때 호출되는 델리게이트 호출			
+	Destroy(); // 적 캐릭터 삭제
 }
 
 void AEnemy::SetHealth(float InHealth)

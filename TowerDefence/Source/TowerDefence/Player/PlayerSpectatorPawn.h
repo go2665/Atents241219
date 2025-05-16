@@ -7,6 +7,7 @@
 #include "AreaIndicator.h"
 #include "PlayerSpectatorPawn.generated.h"
 
+class UCameraComponent;
 class AAreaIndicator;
 class ATower;
 class ATowerDefencePlayerController;
@@ -61,6 +62,9 @@ public:
 	FOnHeroTowerBuildComplete OnHeroTowerBuildComplete;	
 
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UCameraComponent* CameraComponent;	// 카메라 컴포넌트
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AreaIndicator")
 	TSubclassOf<AAreaIndicator> AreaIndicatorClass;	// AreaIndicator 클래스
 

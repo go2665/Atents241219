@@ -36,7 +36,7 @@ public:
 
 	// 적 초기화 함수
 	UFUNCTION(BlueprintCallable, Category = "Enemy")
-	void InitializeEnemy(USplineComponent* InSpline);
+	void InitializeEnemy(USplineComponent* InSpline, const FVector& InOffset);
 
 	UFUNCTION(BlueprintCallable, Category = "Enemy")
 	bool AddEffect(EEffectType InType, int32 InLevel) override;
@@ -45,6 +45,8 @@ public:
 	bool RemoveEffect(EEffectType InType) override;
 
 	void ApplyModifiers(const TMap<EEffectModifier, float>* InModifierMap) override;
+
+	void Die();
 		
 	//inline virtual void SetHealth(float InHealth) override;
 	//inline virtual bool IsAlive() const override;

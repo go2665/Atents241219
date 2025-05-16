@@ -2,6 +2,7 @@
 
 
 #include "PlayerSpectatorPawn.h"
+#include "Camera/CameraComponent.h"
 #include "Components/ChildActorComponent.h"
 #include "AreaIndicator.h"
 #include "TowerDefence/Framework/TowerDefencePlayerController.h"
@@ -13,6 +14,16 @@
 APlayerSpectatorPawn::APlayerSpectatorPawn()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	USceneComponent* Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	SetRootComponent(Root);
+
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	CameraComponent->SetupAttachment(Root);
+	CameraComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 1000.0f));
+	CameraComponent->SetRelativeRotation(FRotator(-90.0f, 0.0f, 0.0f));
+	CameraComponent->ProjectionMode = ECameraProjectionMode::Orthographic;
+
 }
 
 void APlayerSpectatorPawn::Tick(float DeltaTime)

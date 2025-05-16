@@ -96,4 +96,7 @@ private:
 
 	// 이 발사체에 맞은 적들(범위 공격일 때만 사용)
 	TArray<AEnemy*> HitEnemies;
+
+	// 발사체가 초기화 되었는지 여부
+	bool bInitialized = false;	
 };

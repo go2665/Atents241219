@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "NiagaraComponent.h"
 #include "TowerDefence/Spawner/Data/WaveDataAsset.h"
 #include "EnemySpawner.generated.h"
 
@@ -33,13 +34,21 @@ private:
 	void StartWave(int32 InWaveIndex);
 
 	UFUNCTION(BlueprintCallable, Category = "Enemy Spawner")
-	void SpawnEnemy(TSubclassOf<AEnemy> InEnemyClass);
+	void SpawnEnemy(TSubclassOf<AEnemy> InEnemyClass, const FVector& InOffset);
 		
 	void RepeatSpawnEnemy(const FEnemyGroupData* InGroupData);
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USplineComponent* SplineComponent = nullptr;
+
+	// 시작 위치 이펙트
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UNiagaraComponent* StartVFX = nullptr; 
+
+	// 도착 위치 이펙트
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UNiagaraComponent* EndVFX = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy Spawner")
 	UWaveDataAsset* WaveDataAsset = nullptr;

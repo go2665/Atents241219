@@ -23,9 +23,11 @@ void USkillComponent::BeginPlay()
 	PlayerPawn = Cast<APlayerSpectatorPawn>(Pawn);
 
 	ATowerDefencePlayerController* TowerDefencePlayerController = Cast<ATowerDefencePlayerController>(PlayerController); // 플레이어 컨트롤러를 ATowerDefencePlayerController로 캐스팅
-	TowerDefencePlayerController->OnMouseClickInput.AddUObject(this, &USkillComponent::OnSkillAreaClicked); // 마우스 클릭 이벤트 바인딩
+	if (TowerDefencePlayerController)
+	{
+		TowerDefencePlayerController->OnMouseClickInput.AddUObject(this, &USkillComponent::OnSkillAreaClicked); // 마우스 클릭 이벤트 바인딩
+	}
 
-	ensure(PlayerPawn);	// 플레이어 폰이 nullptr이 아닌지 확인
 	ensure(SkillData);	// 스킬 데이터가 nullptr이 아닌지 확인
 
     ATower* HeroTower = Cast<ATower>(GetOwner());

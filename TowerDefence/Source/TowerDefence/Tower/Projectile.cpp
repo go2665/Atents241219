@@ -100,6 +100,8 @@ void AProjectile::OnInitialize(const AActor* InTarget, const UShotDataAsset* InS
 	Damage = InDamage;
 	EffectModifier = InEffectModifier;	
 
+	bInitialized = true;
+
 	bShowDebugInfo = InbShowDebugInfo; // 디버그 정보 표시 여부
 	if (bShowDebugInfo)
 	{
@@ -129,7 +131,7 @@ void AProjectile::OnInitialize(const AActor* InTarget, const UShotDataAsset* InS
 
 void AProjectile::OnOverlapEnemy(AActor* OverlappedActor, AActor* OtherActor)
 {
-	if (OtherActor->ActorHasTag(FName("Enemy")))
+	if (bInitialized && OtherActor->ActorHasTag(FName("Enemy")))
 	{
 		AEnemy* HitEnemy = Cast<AEnemy>(OtherActor);
 		if (HitEnemy)
