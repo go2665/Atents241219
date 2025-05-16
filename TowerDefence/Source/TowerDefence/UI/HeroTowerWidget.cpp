@@ -72,6 +72,7 @@ void UHeroTowerWidget::OnBuildButtonClicked(int32 InIndex)
 
 void UHeroTowerWidget::OnMainButtonClicked()  
 {  
+	UE_LOG(LogTemp, Warning, TEXT("UHeroTowerWidget::OnMainButtonClicked : Mouse Clicked!"));
 	//UE_LOG(LogTemp, Warning, TEXT("Main Build Button Clicked! : [%d]"), static_cast<int32>(State)); // 버튼 클릭 시 로그 출력  
 
 	switch (State)  
@@ -96,6 +97,7 @@ void UHeroTowerWidget::OnMainButtonClicked()
 
 void UHeroTowerWidget::OnScreenClicked()
 {
+	UE_LOG(LogTemp, Warning, TEXT("UHeroTowerWidget::OnScreenClicked : Mouse Clicked!"));
 	//UE_LOG(LogTemp, Warning, TEXT("Screen Clicked!"));	// 화면 클릭 시 로그 출력
 	Close();	// 화면 클릭 시 위젯 닫기	
 }

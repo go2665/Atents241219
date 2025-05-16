@@ -68,8 +68,8 @@ void AAreaIndicator::Deactivate()
 
 void AAreaIndicator::OnMouseClick()
 {
-	Deactivate();
-	//UE_LOG(LogTemp, Warning, TEXT("AAreaIndicator::OnMouseClick"));
+	Deactivate();	
+	UE_LOG(LogTemp, Warning, TEXT("AAreaIndicator : Mouse Clicked!"));
 }
 
 void AAreaIndicator::UpdateLocation()

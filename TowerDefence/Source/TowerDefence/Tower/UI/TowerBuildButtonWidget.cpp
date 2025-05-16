@@ -49,6 +49,7 @@ void UTowerBuildButtonWidget::UpdateButtonState(int32 InGold)
 
 void UTowerBuildButtonWidget::OnButtonClicked()
 {
+	UE_LOG(LogTemp, Warning, TEXT("UTowerBuildButtonWidget : Mouse Clicked!"));
 	// 자기 인덱스 알려주는 델리게이트 호출
 	OnBuildButtonClicked.ExecuteIfBound(Index);
 }

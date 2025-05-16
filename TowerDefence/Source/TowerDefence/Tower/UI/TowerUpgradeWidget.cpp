@@ -58,12 +58,16 @@ void UTowerUpgradeWidget::UpdateCurrentGold(int32 InCurrentGold)
 
 void UTowerUpgradeWidget::UpgradeTower()
 {
+	UE_LOG(LogTemp, Warning, TEXT("UTowerUpgradeWidget::UpgradeTower : Mouse Clicked!"));
+
 	OnUpgradeClicked.ExecuteIfBound();	// 업그레이드 버튼 클릭 시 델리게이트 실행
 	CloseUpgradeWidget();				// 업그레이드 위젯 닫기
 }
 
 void UTowerUpgradeWidget::SellTower()
 {
+	UE_LOG(LogTemp, Warning, TEXT("UTowerUpgradeWidget::SellTower : Mouse Clicked!"));
+
 	//UE_LOG(LogTemp, Warning, TEXT("Tower Sell button clicked!"));
 	OnSellClicked.ExecuteIfBound();	// 판매 버튼 클릭 시 델리게이트 실행
 	CloseUpgradeWidget();			// 업그레이드 위젯 닫기

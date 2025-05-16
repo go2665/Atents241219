@@ -58,7 +58,7 @@ void APlayerSpectatorPawn::BeginPlay()
 
 void APlayerSpectatorPawn::OnMouseClick()
 {
-	//UE_LOG(LogTemp, Warning, TEXT("Clicked!"));
+	UE_LOG(LogTemp, Warning, TEXT("APlayerSpectatorPawn : Mouse Clicked!"));
 	if (TemporaryHero)
 	{
 		ATowerBuilder* HitBuilder = nullptr;	// 클릭한 액터를 저장할 변수

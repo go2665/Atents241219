@@ -32,5 +32,6 @@ void ATowerDefencePlayerController::SetupInputComponent()
 
 void ATowerDefencePlayerController::OnMouseClick(const FInputActionValue& Value)
 {	
+	UE_LOG(LogTemp, Warning, TEXT("ATowerDefencePlayerController : Mouse Clicked!"));	// 마우스 클릭 로그 출력
 	OnMouseClickInput.Broadcast();	// 마우스 클릭 델리게이트 호출
 }
