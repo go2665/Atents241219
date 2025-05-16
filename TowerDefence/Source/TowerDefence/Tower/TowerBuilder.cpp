@@ -90,7 +90,7 @@ void ATowerBuilder::Test_BuildTower(int32 TowerIndex)
 
 void ATowerBuilder::OnBuilderClicked(AActor* TouchedActor, FKey ButtonPressed)
 {
-	UE_LOG(LogTemp, Warning, TEXT("ATowerBuilder:OnBuilderClicked : Mouse Clicked!"));
+	//UE_LOG(LogTemp, Warning, TEXT("ATowerBuilder:OnBuilderClicked : Mouse Clicked!"));
 	// 타워 클릭 시 업그레이드 UI 위젯 열기
 	if (ButtonPressed == EKeys::LeftMouseButton)
 	{
@@ -104,7 +104,7 @@ void ATowerBuilder::OnBuilderClicked(AActor* TouchedActor, FKey ButtonPressed)
 
 void ATowerBuilder::OnScreenClicked()
 {
-	UE_LOG(LogTemp, Warning, TEXT("ATowerBuilder:OnScreenClicked : Mouse Clicked!"));
+	//UE_LOG(LogTemp, Warning, TEXT("ATowerBuilder:OnScreenClicked : Mouse Clicked!"));
 	if (TowerBuilderWidgetInstance)
 	{
 		APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();

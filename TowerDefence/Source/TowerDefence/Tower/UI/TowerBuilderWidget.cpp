@@ -89,7 +89,7 @@ void UTowerBuilderWidget::Open()
 
 void UTowerBuilderWidget::Close()
 {
-	UE_LOG(LogTemp, Warning, TEXT("[%s] : Close Builder Widget"), *this->GetName());
+	//UE_LOG(LogTemp, Warning, TEXT("[%s] : Close Builder Widget"), *this->GetName());
 
 	if (Canvas->GetRenderTransform().Scale.X > 0)	// 열려있으면
 	{

@@ -31,6 +31,8 @@ void UTowerBuildButtonWidget::OnInitialize(int32 InIndex, UTexture* InImage, int
 		// 가격 텍스트 지정
 		PriceText->SetText(FText::AsNumber(Cost));
 	}
+
+	SetVisibility(ESlateVisibility::Visible);	// 보이게 설정
 }
 
 void UTowerBuildButtonWidget::UpdateButtonState(int32 InGold)
