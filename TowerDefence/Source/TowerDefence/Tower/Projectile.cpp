@@ -29,10 +29,6 @@ AProjectile::AProjectile()
 void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// 오버랩 이벤트 바인딩
-	OnActorBeginOverlap.AddDynamic(this, &AProjectile::OnOverlapEnemy);
-
 	SetLifeSpan(10.0f);
 }
 
@@ -83,6 +79,8 @@ void AProjectile::Tick(float DeltaTime)
 void AProjectile::OnInitialize(const AEnemy* InTarget, const UShotDataAsset* InShotData, int32 InLevel,
 	float InDamage, bool InbShowDebugInfo,  float InEffectModifier)
 {
+	//UE_LOG(LogTemp, Warning, TEXT("Projectile[%s]: OnInitialize"), *this->GetName());
+
 	// 타겟과 발사체 데이터는 반드시 존재해야 한다.
 	verify(InTarget != nullptr && InShotData != nullptr);		
 
@@ -107,14 +105,16 @@ void AProjectile::OnInitialize(const AEnemy* InTarget, const UShotDataAsset* InS
 
 	Mesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 
-	bInitialized = true;
-
-	if (OverlapEnemy)
+	// 오버랩 이벤트 바인딩
+	OnActorBeginOverlap.AddDynamic(this, &AProjectile::OnOverlapEnemy);
+	TArray<AActor*> OverlapActors;
+	GetOverlappingActors(OverlapActors);
+	for (AActor* Actor : OverlapActors)
 	{
-		OnHitEnemy(OverlapEnemy); // 적과의 충돌 처리
+		OnOverlapEnemy(this, Actor);	// 이미 겹쳐있는 적 처리
 	}
 
-	bShowDebugInfo = InbShowDebugInfo; // 디버그 정보 표시 여부
+	bShowDebugInfo = InbShowDebugInfo;	// 디버그 정보 표시 여부
 	if (bShowDebugInfo)
 	{
 		UWorld* World = GetWorld();
@@ -143,13 +143,10 @@ void AProjectile::OnInitialize(const AEnemy* InTarget, const UShotDataAsset* InS
 
 void AProjectile::OnOverlapEnemy(AActor* OverlappedActor, AActor* OtherActor)
 {
+	//UE_LOG(LogTemp, Warning, TEXT("Projectile[%s]: Overlapped with %s"), *this->GetName(), *OtherActor->GetName());
 	if (OtherActor->ActorHasTag(FName("Enemy")))
 	{
-		OverlapEnemy = Cast<AEnemy>(OtherActor);
-		if (bInitialized)
-		{
-			OnHitEnemy(OverlapEnemy); // 적과의 충돌 처리		
-		}
+		OnHitEnemy(Cast<AEnemy>(OtherActor)); // 적과의 충돌 처리		
 	}	
 }
 

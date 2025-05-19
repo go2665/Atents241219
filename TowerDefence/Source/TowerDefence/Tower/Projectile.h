@@ -100,13 +100,6 @@ private:
 	// 이 발사체에 맞은 적들(범위 공격일 때만 사용)
 	TArray<AEnemy*> HitEnemies;
 
-	// 발사체가 초기화 되었는지 여부
-	bool bInitialized = false;	
-
 	// 타겟이 죽었는지 여부(발사체가 날아가는 도중에 적이 죽으면 직선으로 날아감)
 	bool bTargetDie = false;	
-
-	AEnemy* OverlapEnemy = nullptr;	// 겹친 적
-
-
 };
