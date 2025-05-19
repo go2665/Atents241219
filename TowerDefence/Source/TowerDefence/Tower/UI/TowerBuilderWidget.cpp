@@ -83,7 +83,7 @@ void UTowerBuilderWidget::Open()
 	}	
 
 	Canvas->SetRenderScale(FVector2D(0.0f, 0.0f));		// 크기 초기화
-	Canvas->SetVisibility(ESlateVisibility::Visible);	// 보이게 만들기
+	Canvas->SetVisibility(ESlateVisibility::SelfHitTestInvisible);	// 보이게 만들기
 	PlayAnimation(OpenAnimation);				// 확대 애니메이션 재생
 }
 
