@@ -101,9 +101,9 @@ void AProjectile::OnInitialize(const AEnemy* InTarget, const UShotDataAsset* InS
 	ShotLevel = InLevel;
 
 	Damage = InDamage;
-	EffectModifier = InEffectModifier;	
+	EffectModifier = InEffectModifier;
 
-	Mesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	bActivate = true;
 
 	// 오버랩 이벤트 바인딩
 	OnActorBeginOverlap.AddDynamic(this, &AProjectile::OnOverlapEnemy);
@@ -206,8 +206,11 @@ const FShotLevelData& AProjectile::GetShotLevelData() const
 
 void AProjectile::OnHitEnemy(AEnemy* InHitEnemy)
 {
-	if (InHitEnemy)
+	if (InHitEnemy && bActivate)
 	{
+		bActivate = false;
+		UE_LOG(LogTemp, Warning, TEXT("[%s] Hit [%s]"), 
+			*this->GetActorNameOrLabel(), *InHitEnemy->GetActorNameOrLabel());
 		if (bShowDebugInfo)
 		{
 			UWorld* World = GetWorld();
