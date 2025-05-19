@@ -103,7 +103,7 @@ void USkillComponent::UseSkill(FVector InLocation)
 
 void USkillComponent::OnSkillAreaClicked()
 {
-	UE_LOG(LogTemp, Warning, TEXT("USkillComponent : Mouse Clicked!"));
+	//UE_LOG(LogTemp, Warning, TEXT("USkillComponent : Mouse Clicked!"));
 
 	// 스킬 사용 중일 때 클릭이 일어났으면 그 위치(AreaIndicator 위치)에 스킬 사용
 	if (bIsSkillActivated)

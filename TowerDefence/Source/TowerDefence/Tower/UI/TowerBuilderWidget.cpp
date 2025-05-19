@@ -74,7 +74,7 @@ void UTowerBuilderWidget::OnInitialize(const TArray<UTowerDataAsset*>* InTowerDa
 
 void UTowerBuilderWidget::Open()
 {
-	UE_LOG(LogTemp, Warning, TEXT("[%s] : Open Builder Widget"), *this->GetName());
+	//UE_LOG(LogTemp, Warning, TEXT("[%s] : Open Builder Widget"), *this->GetName());
 
 	// 버튼의 상태를 현재 골드에 맞게 업데이트
 	for (UTowerBuildButtonWidget* Button : BuildButtons)
@@ -89,7 +89,7 @@ void UTowerBuilderWidget::Open()
 
 void UTowerBuilderWidget::Close()
 {
-	UE_LOG(LogTemp, Warning, TEXT("[%s] : Close Builder Widget"), *this->GetName());
+	//UE_LOG(LogTemp, Warning, TEXT("[%s] : Close Builder Widget"), *this->GetName());
 
 	if (Canvas->GetRenderTransform().Scale.X > 0)	// 열려있으면
 	{
@@ -107,8 +107,8 @@ void UTowerBuilderWidget::OnCloseAnimationFinished()
 
 void UTowerBuilderWidget::OnBuildButtonClicked(int32 InIndex)
 {
-	UE_LOG(LogTemp, Warning, TEXT("UTowerBuilderWidget : Mouse Clicked!"));
-	UE_LOG(LogTemp, Warning, TEXT("[%s] : Build Button Clicked : %d"), *this->GetName(), InIndex);
+	//UE_LOG(LogTemp, Warning, TEXT("UTowerBuilderWidget : Mouse Clicked!"));
+	//UE_LOG(LogTemp, Warning, TEXT("[%s] : Build Button Clicked : %d"), *this->GetName(), InIndex);
 
 	// 버튼이 클릭되면 닫고
 	Close();

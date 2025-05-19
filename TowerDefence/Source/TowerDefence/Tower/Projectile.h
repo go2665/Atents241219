@@ -34,7 +34,7 @@ protected:
 public:	
 	// 발사체 데이터 초기화(스폰 직후에 반드시 호출 되어야 함)
 	UFUNCTION(BlueprintCallable, Category = "Shot")
-	void OnInitialize(const AActor* InTarget, 
+	void OnInitialize(const AEnemy* InTarget,
 		const UShotDataAsset* InShotData, int32 InLevel,
 		float InDamage,
 		bool InbShowDebugInfo = false,	// 나중에 파라메터 마지막으로 보낼것
@@ -77,7 +77,7 @@ protected:
 private:
 	// 발사체가 날아갈 타겟 액터(적)
 	UPROPERTY()
-	const AActor* TargetActor = nullptr;
+	const AEnemy* TargetEnemy = nullptr;
 
 	// 발사체 레벨
 	int32 ShotLevel = 0;	
@@ -99,4 +99,7 @@ private:
 
 	// 발사체가 초기화 되었는지 여부
 	bool bInitialized = false;	
+
+	// 타겟이 죽었는지 여부(발사체가 날아가는 도중에 적이 죽으면 직선으로 날아감)
+	bool bTargetDie = false;	
 };

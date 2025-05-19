@@ -46,7 +46,7 @@ public:
 
 	void ApplyModifiers(const TMap<EEffectModifier, float>* InModifierMap) override;
 
-	void Die();
+	void Die(bool bGoalArrived);
 		
 	//inline virtual void SetHealth(float InHealth) override;
 	//inline virtual bool IsAlive() const override;
@@ -83,6 +83,11 @@ public:
 	inline int32 GetDamage() const
 	{
 		return EnemyData ? EnemyData->Damage : 0;
+	}
+
+	inline bool IsAlive() const
+	{
+		return bIsAlive;
 	}
 
 private:
@@ -140,4 +145,6 @@ private:
 	// 위치 오프셋
 	FVector Offset = FVector::ZeroVector;
 
+	// 적이 살아있는지 여부
+	bool bIsAlive = true;	
 };

@@ -169,7 +169,7 @@ void ATower::ApplyModifiers(const TMap<EEffectModifier, float>* InModifierMap)
 
 void ATower::OnTowerClicked(AActor* TouchedActor, FKey ButtonPressed)
 {
-	UE_LOG(LogTemp, Warning, TEXT("ATower:OnTowerClicked : Mouse Clicked!"));
+	//UE_LOG(LogTemp, Warning, TEXT("ATower:OnTowerClicked : Mouse Clicked!"));
 
 	// 타워 클릭 시 업그레이드 UI 위젯 열기
 	if (ButtonPressed == EKeys::LeftMouseButton)
@@ -184,7 +184,7 @@ void ATower::OnTowerClicked(AActor* TouchedActor, FKey ButtonPressed)
 
 void ATower::OnScreenClicked()
 {
-	UE_LOG(LogTemp, Warning, TEXT("ATower:OnScreenClicked : Mouse Clicked!"));
+	//UE_LOG(LogTemp, Warning, TEXT("ATower:OnScreenClicked : Mouse Clicked!"));
 	if (UpgradeWidgetInstance)
 	{
 		APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();

@@ -32,19 +32,24 @@ void AProjectile::BeginPlay()
 
 	// 오버랩 이벤트 바인딩
 	OnActorBeginOverlap.AddDynamic(this, &AProjectile::OnOverlapEnemy);
+
+	SetLifeSpan(10.0f);
 }
 
 void AProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (TargetActor) // TargetActor가 없으면 범위공격이다.
+	if (TargetEnemy) // TargetActor가 없으면 범위공격이다.
 	{
-		// 목표 액터를 계속 따라가다가 부딪히면 DamageToEnemy 호출
-		FVector Direction = TargetActor->GetActorLocation() - GetActorLocation();
-		Direction.Normalize();
-		SetActorRotation(Direction.Rotation()); // 발사체가 날아가는 방향으로 회전
-		ProjectileMovement->Velocity = Direction * MoveSpeed;		
+		if (TargetEnemy->IsAlive())
+		{
+			// 목표가 살아있으면 목표 방향으로 계속 회전
+			FVector Direction = TargetEnemy->GetActorLocation() - GetActorLocation();
+			Direction.Normalize();
+			SetActorRotation(Direction.Rotation()); // 발사체가 날아가는 방향으로 회전
+			ProjectileMovement->Velocity = Direction * MoveSpeed;		
+		}
 	}
 	else
 	{
@@ -75,16 +80,16 @@ void AProjectile::Tick(float DeltaTime)
 	}
 }
 
-void AProjectile::OnInitialize(const AActor* InTarget, const UShotDataAsset* InShotData, int32 InLevel,
+void AProjectile::OnInitialize(const AEnemy* InTarget, const UShotDataAsset* InShotData, int32 InLevel,
 	float InDamage, bool InbShowDebugInfo,  float InEffectModifier)
 {
 	// 타겟과 발사체 데이터는 반드시 존재해야 한다.
 	verify(InTarget != nullptr && InShotData != nullptr);		
 
-	TargetActor = InTarget;
-	TargetLocation = TargetActor->GetActorLocation();
+	TargetEnemy = InTarget;
+	TargetLocation = TargetEnemy->GetActorLocation();
 	
-	FVector Direction = TargetActor->GetActorLocation() - GetActorLocation();
+	FVector Direction = TargetEnemy->GetActorLocation() - GetActorLocation();
 	Direction.Normalize();
 	ProjectileMovement->Velocity = Direction * MoveSpeed;
 	ProjectileMovement->InitialSpeed = MoveSpeed;
@@ -92,7 +97,7 @@ void AProjectile::OnInitialize(const AActor* InTarget, const UShotDataAsset* InS
 	ShotData = InShotData;	
 	if (ShotData->bIsSplashAttack)
 	{
-		TargetActor = nullptr; // 범위 공격이면 TargetActor는 nullptr로 설정
+		TargetEnemy = nullptr; // 범위 공격이면 TargetActor는 nullptr로 설정
 	}
 
 	ShotLevel = InLevel;
@@ -158,7 +163,7 @@ void AProjectile::OnOverlapEnemy(AActor* OverlappedActor, AActor* OtherActor)
 
 			DamageToEnemy(HitEnemy);	// 데미지 주기
 
-			if (TargetActor == nullptr) 
+			if (TargetEnemy == nullptr) 
 			{
 				DamageToArea(HitEnemy); // 범위 공격에서는 HitEnemy를 이미 데미지를 줬으니 무시
 			}

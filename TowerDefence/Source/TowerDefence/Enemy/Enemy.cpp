@@ -68,7 +68,7 @@ void AEnemy::Tick(float DeltaTime)
 			// 스플라인의 끝에 도달했을 때의 처리
 			if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] Reached the end of the spline!"), *this->GetActorLabel());
 			
-			Die();
+			Die(true);	// 골인 지점에 도착한 채로 죽음 = 공격
 		}
 	}
 }
@@ -148,10 +148,18 @@ void AEnemy::ApplyModifiers(const TMap<EEffectModifier, float>* InModifierMap)
 	}
 }
 
-void AEnemy::Die()
+void AEnemy::Die(bool bGoalArrived)
 {
-	OnEnemyAttack.Broadcast(GetEnemyData()->Damage); // 골인 지점에 도달했을 때 호출되는 델리게이트 호출			
-	Destroy(); // 적 캐릭터 삭제
+	if (bGoalArrived)
+	{
+		OnEnemyAttack.Broadcast(GetEnemyData()->Damage); // 골인 지점에 도달했을 때 호출되는 델리게이트 호출
+	}
+	else
+	{
+		OnEnemyKilled.Broadcast(GetEnemyData()->Gold);	// 적 캐릭터가 골에 도착전에 죽었을 때의 처리
+	}
+	bIsAlive = false; // 죽었다고 표시
+	Destroy(); // 적 캐릭터 삭제(발사체가 타겟으로 하고 있을 때는 메모리 상에서 실제 삭제는 안됨. 게임에서는 삭제 됨)
 }
 
 void AEnemy::SetHealth(float InHealth)
@@ -159,11 +167,7 @@ void AEnemy::SetHealth(float InHealth)
 	CurrentHealth = InHealth;
 	if (CurrentHealth <= 0.0f)
 	{
-		// 적 캐릭터가 죽었을 때의 처리
-		OnEnemyKilled.Broadcast(GetEnemyData()->Gold);
-
-		Destroy(); // 적 캐릭터 삭제
-
+		Die(false);
 		if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] is dead!"), *this->GetActorLabel());
 	}
 	else
