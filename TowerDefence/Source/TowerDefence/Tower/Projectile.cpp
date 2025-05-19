@@ -17,7 +17,7 @@ AProjectile::AProjectile()
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Root);
-	Mesh->SetCollisionProfileName(TEXT("OverlapEnemyOnly"));
+	Mesh->SetCollisionProfileName(TEXT("Projectile"));
 
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
 	ProjectileMovement->bRotationFollowsVelocity = true;
@@ -105,7 +105,14 @@ void AProjectile::OnInitialize(const AEnemy* InTarget, const UShotDataAsset* InS
 	Damage = InDamage;
 	EffectModifier = InEffectModifier;	
 
+	Mesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+
 	bInitialized = true;
+
+	if (OverlapEnemy)
+	{
+		OnHitEnemy(OverlapEnemy); // 적과의 충돌 처리
+	}
 
 	bShowDebugInfo = InbShowDebugInfo; // 디버그 정보 표시 여부
 	if (bShowDebugInfo)
@@ -136,40 +143,14 @@ void AProjectile::OnInitialize(const AEnemy* InTarget, const UShotDataAsset* InS
 
 void AProjectile::OnOverlapEnemy(AActor* OverlappedActor, AActor* OtherActor)
 {
-	if (bInitialized && OtherActor->ActorHasTag(FName("Enemy")))
+	if (OtherActor->ActorHasTag(FName("Enemy")))
 	{
-		AEnemy* HitEnemy = Cast<AEnemy>(OtherActor);
-		if (HitEnemy)
+		OverlapEnemy = Cast<AEnemy>(OtherActor);
+		if (bInitialized)
 		{
-			if (bShowDebugInfo)
-			{
-				UWorld* World = GetWorld();				
-				float Radius = ShotData->bIsSplashAttack ? GetShotLevelData().SplashRadius : 10.0f;
-				DrawDebugSphere(
-					World,
-					OverlappedActor->GetActorLocation(),
-					Radius,
-					12,
-					FColor::Red,
-					false,
-					1.0f
-				);
-
-				int Minutes = FMath::FloorToInt(World->TimeSeconds / 60);
-				float Seconds = FMath::Fmod(World->TimeSeconds, 60.0f);
-				FString TimeString = FString::Printf(TEXT("%02d:%05.2f"), Minutes, Seconds);
-				UE_LOG(LogTemp, Warning, TEXT("[%s] [%s] : Hit!"), *TimeString, *this->GetActorNameOrLabel());
-			}
-
-			DamageToEnemy(HitEnemy);	// 데미지 주기
-
-			if (TargetEnemy == nullptr) 
-			{
-				DamageToArea(HitEnemy); // 범위 공격에서는 HitEnemy를 이미 데미지를 줬으니 무시
-			}
-			Destroy();					// 발사체 삭제
+			OnHitEnemy(OverlapEnemy); // 적과의 충돌 처리		
 		}
-	}
+	}	
 }
 
 void AProjectile::DamageToEnemy(AEnemy* HitEnemy)
@@ -226,3 +207,36 @@ const FShotLevelData& AProjectile::GetShotLevelData() const
 	return ShotData->LevelData[ShotLevel];
 }
 
+void AProjectile::OnHitEnemy(AEnemy* InHitEnemy)
+{
+	if (InHitEnemy)
+	{
+		if (bShowDebugInfo)
+		{
+			UWorld* World = GetWorld();
+			float Radius = ShotData->bIsSplashAttack ? GetShotLevelData().SplashRadius : 10.0f;
+			DrawDebugSphere(
+				World,
+				this->GetActorLocation(),
+				Radius,
+				12,
+				FColor::Red,
+				false,
+				1.0f
+			);
+
+			int Minutes = FMath::FloorToInt(World->TimeSeconds / 60);
+			float Seconds = FMath::Fmod(World->TimeSeconds, 60.0f);
+			FString TimeString = FString::Printf(TEXT("%02d:%05.2f"), Minutes, Seconds);
+			UE_LOG(LogTemp, Warning, TEXT("[%s] [%s] : Hit!"), *TimeString, *this->GetActorNameOrLabel());
+		}
+
+		DamageToEnemy(InHitEnemy);		// 데미지 주기
+
+		if (TargetEnemy == nullptr)
+		{
+			DamageToArea(InHitEnemy);	// 범위 공격에서는 HitEnemy를 이미 데미지를 줬으니 무시
+		}
+		Destroy();						// 발사체 삭제
+	}
+}

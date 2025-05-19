@@ -57,6 +57,9 @@ protected:
 private:
 	const FShotLevelData& GetShotLevelData() const;
 
+	// 적에게 맞았을 때의 처리를 수행하는 함수
+	void OnHitEnemy(AEnemy* InHitEnemy);	
+
 protected:
 	// 발사체 이동 컴포넌트
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -102,4 +105,8 @@ private:
 
 	// 타겟이 죽었는지 여부(발사체가 날아가는 도중에 적이 죽으면 직선으로 날아감)
 	bool bTargetDie = false;	
+
+	AEnemy* OverlapEnemy = nullptr;	// 겹친 적
+
+
 };
