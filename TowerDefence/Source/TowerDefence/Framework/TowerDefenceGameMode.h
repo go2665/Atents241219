@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "TowerDefence/Framework/ObjectPool/ObjectPoolDataAsset.h"
 #include "TowerDefenceGameMode.generated.h"
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnGoldChanged, int32 /*InCurrentGold*/);
@@ -80,6 +81,10 @@ public:
 	FOnGameOver OnGameOver;
 
 protected:
+	// 오브젝트 풀 데이터 에셋
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "StageData")
+	UObjectPoolDataAsset* ObjectPoolDataAsset = nullptr; 
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "StageData")
 	int32 Gold = 0;
 

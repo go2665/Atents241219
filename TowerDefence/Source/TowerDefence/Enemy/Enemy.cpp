@@ -89,7 +89,7 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 	if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] Take Damage: %.1f"), *this->GetActorLabel(), ActualDamage);
 	SetHealth(CurrentHealth - ActualDamage); // 체력 설정
 
-	FVector Location;
+	FVector Location = FVector::ZeroVector;
 
 	// 발사체에게 맞은 대상을 알림
 	if (DamageCauser)

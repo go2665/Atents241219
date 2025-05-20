@@ -67,3 +67,15 @@ enum class EEffectModifier : uint8
 	// Add more modifier types as needed
 	COUNT		UMETA(Hidden),	// 모디파이어 타입 개수
 };
+
+// 풀링될 액터 타입 enum
+UENUM(BlueprintType)
+enum class EPooledActorType : uint8
+{
+	ProjectileArrow			UMETA(DisplayName = "ProjectileArrow"),			// 화살 발사체
+	ProjectileBoulder		UMETA(DisplayName = "ProjectileBoulder"),		// 바위 발사체
+	ProjectileBullet		UMETA(DisplayName = "ProjectileBullet"),		// 총알 발사체
+	ProjectileCannonBall	UMETA(DisplayName = "ProjectileCannonBall"),	// 대포알 발사체
+	EnemySpeed				UMETA(DisplayName = "EnemySpeed"),				// 적 스피드
+	EnemyTanker				UMETA(DisplayName = "EnemyTanker"),				// 적 탱커
+};

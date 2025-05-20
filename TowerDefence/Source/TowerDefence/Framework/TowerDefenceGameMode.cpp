@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "TowerDefence/Tower/TowerBuilder.h"
 #include "TowerDefence/Spawner/EnemySpawner.h"
+#include "TowerDefence/Framework/ObjectPool/ObjectPoolSubsystem.h"
 
 void ATowerDefenceGameMode::BeginPlay()
 {
@@ -15,6 +16,13 @@ void ATowerDefenceGameMode::BeginPlay()
 
 	if (World)
 	{
+		UObjectPoolSubsystem* ObjectPoolSubsystem = World->GetSubsystem<UObjectPoolSubsystem>();
+		if (ObjectPoolSubsystem && ObjectPoolDataAsset)
+		{
+			ObjectPoolSubsystem->InitializeObjectPool(ObjectPoolDataAsset); // 오브젝트 풀 초기화
+		}
+
+
 		// 현재 레벨에 ATowerBuilder가 몇개 있는지 확인
 		TArray<ATowerBuilder*> TowerBuilders;
 		for (TActorIterator<ATowerBuilder> Iter(World, ATowerBuilder::StaticClass()); Iter; ++Iter)
