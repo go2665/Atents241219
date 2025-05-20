@@ -50,6 +50,13 @@ void ACannon::OnInitialize(ATower* InTower, EFireOrder InOrder)
 
 	// 시야 센서의 겹침 시작 이벤트 바인딩
 	SightSensor->OnComponentBeginOverlap.AddUniqueDynamic(this, &ACannon::OnSightOverlapBegin); 
+	TArray<AActor*> OverlapActors;
+	SightSensor->GetOverlappingActors(OverlapActors);
+	for (AActor* Actor : OverlapActors)
+	{
+		OnSightOverlapBegin(SightSensor, Actor, nullptr, -1, false, FHitResult() );	// 이미 겹쳐있는 적 처리
+	}
+
 	// 시야 센서의 겹침 종료 이벤트 바인딩
 	SightSensor->OnComponentEndOverlap.AddUniqueDynamic(this, &ACannon::OnSightOverlapEnd); 
 }
