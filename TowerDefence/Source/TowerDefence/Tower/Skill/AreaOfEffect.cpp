@@ -119,14 +119,6 @@ void AAreaOfEffect::OnTargetOverlapBegin(UPrimitiveComponent* OverlappedComponen
 
 void AAreaOfEffect::OnTargetOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (bShowDebugInfo)
-	{
-		int Minutes = FMath::FloorToInt(GetWorld()->TimeSeconds / 60);
-		float Seconds = FMath::Fmod(GetWorld()->TimeSeconds, 60.0f);
-		FString TimeString = FString::Printf(TEXT("%02d:%05.2f"), Minutes, Seconds);
-		UE_LOG(LogTemp, Warning, TEXT("[%s] Overlap End: %s"), *TimeString, *OtherActor->GetActorNameOrLabel());
-	}
-
 	AffectedActors.RemoveSingle(OtherActor); // 겹친 액터를 제거
 	if (AffectedActors.IsEmpty())
 	{
@@ -134,18 +126,34 @@ void AAreaOfEffect::OnTargetOverlapEnd(UPrimitiveComponent* OverlappedComponent,
 		FTimerManager& TimerManager = World->GetTimerManager();
 		TimerManager.ClearTimer(TimerHandle);
 	}
+
+	if (bShowDebugInfo)
+	{
+		int Minutes = FMath::FloorToInt(GetWorld()->TimeSeconds / 60);
+		float Seconds = FMath::Fmod(GetWorld()->TimeSeconds, 60.0f);
+		FString TimeString = FString::Printf(TEXT("%02d:%05.2f"), Minutes, Seconds);
+		UE_LOG(LogTemp, Warning, TEXT("[%s] Overlap End: %s"), *TimeString, *OtherActor->GetActorNameOrLabel());
+	}
 }
 
 void AAreaOfEffect::OnTickDamage()
 {
-	for(AActor* Target : AffectedActors)
+	if (!AffectedActors.IsEmpty())
 	{
-		UGameplayStatics::ApplyDamage(
-			Target,
-			DotDamage,
-			nullptr,
-			this,
-			DamageType); // 데미지 적용
+		// Range-For 실행 중에 배열 크기가 변경될 수 있기 때문에 복사본을 만들어서 사용
+		TArray<AActor*> TargetActors = AffectedActors; 
+		for (AActor* Target : TargetActors)
+		{
+			if (IsValid(Target))
+			{
+				UGameplayStatics::ApplyDamage(
+					Target,
+					DotDamage,
+					nullptr,
+					this,
+					DamageType); // 데미지 적용
+			}
+		}
 	}
 }
 
