@@ -3,6 +3,7 @@
 
 #include "Cannon.h"
 #include "Components/SphereComponent.h"
+#include "NiagaraComponent.h"
 #include "TowerDefence/Tower/Tower.h"
 #include "TowerDefence/Enemy/Enemy.h"
 
@@ -22,6 +23,10 @@ ACannon::ACannon()
 	MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
 	MuzzleLocation->SetupAttachment(Root);
 	MuzzleLocation->SetRelativeLocation(FVector::ForwardVector * 100.0f); // 총구 위치 설정(에디터에서 상세조정필요)
+
+	FireEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("FireEffect"));
+	FireEffect->SetupAttachment(MuzzleLocation); // 발사 이펙트 위치 설정
+	FireEffect->SetAutoActivate(false); // 자동 활성화 비활성화
 
 	SightSensor = CreateDefaultSubobject<USphereComponent>(TEXT("SightSensor"));
 	SightSensor->SetupAttachment(Root);
@@ -147,6 +152,12 @@ void ACannon::Fire()
 		{
 			CurrentTargetEnemies.Add(TargetEnemies[i]); // 타겟 적 추가
 		}
+	}
+
+	// 발사 이펙트 재생
+	if (FireEffect)
+	{
+		FireEffect->Activate(); // 발사 이펙트 재생
 	}
 	
 	// 발사 델리게이트 호출

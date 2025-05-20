@@ -156,7 +156,7 @@ void AProjectile::DamageToEnemy(AEnemy* HitEnemy)
 	UGameplayStatics::ApplyDamage(
 		HitEnemy,
 		Damage,
-		nullptr, nullptr,
+		nullptr, this,
 		ShotData->DamageType);
 
 	// 맞은 적에게 이팩트 주기

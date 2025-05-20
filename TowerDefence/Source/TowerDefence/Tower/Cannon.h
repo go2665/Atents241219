@@ -10,6 +10,7 @@
 class ATower;
 class USphereComponent;
 class USceneComponent;
+class UNiagaraComponent;
 class AEnemy;
 
 // 발사 시 타겟 적들을 전달하는 델리게이트
@@ -88,6 +89,10 @@ protected:
 	// 발사 트랜스폼 표시용 씬 컴포넌트
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USceneComponent* MuzzleLocation = nullptr;
+
+	// 발사 이펙트
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UNiagaraComponent* FireEffect = nullptr;
 
 	// 메시 스케일 조정용
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower|Cannon", meta = (ClampMin = "0.1"))

@@ -9,6 +9,8 @@
 #include "TowerDefence/Defines/DamageAttribute/PoisonDamageType.h"
 #include "TowerDefence/Tower/Projectile.h"
 #include "Components/SplineComponent.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraSystem.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -87,6 +89,8 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 	if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] Take Damage: %.1f"), *this->GetActorLabel(), ActualDamage);
 	SetHealth(CurrentHealth - ActualDamage); // 체력 설정
 
+	FVector Location;
+
 	// 발사체에게 맞은 대상을 알림
 	if (DamageCauser)
 	{
@@ -96,6 +100,38 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 		{
 			Projectile->AddHitEnemy(this); // 발사체에 적 기록
 		}
+
+		// 피격 VFX 생성 위치 결정(발사체 위치에서 재생)
+		if (HitEffectAsset)
+		{
+			Location = DamageCauser->GetActorLocation() + HitEffectOffset;
+		}		
+	}
+	else
+	{
+		// 피격 VFX 생성 위치 결정(적 캐릭터 위치에서 재생)
+		if (HitEffectAsset)
+		{
+			FVector RandomOffset = FMath::VRand();
+			RandomOffset.Z = 0.0f;
+			RandomOffset *= 50.0f;
+			Location = GetActorLocation() + HitEffectOffset + RandomOffset;
+		}
+	}
+
+	// 피격 VFX 생성
+	if (HitEffectAsset)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			GetWorld(),
+			HitEffectAsset,
+			Location,
+			FRotator::ZeroRotator,
+			FVector(1.0f),
+			true,
+			true,
+			ENCPoolMethod::AutoRelease
+		);
 	}
 
 	return ActualDamage;

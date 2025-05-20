@@ -12,6 +12,9 @@
 #include "Enemy.generated.h"
 
 class USplineComponent;
+class UMeshComponent;
+class UNiagaraSystem;
+
 
 // 타워가 적을 죽였을 때 호출되는 델리게이트(파라메터는 플레이어가 획득할 골드)
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnEnemyKilled, int32); 
@@ -106,7 +109,7 @@ public:
 protected:
 	// 적의 메쉬 컴포넌트
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	class UMeshComponent* EnemyMesh = nullptr;			
+	UMeshComponent* EnemyMesh = nullptr;			
 	
 	// 적의 데이터 에셋
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy")
@@ -115,6 +118,14 @@ protected:
 	// 적의 현재 체력
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy")
 	float CurrentHealth = 20.0f;
+
+	// 이펙트의 위치 오프셋
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy")
+	FVector HitEffectOffset = FVector(0.0f, 0.0f, 100.0f);
+
+	// 히트 이펙트 에셋
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy")
+	UNiagaraSystem* HitEffectAsset = nullptr; 
 
 	// 적의 이동 속도(모디파이어 적용된 값. 버프 변경시 재계산되어야 함)
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy|Effect Modified Value")
