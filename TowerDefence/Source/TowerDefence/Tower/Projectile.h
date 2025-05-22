@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "TowerDefence/Framework/ObjectPool/PoolableActor.h"
 #include "Projectile.generated.h"
 
 class AEnemy;
@@ -18,7 +19,7 @@ struct FShotLevelData;
  */ 
 
 UCLASS()
-class TOWERDEFENCE_API AProjectile : public AActor
+class TOWERDEFENCE_API AProjectile : public AActor, public IPoolableActor
 {
 	GENERATED_BODY()
 	
@@ -28,20 +29,36 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 public:	
-	// 발사체 데이터 초기화(스폰 직후에 반드시 호출 되어야 함)
+
+	// 발사체가 풀에서 꺼내질 때 마다 해야할일(초기 트랜스폼, 샷데이터, 대상, 레벨, 데미지 설정)
 	UFUNCTION(BlueprintCallable, Category = "Shot")
-	void OnInitialize(const AEnemy* InTarget,
-		const UShotDataAsset* InShotData, int32 InLevel,
-		float InDamage,
-		bool InbShowDebugInfo = false,	// 나중에 파라메터 마지막으로 보낼것
-		float InEffectModifier = 1.0f );
+	void OnSpawn(
+		const FTransform& InTransform, 
+		const UShotDataAsset* InShotData,
+		const AEnemy* InTarget, 
+		int32 InLevel, 
+		float InDamage, 
+		bool InbShowDebugInfo = false);
 
 	// 이 발사체에 맞은 적 기록
 	void AddHitEnemy(AEnemy* InEnemy) { HitEnemies.Add(InEnemy); }	
+
+	// IPoolableActor을(를) 통해 상속됨 ---------------------------------
+
+	// 오브젝트가 풀에서 생성될 때 호출(초기화)
+	void OnInitialize() override;
+
+	// 오브젝트가 풀에서 꺼내질 때 호출(활성화 때)
+	void OnActivate() override;
+
+	// 오브젝트가 풀로 돌아갈 때 호출(비활성화 때)
+	void OnDeactivate() override;
+
+	inline EPooledActorType GetPoolType() const override { return PoolType; };
+	inline void SetPoolType(EPooledActorType InType) override { PoolType = InType; };
+	// -----------------------------------------------------------------
 
 protected:
 	// 적과의 겹침을 판단하기 위한 함수
@@ -89,10 +106,7 @@ private:
 	FVector TargetLocation = FVector::ZeroVector;	
 
 	// 발사체가 적에게 줄 데미지
-	float Damage = 1.0f;
-
-	// 발사체가 적에게 줄 효과에 대한 배율(디버프 배율)
-	float EffectModifier = 1.0f;					
+	float Damage = 1.0f;				
 
 	// 디버그 정보 표시 여부
 	bool bShowDebugInfo = false;	
@@ -103,5 +117,13 @@ private:
 	// 타겟이 죽었는지 여부(발사체가 날아가는 도중에 적이 죽으면 직선으로 날아감)
 	bool bTargetDie = false;	
 
+	// 활성화 여부
 	bool bActivate = true;
+
+	// 풀액터 타입(발사체 타입중 하나 선택)
+	EPooledActorType PoolType = EPooledActorType::None;	
+
+	// 수명 타이머 핸들
+	FTimerHandle LifeTimerHandle;	
+
 };

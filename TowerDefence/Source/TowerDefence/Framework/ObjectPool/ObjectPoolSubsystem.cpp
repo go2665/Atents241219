@@ -18,6 +18,13 @@ void UObjectPoolSubsystem::InitializeObjectPool(const UObjectPoolDataAsset* InDa
 			AActor* NewObject = GetWorld()->SpawnActor<AActor>(Data.ObjectClass, DefaultSpawnLocation, FRotator::ZeroRotator);
 			NewObject->SetActorHiddenInGame(true);
 			NewObject->SetActorEnableCollision(false);
+
+			if (IPoolableActor* PoolableActor = Cast<IPoolableActor>(NewObject))
+			{
+				PoolableActor->OnInitialize(); // 인터페이스를 상속 받았다면 오브젝트 초기화 처리 실행
+				PoolableActor->OnDeactivate(); // 비활성화 처리
+			}
+			
 			NewPool.Add(NewObject);
 						
 #if WITH_EDITOR
@@ -38,7 +45,7 @@ AActor* UObjectPoolSubsystem::GetObject(EPooledActorType InType)
 	AActor* PoolObject = nullptr;
 	if (Pool.Contains(InType))
 	{		
-		TArray<AActor*>& ObjectPool = Pool[InType];
+		TArray<AActor*>& ObjectPool = Pool[InType];		
 		if (ObjectPool.Num() > 0)
 		{
 			// 풀에서 꺼낼 오브젝트가 있는 경우 마지막 오브젝트를 꺼내서 사용
@@ -49,6 +56,18 @@ AActor* UObjectPoolSubsystem::GetObject(EPooledActorType InType)
 			// 풀에서 꺼낼 오브젝트가 없는 경우 새로 생성해서 사용
 			PoolObject = GetWorld()->SpawnActor<AActor>(
 				ObjectClass[InType], DefaultSpawnLocation, FRotator::ZeroRotator);
+#if WITH_EDITOR
+			FString EnumName = *UEnum::GetValueAsString(InType);
+			EnumName.Split(TEXT("::"), nullptr, &EnumName); // EnumName에서 :: 앞부분 제거
+
+			FString Path = FString::Printf(TEXT("ObjectPool/%s"), *EnumName);
+			PoolObject->SetFolderPath(FName(Path));
+#endif
+			IPoolableActor* PoolableActor = Cast<IPoolableActor>(PoolObject);
+			if (PoolableActor)
+			{
+				PoolableActor->OnInitialize();
+			}
 		}		
 		PoolObject->SetActorHiddenInGame(false);
 		PoolObject->SetActorEnableCollision(true);

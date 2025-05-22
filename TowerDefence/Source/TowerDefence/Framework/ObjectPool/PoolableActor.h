@@ -23,6 +23,9 @@ class TOWERDEFENCE_API IPoolableActor
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
+	// 오브젝트가 풀에서 생성될 때 호출(초기화)
+	virtual void OnInitialize() = 0;
+
 	// 오브젝트가 풀에서 꺼내질 때 호출(활성화 때)
 	virtual void OnActivate() = 0;
 

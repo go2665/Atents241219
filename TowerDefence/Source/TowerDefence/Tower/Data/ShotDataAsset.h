@@ -37,18 +37,22 @@ class TOWERDEFENCE_API UShotDataAsset : public UDataAsset
 	GENERATED_BODY()
 	
 public:
+	// 발사체인지 히트스캔인지 여부
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower|Shot")
+	EShootType ShootType = EShootType::HitScan;	
+
+	// 발사체 종류(풀에서의 타입, ShootType이 Projectile일 때만 설정)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower|Shot")
+	EPooledActorType ProjectileType = EPooledActorType::ProjectileArrow;
+
 	// 속성 타입(데미지 타입)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Shot")
 	TSubclassOf<UTowerDamageType> DamageType = UTowerDamageType::StaticClass(); // 속성 타입(데미지 타입)
 	
 	// 레벨별 데이터
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Shot")
-	TArray<FShotLevelData> LevelData;
-
-	// 발사체 클래스(없으면 히트스캔)
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Tower|Shot")
-	TSubclassOf<AProjectile> ProjectileClass = nullptr;
-	
+	TArray<FShotLevelData> LevelData;	
+		
 	// 단일/범위 공격 여부
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tower|Shot|Splash")
 	bool bIsSplashAttack = false;
@@ -59,11 +63,11 @@ public:
 
 	// 이 Shot이 Projectile인지 확인하는 함수(true면 발사체)
 	UFUNCTION()
-	inline bool IsProjectile() const { return ProjectileClass != nullptr; }
+	inline bool IsProjectile() const { return ShootType == EShootType::Projectile; }
 
 	// 이 Shot이 HitScan인지 확인하는 함수(true면 히트스캔)
 	UFUNCTION()
-	inline bool IsHitScan() const { return ProjectileClass == nullptr; }
+	inline bool IsHitScan() const { return ShootType == EShootType::HitScan; }
 
 	// 안전한 레벨 구하는 함수
 	inline int32 GetSafeLevel(int32 InLevel) const

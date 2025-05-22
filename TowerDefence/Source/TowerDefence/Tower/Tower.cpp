@@ -13,6 +13,7 @@
 #include "TowerDefence/Framework/TowerDefencePlayerController.h"
 #include "TowerDefence/Enemy/Enemy.h"
 #include "TowerDefence/Components/Effect/EffectComponent.h"
+#include "TowerDefence/Framework/ObjectPool/ObjectPoolSubsystem.h"
 
 // Sets default values
 ATower::ATower()
@@ -233,17 +234,20 @@ void ATower::ShootProjectile(const TArray<AEnemy*>& InTargetEnemies)
 	int32 Count = FMath::Min(GetCannonLevelData().TargetCount, InTargetEnemies.Num()); // 공격할 적의 수
 	for (int32 i = 0; i < Count; i++)
 	{
-		AProjectile* Projectile = World->SpawnActor<AProjectile>(
-			ShotData->ProjectileClass, CannonInstance->GetMuzzleTransform());
+		AProjectile* Projectile = Cast<AProjectile>(
+			World->GetSubsystem<UObjectPoolSubsystem>()->GetObject(ShotData->ProjectileType));
+
 		if (Projectile)
 		{
-			// 발사체 데이터 초기화
-			Projectile->OnInitialize(
-				InTargetEnemies[i], 
-				ShotData, TowerLevel, Damage,
+			UE_LOG(LogTemp, Warning, TEXT("[%s] : Projectile is Spawn!"), *Projectile->GetActorNameOrLabel());
+			Projectile->OnSpawn(
+				CannonInstance->GetMuzzleTransform(),
+				ShotData,
+				InTargetEnemies[i],
+				TowerLevel,
+				Damage,
 				bShowDebugInfo
-				/*나중에 모디파이어 적용할 것*/
-			);	
+			);
 
 			if (bShowDebugInfo)
 			{
@@ -253,6 +257,10 @@ void ATower::ShootProjectile(const TArray<AEnemy*>& InTargetEnemies)
 				FString TimeString = FString::Printf(TEXT("%02d:%05.2f"), Minutes, Seconds);
 				UE_LOG(LogTemp, Warning, TEXT("[%s] [%s] : Shoot!"), *TimeString, *this->GetActorNameOrLabel());
 			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[%s] : Projectile is nullptr!"), *this->GetActorNameOrLabel());
 		}
 	}
 }

@@ -72,10 +72,18 @@ enum class EEffectModifier : uint8
 UENUM(BlueprintType)
 enum class EPooledActorType : uint8
 {
+	None					UMETA(Hidden),									// 코드 처리용
 	ProjectileArrow			UMETA(DisplayName = "ProjectileArrow"),			// 화살 발사체
 	ProjectileBoulder		UMETA(DisplayName = "ProjectileBoulder"),		// 바위 발사체
 	ProjectileBullet		UMETA(DisplayName = "ProjectileBullet"),		// 총알 발사체
 	ProjectileCannonBall	UMETA(DisplayName = "ProjectileCannonBall"),	// 대포알 발사체
 	EnemySpeed				UMETA(DisplayName = "EnemySpeed"),				// 적 스피드
 	EnemyTanker				UMETA(DisplayName = "EnemyTanker"),				// 적 탱커
+};
+
+UENUM(BlueprintType)
+enum class EShootType : uint8
+{
+	HitScan		UMETA(DisplayName = "HitScan"),	// 히트스캔
+	Projectile	UMETA(DisplayName = "Projectile"),// 발사체
 };

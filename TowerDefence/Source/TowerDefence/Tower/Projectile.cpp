@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "TowerDefence/Enemy/Enemy.h"
 #include "TowerDefence/Tower/Data/ShotDataAsset.h"
+#include "TowerDefence/Framework/ObjectPool/ObjectPoolSubsystem.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -24,12 +25,6 @@ AProjectile::AProjectile()
 	ProjectileMovement->bRotationRemainsVertical = true;
 	ProjectileMovement->bShouldBounce = false;
 	ProjectileMovement->ProjectileGravityScale = 0.0f;
-}
-
-void AProjectile::BeginPlay()
-{
-	Super::BeginPlay();
-	SetLifeSpan(10.0f);
 }
 
 void AProjectile::Tick(float DeltaTime)
@@ -71,28 +66,30 @@ void AProjectile::Tick(float DeltaTime)
 			}
 
 			DamageToArea(nullptr);	// 바닥에 충돌
-			Destroy();
+			
+			GetWorld()->GetSubsystem<UObjectPoolSubsystem>()->ReleaseObject(this); // 발사체 풀로 반환
 		}
 	}
 }
 
-void AProjectile::OnInitialize(const AEnemy* InTarget, const UShotDataAsset* InShotData, int32 InLevel,
-	float InDamage, bool InbShowDebugInfo,  float InEffectModifier)
+void AProjectile::OnSpawn(const FTransform& InTransform, const UShotDataAsset* InShotData, const AEnemy* InTarget, int32 InLevel, float InDamage, bool InbShowDebugInfo)
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Projectile[%s]: OnInitialize"), *this->GetName());
 
 	// 타겟과 발사체 데이터는 반드시 존재해야 한다.
-	verify(InTarget != nullptr && InShotData != nullptr);		
+	verify(InTarget != nullptr && InShotData != nullptr);
+
+	SetActorTransform(InTransform); // 초기 트랜스폼 설정
 
 	TargetEnemy = InTarget;
 	TargetLocation = TargetEnemy->GetActorLocation();
-	
+
 	FVector Direction = TargetEnemy->GetActorLocation() - GetActorLocation();
 	Direction.Normalize();
-	ProjectileMovement->Velocity = Direction * MoveSpeed;
-	ProjectileMovement->InitialSpeed = MoveSpeed;
+	ProjectileMovement->Velocity = Direction * MoveSpeed;	
 
-	ShotData = InShotData;	
+	// 샷 데이터 설정
+	ShotData = InShotData;
 	if (ShotData->bIsSplashAttack)
 	{
 		TargetEnemy = nullptr; // 범위 공격이면 TargetActor는 nullptr로 설정
@@ -101,17 +98,13 @@ void AProjectile::OnInitialize(const AEnemy* InTarget, const UShotDataAsset* InS
 	ShotLevel = InLevel;
 
 	Damage = InDamage;
-	EffectModifier = InEffectModifier;
 
-	bActivate = true;
-
-	// 오버랩 이벤트 바인딩
-	OnActorBeginOverlap.AddDynamic(this, &AProjectile::OnOverlapEnemy);
+	// 이미 겹쳐있는 적 처리
 	TArray<AActor*> OverlapActors;
 	GetOverlappingActors(OverlapActors);
 	for (AActor* Actor : OverlapActors)
 	{
-		OnOverlapEnemy(this, Actor);	// 이미 겹쳐있는 적 처리
+		OnOverlapEnemy(this, Actor);
 	}
 
 	bShowDebugInfo = InbShowDebugInfo;	// 디버그 정보 표시 여부
@@ -152,48 +145,54 @@ void AProjectile::OnOverlapEnemy(AActor* OverlappedActor, AActor* OtherActor)
 
 void AProjectile::DamageToEnemy(AEnemy* HitEnemy)
 {
-	// 적 한명에게 데미지 적용
-	UGameplayStatics::ApplyDamage(
-		HitEnemy,
-		Damage,
-		nullptr, this,
-		ShotData->DamageType);
+	if (ShotData)
+	{
+		// 적 한명에게 데미지 적용
+		UGameplayStatics::ApplyDamage(
+			HitEnemy,
+			Damage,
+			nullptr, this,
+			ShotData->DamageType);
 
-	// 맞은 적에게 이팩트 주기
-	HitEnemy->AddEffect(GetShotLevelData().EffectType, ShotLevel);
+		// 맞은 적에게 이팩트 주기
+		HitEnemy->AddEffect(GetShotLevelData().EffectType, ShotLevel);
+	}
 }
 
 void AProjectile::DamageToArea(AActor* InIgnore)
 {
-	// 범위 공격 데미지 처리
-	TArray<AActor*> Ignores;
-	if (InIgnore)
-		Ignores.Add(InIgnore); // InIgnore는 무시한다. 
-
-	HitEnemies.Empty(); // 범위로 데미지 주기 전에 초기화
-
-	UGameplayStatics::ApplyRadialDamageWithFalloff(
-		GetWorld(),
-		Damage,
-		0.0f,
-		GetActorLocation(),
-		GetShotLevelData().SplashRadius * 0.5f,
-		GetShotLevelData().SplashRadius,
-		ShotData->SplashFalloff,
-		ShotData->DamageType,
-		Ignores,
-		this // 이 발사체를 맞은 대상을 기록하기 위해 사용
-	);
-
-	// 이팩트 처리(HitEnemies에 들어있는 적 사용)
-	if (GetShotLevelData().EffectType != EEffectType::None)
+	if (ShotData)
 	{
-		for (AEnemy* Target : HitEnemies)
+		// 범위 공격 데미지 처리
+		TArray<AActor*> Ignores;
+		if (InIgnore)
+			Ignores.Add(InIgnore); // InIgnore는 무시한다. 
+
+		HitEnemies.Empty(); // 범위로 데미지 주기 전에 초기화
+
+		UGameplayStatics::ApplyRadialDamageWithFalloff(
+			GetWorld(),
+			Damage,
+			0.0f,
+			GetActorLocation(),
+			GetShotLevelData().SplashRadius * 0.5f,
+			GetShotLevelData().SplashRadius,
+			ShotData->SplashFalloff,
+			ShotData->DamageType,
+			Ignores,
+			this // 이 발사체를 맞은 대상을 기록하기 위해 사용
+		);
+
+		// 이팩트 처리(HitEnemies에 들어있는 적 사용)
+		if (GetShotLevelData().EffectType != EEffectType::None)
 		{
-			AEnemy* Enemy = Cast<AEnemy>(Target);
-			if (Enemy)
+			for (AEnemy* Target : HitEnemies)
 			{
-				Enemy->AddEffect(GetShotLevelData().EffectType, ShotLevel);
+				AEnemy* Enemy = Cast<AEnemy>(Target);
+				if (Enemy)
+				{
+					Enemy->AddEffect(GetShotLevelData().EffectType, ShotLevel);
+				}
 			}
 		}
 	}
@@ -237,6 +236,52 @@ void AProjectile::OnHitEnemy(AEnemy* InHitEnemy)
 		{
 			DamageToArea(InHitEnemy);	// 범위 공격에서는 HitEnemy를 이미 데미지를 줬으니 무시
 		}
-		Destroy();						// 발사체 삭제
+		
+		GetWorld()->GetSubsystem<UObjectPoolSubsystem>()->ReleaseObject(this); // 발사체 삭제
 	}
+}
+
+void AProjectile::OnInitialize()
+{
+	ProjectileMovement->InitialSpeed = MoveSpeed;
+
+	// 오버랩 이벤트 바인딩
+	OnActorBeginOverlap.AddDynamic(this, &AProjectile::OnOverlapEnemy);	
+}
+
+void AProjectile::OnActivate()
+{
+	// 10초 후에 발사체를 풀로 되돌린다.
+	UWorld* World = GetWorld();
+
+	World->GetTimerManager().SetTimer(
+		LifeTimerHandle,
+		[this]()
+		{
+			GetWorld()->GetSubsystem<UObjectPoolSubsystem>()->ReleaseObject(this);
+		},
+		10.0f, false);
+	ProjectileMovement->SetActive(true);
+	bActivate = true;
+
+	int Minutes = FMath::FloorToInt(GetWorld()->TimeSeconds / 60);
+	float Seconds = FMath::Fmod(GetWorld()->TimeSeconds, 60.0f);
+	FString TimeString = FString::Printf(TEXT("%02d:%05.2f"), Minutes, Seconds);
+	UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] - OnActivate"), *TimeString, *this->GetName());
+}
+
+void AProjectile::OnDeactivate()
+{
+	int Minutes = FMath::FloorToInt(GetWorld()->TimeSeconds / 60);
+	float Seconds = FMath::Fmod(GetWorld()->TimeSeconds, 60.0f);
+	FString TimeString = FString::Printf(TEXT("%02d:%05.2f"), Minutes, Seconds);
+	UE_LOG(LogTemp, Warning, TEXT("[%s] : [%s] - OnDeactivate"), *TimeString, *this->GetName());
+
+	ProjectileMovement->SetActive(false);
+	if (LifeTimerHandle.IsValid())
+	{
+		UWorld* World = GetWorld();
+		World->GetTimerManager().ClearTimer(LifeTimerHandle);
+	}
+	bActivate = false;
 }
