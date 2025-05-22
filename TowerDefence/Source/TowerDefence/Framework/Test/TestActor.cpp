@@ -16,3 +16,5 @@ void ATestActor::TestFunction()
 		UE_LOG(LogTemp, Warning, TEXT("ObjectPoolSubsystem not found"));
 	}
 }
+
+	{
