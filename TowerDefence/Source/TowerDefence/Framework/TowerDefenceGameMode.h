@@ -49,6 +49,8 @@ public:
 			Health = 0;
 			GameOver();
 		}
+
+		DecreaseRemainingEnemyCount();
 	}
 
 	// 비어있는 타워빌더가 있는지 확인하는 함수(true면 비어있는 타워빌더가 있음)

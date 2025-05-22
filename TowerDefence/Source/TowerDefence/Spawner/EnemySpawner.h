@@ -34,7 +34,7 @@ private:
 	void StartWave(int32 InWaveIndex);
 
 	UFUNCTION(BlueprintCallable, Category = "Enemy Spawner")
-	void SpawnEnemy(TSubclassOf<AEnemy> InEnemyClass, const FVector& InOffset);
+	void SpawnEnemy(EPooledActorType InEnemyType, const FVector& InOffset);
 		
 	void RepeatSpawnEnemy(const FEnemyGroupData* InGroupData);
 

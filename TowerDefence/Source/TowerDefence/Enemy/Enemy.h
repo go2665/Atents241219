@@ -9,6 +9,7 @@
 #include "TowerDefence/Defines/DamageAttribute/TowerDamageType.h"
 #include "TowerDefence/Components/Effect/EffectTargetable.h"
 #include "TowerDefence/Components/Effect/EffectComponent.h"
+#include "TowerDefence/Framework/ObjectPool/PoolableActor.h"
 #include "Enemy.generated.h"
 
 class USplineComponent;
@@ -23,7 +24,7 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnEnemyKilled, int32);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnEnemyAttack, int32);
 
 UCLASS()
-class TOWERDEFENCE_API AEnemy : public AActor, public IEffectTargetable
+class TOWERDEFENCE_API AEnemy : public AActor, public IEffectTargetable, public IPoolableActor
 {
 	GENERATED_BODY()
 	
@@ -31,15 +32,14 @@ public:
 	AEnemy();
 
 protected:
-	virtual void BeginPlay() override;
 
 public:	
 	virtual void Tick(float DeltaTime) override;
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override; // 데미지 처리 함수
 
-	// 적 초기화 함수
+	// 스폰되었을 때 적을 초기화하는 함수
 	UFUNCTION(BlueprintCallable, Category = "Enemy")
-	void InitializeEnemy(USplineComponent* InSpline, const FVector& InOffset);
+	void OnSpawn(USplineComponent* InSpline, const FVector& InOffset);
 
 	UFUNCTION(BlueprintCallable, Category = "Enemy")
 	bool AddEffect(EEffectType InType, int32 InLevel) override;
@@ -50,6 +50,14 @@ public:
 	void ApplyModifiers(const TMap<EEffectModifier, float>* InModifierMap) override;
 
 	void Die(bool bGoalArrived);
+
+	// IPoolableActor을(를) 통해 상속됨 ---------------------------------
+	void OnInitialize() override;
+	void OnActivate() override;
+	void OnDeactivate() override;
+	inline EPooledActorType GetPoolType() const override { return PoolType; };
+	inline void SetPoolType(EPooledActorType InType) override { PoolType = InType; };
+	// -----------------------------------------------------------------
 		
 	//inline virtual void SetHealth(float InHealth) override;
 	//inline virtual bool IsAlive() const override;
@@ -158,4 +166,7 @@ private:
 
 	// 적이 살아있는지 여부
 	bool bIsAlive = true;	
+
+	// 풀 액터 타입(적 캐릭터 타입중 하나 선택)
+	EPooledActorType PoolType = EPooledActorType::EnemySpeed;	
 };

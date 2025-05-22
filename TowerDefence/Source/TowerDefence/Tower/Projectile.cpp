@@ -253,12 +253,20 @@ void AProjectile::OnActivate()
 {
 	// 10초 후에 발사체를 풀로 되돌린다.
 	UWorld* World = GetWorld();
+	TWeakObjectPtr<AProjectile> WeakThis(this);
 
 	World->GetTimerManager().SetTimer(
 		LifeTimerHandle,
-		[this]()
+		[WeakThis]()
 		{
-			GetWorld()->GetSubsystem<UObjectPoolSubsystem>()->ReleaseObject(this);
+			if (WeakThis.IsValid())
+			{
+				UObjectPoolSubsystem* PoolSubSystem = WeakThis->GetWorld()->GetSubsystem<UObjectPoolSubsystem>();
+				if (PoolSubSystem)
+				{
+					PoolSubSystem->ReleaseObject(WeakThis.Get());
+				}
+			}
 		},
 		10.0f, false);
 	ProjectileMovement->SetActive(true);

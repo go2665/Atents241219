@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "TowerDefence/Defines/TowerDefenceEnums.h"
 #include "WaveDataAsset.generated.h"
 
 class AEnemy;
@@ -16,9 +17,9 @@ struct FEnemyGroupData
 {
 	GENERATED_BODY()
 
-	// 적의 종류(적 블루프린트)
+	// 풀에서의 적타입
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy Group")
-	TSubclassOf<AEnemy> EnemyClass;
+	EPooledActorType EnemyType = EPooledActorType::EnemySpeed; 
 
 	// 스폰할 수량
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy Group")

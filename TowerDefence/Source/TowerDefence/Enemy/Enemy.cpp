@@ -11,6 +11,8 @@
 #include "Components/SplineComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraSystem.h"
+#include "TowerDefence/Framework/ObjectPool/ObjectPoolSubsystem.h"
+#include "TowerDefence/Framework/TowerDefenceGameMode.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -28,26 +30,6 @@ AEnemy::AEnemy()
 
 	// 태그 설정
 	Tags.Add(FName("Enemy")); // 태그 추가
-}
-
-// Called when the game starts or when spawned
-void AEnemy::BeginPlay()
-{
-	Super::BeginPlay();
-
-	// UEffectComponent를 찾아서 EffectComponent에 저장
-	EffectComponent = FindComponentByClass<UEffectComponent>();
-
-	ensure(GetEnemyData() != nullptr); // EnemyData가 nullptr이 아닌지 확인
-
-	if (GetEnemyData())
-	{		
-		CurrentHealth = GetEnemyData()->Health;	// 적 캐릭터의 체력 설정
-		Speed = GetEnemyData()->Speed;			// 적 캐릭터의 이동 속도 설정
-		Defence = GetEnemyData()->Defence;		// 적의 방어력 설정
-
-		// 속성과 골드는 데이터에서 직접 확인
-	}	
 }
 
 // Called every frame
@@ -137,9 +119,17 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 	return ActualDamage;
 }
 
-void AEnemy::InitializeEnemy(USplineComponent* InSpline, const FVector& InOffset)
+void AEnemy::OnSpawn(USplineComponent* InSpline, const FVector& InOffset)
 {
-	SpawnerSpline = InSpline; // 스플라인 저장
+	// 스플라인 저장
+	SpawnerSpline = InSpline; 
+
+	// 스플라인의 시작 위치로 설정
+	SetActorLocation(SpawnerSpline->GetLocationAtSplinePoint(0, ESplineCoordinateSpace::World));
+
+	// 스플라인의 시작 회전으로 설정
+	SetActorRotation(SpawnerSpline->GetRotationAtSplinePoint(0, ESplineCoordinateSpace::World));
+
 	CurrentDistance = 0.0f;			
 	Offset = InOffset;
 	//UE_LOG(LogTemp, Warning, TEXT("[%s] Offset: %s"), *this->GetActorLabel(), *Offset.ToString());
@@ -195,7 +185,9 @@ void AEnemy::Die(bool bGoalArrived)
 		OnEnemyKilled.Broadcast(GetEnemyData()->Gold);	// 적 캐릭터가 골에 도착전에 죽었을 때의 처리
 	}
 	bIsAlive = false; // 죽었다고 표시
-	Destroy(); // 적 캐릭터 삭제(발사체가 타겟으로 하고 있을 때는 메모리 상에서 실제 삭제는 안됨. 게임에서는 삭제 됨)
+	//Destroy(); // 적 캐릭터 삭제(발사체가 타겟으로 하고 있을 때는 메모리 상에서 실제 삭제는 안됨. 게임에서는 삭제 됨)
+
+	GetWorld()->GetSubsystem<UObjectPoolSubsystem>()->ReleaseObject(this); // 적 캐릭터 풀로 반환
 }
 
 void AEnemy::SetHealth(float InHealth)
@@ -211,4 +203,34 @@ void AEnemy::SetHealth(float InHealth)
 		// 적 캐릭터가 살아있을 때의 처리
 		if (bShowDebugInfo) UE_LOG(LogTemp, Warning, TEXT("[%s] Current Health: %.1f"), *this->GetActorLabel(), CurrentHealth);
 	}
+}
+
+void AEnemy::OnInitialize()
+{
+	// UEffectComponent를 찾아서 EffectComponent에 저장
+	EffectComponent = FindComponentByClass<UEffectComponent>();
+
+	ensure(GetEnemyData() != nullptr); // EnemyData가 nullptr이 아닌지 확인
+
+	if (GetEnemyData())
+	{
+		CurrentHealth = GetEnemyData()->Health;	// 적 캐릭터의 체력 설정
+		Speed = GetEnemyData()->Speed;			// 적 캐릭터의 이동 속도 설정
+		Defence = GetEnemyData()->Defence;		// 적의 방어력 설정
+		// 속성과 골드는 데이터에서 직접 확인
+	}
+
+	ATowerDefenceGameMode* GameMode = Cast<ATowerDefenceGameMode>(GetWorld()->GetAuthGameMode());
+	OnEnemyAttack.AddUObject(GameMode, &ATowerDefenceGameMode::SubtractHealth);
+	OnEnemyKilled.AddUObject(GameMode, &ATowerDefenceGameMode::OnEnemyKilled);
+}
+
+void AEnemy::OnActivate()
+{
+}
+
+void AEnemy::OnDeactivate()
+{
+	CurrentDistance = 0.0f;
+	CurrentHealth = GetEnemyData()->Health;
 }

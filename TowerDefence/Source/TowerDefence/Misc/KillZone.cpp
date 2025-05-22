@@ -3,6 +3,7 @@
 
 #include "KillZone.h"
 #include "TowerDefence/Tower/Projectile.h"
+#include "TowerDefence/Framework/ObjectPool/ObjectPoolSubsystem.h"
 
 // Sets default values
 AKillZone::AKillZone()
@@ -23,6 +24,7 @@ void AKillZone::OnProjectileOverlapBegin(AActor* OverlappedActor, AActor* OtherA
 	if (OtherActor->IsA<AProjectile>())
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("[%s] Destroy"), *OtherActor->GetName());
-		OtherActor->Destroy();
+		
+		GetWorld()->GetSubsystem<UObjectPoolSubsystem>()->ReleaseObject(OtherActor);
 	}
 }

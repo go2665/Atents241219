@@ -12,7 +12,10 @@ void UObjectPoolSubsystem::InitializeObjectPool(const UObjectPoolDataAsset* InDa
 		ObjectClass.Add(Data.Type, Data.ObjectClass);
 
 		// Pool에 저장
-		TArray<AActor*> NewPool;
+		FActorArray NewActorArray;
+		NewActorArray.Actors.Reserve(Data.PoolSize); // 미리 메모리 할당
+		//TArray<AActor*> NewPool;
+		//NewPool.Reserve(Data.PoolSize); // 미리 메모리 할당
 		for (int32 i = 0; i < Data.PoolSize; ++i)
 		{
 			AActor* NewObject = GetWorld()->SpawnActor<AActor>(Data.ObjectClass, DefaultSpawnLocation, FRotator::ZeroRotator);
@@ -25,7 +28,7 @@ void UObjectPoolSubsystem::InitializeObjectPool(const UObjectPoolDataAsset* InDa
 				PoolableActor->OnDeactivate(); // 비활성화 처리
 			}
 			
-			NewPool.Add(NewObject);
+			NewActorArray.Actors.Add(NewObject);
 						
 #if WITH_EDITOR
 			FString EnumName = *UEnum::GetValueAsString(Data.Type);
@@ -35,8 +38,8 @@ void UObjectPoolSubsystem::InitializeObjectPool(const UObjectPoolDataAsset* InDa
 			NewObject->SetFolderPath(FName(Path));
 #endif
 		}
-		Pool.Add(Data.Type, NewPool);
-		ActivatedObjects.Add(Data.Type, TArray<AActor*>());
+		Pool.Add(Data.Type, NewActorArray);
+		ActivatedObjects.Add(Data.Type, FActorArray());
 	}
 }
 
@@ -45,7 +48,7 @@ AActor* UObjectPoolSubsystem::GetObject(EPooledActorType InType)
 	AActor* PoolObject = nullptr;
 	if (Pool.Contains(InType))
 	{		
-		TArray<AActor*>& ObjectPool = Pool[InType];		
+		TArray<AActor*>& ObjectPool = Pool[InType].Actors;		
 		if (ObjectPool.Num() > 0)
 		{
 			// 풀에서 꺼낼 오브젝트가 있는 경우 마지막 오브젝트를 꺼내서 사용
@@ -68,10 +71,12 @@ AActor* UObjectPoolSubsystem::GetObject(EPooledActorType InType)
 			{
 				PoolableActor->OnInitialize();
 			}
+			UE_LOG(LogTemp, Warning, TEXT("ObjectPoolSubsystem: New Object Created!"));
 		}		
+		PoolObject->SetActorTickEnabled(true);
 		PoolObject->SetActorHiddenInGame(false);
 		PoolObject->SetActorEnableCollision(true);
-		ActivatedObjects[InType].Add(PoolObject);
+		ActivatedObjects[InType].Actors.Add(PoolObject);
 
 		IPoolableActor* PoolableActor = Cast<IPoolableActor>(PoolObject);
 		if (PoolableActor)
@@ -90,10 +95,11 @@ void UObjectPoolSubsystem::ReleaseObject(TScriptInterface<IPoolableActor> InObje
 	if (ActivatedObjects.Contains(Type))
 	{
 		AActor* PoolObject = Cast<AActor>(InObject.GetObject());
-		if (ActivatedObjects[Type].Remove(PoolObject) > 0)
+		if (ActivatedObjects[Type].Actors.Remove(PoolObject) > 0)
 		{
 			// 풀에서 꺼내진 오브젝트가 맞다.
-			Pool[Type].Add(PoolObject); // 풀에 다시 넣기
+			Pool[Type].Actors.Add(PoolObject); // 풀에 다시 넣기
+			PoolObject->SetActorTickEnabled(false);
 			PoolObject->SetActorHiddenInGame(true);
 			PoolObject->SetActorEnableCollision(false);
 			PoolObject->SetActorLocation(DefaultSpawnLocation); // 기본 위치로 이동
@@ -101,6 +107,15 @@ void UObjectPoolSubsystem::ReleaseObject(TScriptInterface<IPoolableActor> InObje
 			InObject->OnDeactivate();
 		}
 	}
+}
+
+UObject* UObjectPoolSubsystem::GetDefaultObject(EPooledActorType InType)
+{
+	if (ObjectClass.Contains(InType))
+	{
+		return ObjectClass[InType]->GetDefaultObject();
+	}
+	return nullptr;
 }
 
 void UObjectPoolSubsystem::Test()

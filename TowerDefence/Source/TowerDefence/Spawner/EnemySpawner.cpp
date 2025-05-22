@@ -5,6 +5,7 @@
 #include "Components/SplineComponent.h"
 #include "TowerDefence/Enemy/Enemy.h"
 #include "TowerDefence/Framework/TowerDefenceGameMode.h"
+#include "TowerDefence/Framework/ObjectPool/ObjectPoolSubsystem.h"
 
 // Sets default values
 AEnemySpawner::AEnemySpawner()
@@ -61,18 +62,16 @@ void AEnemySpawner::Tick(float DeltaTime)
 
 int32 AEnemySpawner::GetTotalEnemyDamage() const
 {
+	UObjectPoolSubsystem* PoolSubSystem = GetWorld()->GetSubsystem<UObjectPoolSubsystem>();
 	int32 TotalDamage = 0;
 	for (const FWaveData& WaveData : WaveDataAsset->WaveDatas)
 	{
 		for (const FEnemyGroupData& GroupData : WaveData.EnemyGroups)
 		{
-			if (GroupData.EnemyClass)
+			AEnemy* Enemy = Cast<AEnemy>(PoolSubSystem->GetDefaultObject(GroupData.EnemyType));
+			if (Enemy)
 			{
-				AEnemy* Enemy = GroupData.EnemyClass.GetDefaultObject();
-				if (Enemy)
-				{
-					TotalDamage += (Enemy->GetDamage() * GroupData.SpawnCount);
-				}
+				TotalDamage += (Enemy->GetDamage() * GroupData.SpawnCount);
 			}
 		}
 	}
@@ -129,26 +128,29 @@ void AEnemySpawner::StartWave(int32 InWaveIndex)
 			for (int i = 0; i < GroupData.SpawnCount; i++)
 			{
 				FVector CircleLineLocation = BaseLocation.RotateAngleAxis(StartAngle + AngleStep * i, FVector::UpVector);
-				SpawnEnemy(GroupData.EnemyClass, CircleLineLocation);
+				SpawnEnemy(GroupData.EnemyType, CircleLineLocation);
 			}
 		}
 	}
 	
 }
 
-void AEnemySpawner::SpawnEnemy(TSubclassOf<AEnemy> InEnemyClass, const FVector& InOffset)
+void AEnemySpawner::SpawnEnemy(EPooledActorType InEnemyType, const FVector& InOffset)
 {
 	UWorld* World = GetWorld();
 	if (World)
 	{
-		AEnemy* Enemy = World->SpawnActor<AEnemy>(
-			InEnemyClass,
-			SplineComponent->GetLocationAtSplinePoint(0, ESplineCoordinateSpace::World),
-			SplineComponent->GetRotationAtSplinePoint(0, ESplineCoordinateSpace::World));
+		AEnemy* Enemy = Cast<AEnemy>(World->GetSubsystem<UObjectPoolSubsystem>()->GetObject(InEnemyType));
 
-		Enemy->InitializeEnemy(SplineComponent, InOffset);
-		Enemy->OnEnemyAttack.AddUObject(GameMode, &ATowerDefenceGameMode::SubtractHealth);
-		Enemy->OnEnemyKilled.AddUObject(GameMode, &ATowerDefenceGameMode::OnEnemyKilled);
+		if (Enemy)
+		{
+			Enemy->OnSpawn(SplineComponent, InOffset);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[%s] SpawnEnemy: InEnemyType is WORNG Type!"), *this->GetActorNameOrLabel());
+		}
+
 	}
 }
 
@@ -159,8 +161,8 @@ void AEnemySpawner::RepeatSpawnEnemy(const FEnemyGroupData* InGroupData)
 		UWorld* World = GetWorld();
 		int Minutes = FMath::FloorToInt(World->TimeSeconds / 60);
 		float Seconds = FMath::Fmod(World->TimeSeconds, 60.0f);
-		FString TimeString = FString::Printf(TEXT("%02d:%05.3f"), Minutes, Seconds);
-		UE_LOG(LogTemp, Warning, TEXT("[%s] RepeatSpawnEnemy: %s"), *TimeString, *InGroupData->EnemyClass->GetName());
+		FString TimeString = FString::Printf(TEXT("%02d:%05.3f"), Minutes, Seconds);		
+		UE_LOG(LogTemp, Warning, TEXT("[%s] RepeatSpawnEnemy: %s"), *TimeString, *UEnum::GetValueAsString(InGroupData->EnemyType));
 	}
 
 	int32& Count = SpawnCountMap.FindOrAdd(InGroupData);
@@ -168,7 +170,7 @@ void AEnemySpawner::RepeatSpawnEnemy(const FEnemyGroupData* InGroupData)
 	{
 		Count++;
 		FVector Offset = FMath::RandRange(-25.0f, 25.0f) * FVector::RightVector;
-		SpawnEnemy(InGroupData->EnemyClass, Offset);
+		SpawnEnemy(InGroupData->EnemyType, Offset);
 	}
 	else
 	{
